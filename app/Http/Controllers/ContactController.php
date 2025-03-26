@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Contact;
-use App\User;
-use App\CustomerGroup;
-use App\Transaction;
+use App\Models\Contact;
+use App\Models\User;
+use App\Models\CustomerGroup;
+use App\Models\Transaction;
 
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 
 use Excel;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 use App\Utils\Util;
 use App\Utils\ModuleUtil;
@@ -21,6 +21,7 @@ class ContactController extends Controller
 {
     protected $commonUtil;
     protected $transactionUtil;
+    protected $moduleUtil;
 
     /**
      * Constructor
