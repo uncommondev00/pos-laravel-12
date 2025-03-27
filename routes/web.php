@@ -48,6 +48,7 @@ use App\Http\Controllers\Restaurant\ProductModifierSetController;
 use App\Http\Controllers\Restaurant\TableController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SalesCommissionAgentController;
+use App\Http\Controllers\TransactionPaymentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
@@ -153,6 +154,15 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::post('/contacts/check-contact-id', [ContactController::class, 'checkContactId'])->name('contacts.checkContactId');
     Route::get('/contacts/customers', [ContactController::class, 'getCustomers'])->name('contacts.getCustomers');
     Route::resource('contacts', ContactController::class);
+
+    //Transaction payments...
+    Route::get('/payments/opening-balance/{contact_id}', [TransactionPaymentController::class, 'getOpeningBalancePayments'])->name('payments.getOpeningBalancePayments');
+    Route::get('/payments/show-child-payments/{payment_id}', [TransactionPaymentController::class, 'showChildPayments'])->name('payments.showChildPayments');
+    Route::get('/payments/view-payment/{payment_id}', [TransactionPaymentController::class, 'viewPayment'])->name('payments.viewPayment');
+    Route::get('/payments/add_payment/{transaction_id}', [TransactionPaymentController::class, 'addPayment'])->name('payments.addPayment');
+    Route::get('/payments/pay-contact-due/{contact_id}', [TransactionPaymentController::class, 'getPayContactDue'])->name('payments.getPayContactDue');
+    Route::post('/payments/pay-contact-due', [TransactionPaymentController::class, 'postPayContactDue'])->name('payments.postPayContactDue');
+    Route::resource('payments', TransactionPaymentController::class);
 
     //Cash Register
     Route::get('/cash-register/register-details', [CashRegisterController::class, 'getRegisterDetails'])->name('cash-register.getRegisterDetails');

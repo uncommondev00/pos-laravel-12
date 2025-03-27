@@ -85,15 +85,15 @@
                                             </span>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                    {{-- @if(($total_purchase + $opening_balance - $purchase_paid - $opening_balance_paid)  > 0)
-                                        <li><a href="{{route('', [$id])}}?type=purchase" class="pay_purchase_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("contact.pay_due_amount")</a></li>
-                                    @endif --}}
-                                    {{-- @if(($total_purchase_return - $purchase_return_paid)  > 0)
-                                        <li><a href="{{route('', [$id])}}?type=purchase_return" class="pay_purchase_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("lang_v1.receive_purchase_return_due")</a></li>
-                                    @endif --}}
-                                    {{-- @can("supplier.view")
-                                        <li><a href="{{route('', [$id])}}"><i class="fa fa-external-link" aria-hidden="true"></i> @lang("messages.view")</a></li>
-                                    @endcan --}}
+                                    @if(($contact->total_purchase + $contact->opening_balance - $contact->purchase_paid - $contact->opening_balance_paid)  > 0)
+                                        <li><a href="{{route('payments.getPayContactDue', [$contact->id])}}?type=purchase" class="pay_purchase_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("contact.pay_due_amount")</a></li>
+                                    @endif
+                                    @if(($contact->total_purchase_return - $contact->purchase_return_paid)  > 0)
+                                        <li><a href="{{route('payments.getPayContactDue', [$contact->id])}}?type=purchase_return" class="pay_purchase_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("lang_v1.receive_purchase_return_due")</a></li>
+                                    @endif
+                                    @can("supplier.view")
+                                        <li><a href="{{route('contacts.show', [$contact->id])}}"><i class="fa fa-external-link" aria-hidden="true"></i>@lang("messages.view")</a></li>
+                                    @endcan
                                     @can("supplier.update")
                                         <li><a href="{{route('contacts.edit', [$contact->id])}}" class="edit_contact_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
                                     @endcan
@@ -120,12 +120,12 @@
                                             </span>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                    {{-- @if(($contact->total_invoice + $contact->opening_balance - $contact->total_invoice_received - $contact->opening_balance_paid)  > 0)
-                                        <li><a href="{{action(\'TransactionPaymentController@getPayContactDue\', [$id])}}?type=sell" class="pay_sale_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("contact.pay_due_amount")</a></li>
+                                    @if(($contact->total_invoice + $contact->opening_balance - $contact->total_invoice_received - $contact->opening_balance_paid)  > 0)
+                                        <li><a href="{{route('payments.getPayContactDue', [$contact->id])}}?type=sell" class="pay_sale_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("contact.pay_due_amount")</a></li>
                                     @endif
                                     @if(($contact->total_sell_return - $contact->sell_return_paid)  > 0)
-                                        <li><a href="{{action(\'TransactionPaymentController@getPayContactDue\', [$id])}}?type=sell_return" class="pay_purchase_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("lang_v1.pay_sell_return_due")</a></li>
-                                    @endif --}}
+                                        <li><a href="{{route('payments.getPayContactDue', [$contact->id])}}?type=sell_return" class="pay_purchase_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("lang_v1.pay_sell_return_due")</a></li>
+                                    @endif
                                     @can("customer.view")
                                         <li><a href="{{route('contacts.show', [$contact->id])}}"><i class="fa fa-external-link" aria-hidden="true"></i> @lang("messages.view")</a></li>
                                     @endcan

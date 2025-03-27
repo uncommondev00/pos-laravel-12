@@ -1,10 +1,10 @@
 <div class="modal-dialog" role="document">
   <div class="modal-content">
 
-    {!! Form::open(['url' => action('TransactionPaymentController@postPayContactDue'), 'method' => 'post', 'id' => 'pay_contact_due_form', 'files' => true ]) !!}
-
-    {!! Form::hidden("contact_id", $contact_details->contact_id); !!}
-    {!! Form::hidden("due_payment_type", $due_payment_type); !!}
+    <form action="{{ route('payments.postPayContactDue') }}" method="post" id="pay_contact_due_form" enctype="multipart/form-data">
+      @csrf
+      <input type="hidden" name="contact_id" value="{{ $contact_details->contact_id }}">
+      <input type="hidden" name="due_payment_type" value="{{ $due_payment_type }}">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       <h4 class="modal-title">@lang( 'purchase.add_payment' )</h4>
@@ -89,53 +89,54 @@
       <div class="row payment_row">
         <div class="col-md-4">
           <div class="form-group">
-            {!! Form::label("amount" ,'Amount:*') !!}
+            <label for="amount">Amount:*</label>
             <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-money"></i>
-              </span>
-              {!! Form::text("amount", @num_format($payment_line->amount), ['class' => 'form-control input_number', 'required', 'placeholder' => 'Amount', 'data-rule-max-value' => $payment_line->amount, 'data-msg-max-value' => __('lang_v1.max_amount_to_be_paid_is', ['amount' => $amount_formated])]); !!}
+              <span class="input-group-addon"><i class="fa fa-money"></i></span>
+              <input type="text" name="amount" value="{{ @num_format($payment_line->amount) }}" class="form-control input_number" required placeholder="Amount" data-rule-max-value="{{ $payment_line->amount }}" data-msg-max-value="@lang('lang_v1.max_amount_to_be_paid_is', ['amount' => $amount_formated])">
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="form-group">
-            {!! Form::label("paid_on" ,'Paid on:*') !!}
+            <label for="paid_on">Paid on:*</label>
             <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-calendar"></i>
-              </span>
-              {!! Form::text('paid_on', date('m/d/Y', strtotime($payment_line->paid_on) ), ['class' => 'form-control', 'readonly', 'required']); !!}
+              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+              <input type="text" name="paid_on" value="{{ date('m/d/Y', strtotime($payment_line->paid_on)) }}" class="form-control" readonly required>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="form-group">
-            {!! Form::label("method" ,'Pay Via:*') !!}
+            <label for="method">Pay Via:*</label>
             <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-money"></i>
-              </span>
-              {!! Form::select("method", $payment_types, $payment_line->method, ['class' => 'form-control select2 payment_types_dropdown', 'required', 'style' => 'width:100%;']); !!}
+              <span class="input-group-addon"><i class="fa fa-money"></i></span>
+              <select name="method" class="form-control select2 payment_types_dropdown" required style="width:100%;">
+                @foreach($payment_types as $key => $value)
+                  <option value="{{ $key }}" {{ $payment_line->method == $key ? 'selected' : '' }}>{{ $value }}</option>
+                @endforeach
+              </select>
             </div>
           </div>
         </div>
-        <div class="clearfix"></div>
+        
         <div class="col-md-4">
           <div class="form-group">
-            {!! Form::label('document', __('purchase.attach_document') . ':') !!}
-            {!! Form::file('document'); !!}
+            <label for="document">@lang('purchase.attach_document'):</label>
+            <input type="file" name="document">
           </div>
         </div>
+        
         @if(!empty($accounts))
           <div class="col-md-6">
             <div class="form-group">
-              {!! Form::label("account_id" , __('lang_v1.payment_account') . ':') !!}
+              <label for="account_id">@lang('lang_v1.payment_account'):</label>
               <div class="input-group">
-                <span class="input-group-addon">
-                  <i class="fa fa-money"></i>
-                </span>
-                {!! Form::select("account_id", $accounts, !empty($payment_line->account_id) ? $payment_line->account_id : '' , ['class' => 'form-control select2', 'id' => "account_id", 'style' => 'width:100%;']); !!}
+                <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                <select name="account_id" id="account_id" class="form-control select2" style="width:100%;">
+                  @foreach($accounts as $key => $value)
+                    <option value="{{ $key }}" {{ (!empty($payment_line->account_id) && $payment_line->account_id == $key) ? 'selected' : '' }}>{{ $value }}</option>
+                  @endforeach
+                </select>
               </div>
             </div>
           </div>
@@ -143,11 +144,11 @@
         <div class="clearfix"></div>
 
           @include('transaction_payment.payment_type_details')
-        <div class="col-md-12">
-          <div class="form-group">
-            {!! Form::label("note",'Payment Note:') !!}
-            {!! Form::textarea("note", $payment_line->note, ['class' => 'form-control', 'rows' => 3]); !!}
-          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+                <label for="note">Payment Note:</label>
+                <textarea name="note" id="note" class="form-control" rows="3">{{ old('note', $payment_line->note) }}</textarea>
+            </div>
         </div>
       </div>
     </div>
@@ -157,7 +158,7 @@
       <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'messages.close' )</button>
     </div>
 
-    {!! Form::close() !!}
+    </form>
 
   </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->

@@ -1,6 +1,6 @@
 <div class="modal-dialog" role="document">
   <div class="modal-content">
-      <form action="{{ route('sales-commission-agentController@update', [$user->id]) }}" method="POST" id="sale_commission_agent_form">
+      <form action="{{ route('sales-commission-agents.update', [$user->id]) }}" method="POST" id="sale_commission_agent_form">
           @csrf
           @method('PUT')
 

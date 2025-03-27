@@ -1,5 +1,4 @@
-<div class="modal fade commission_agent_modal" tabindex="-1" role="dialog" 
-    	aria-labelledby="gridSystemModalLabel">
+
 <div class="modal-dialog" role="document">
     <div class="modal-content">
         <form action="{{ route('sales-commission-agents.store') }}" method="POST" id="sale_commission_agent_form">
@@ -76,5 +75,4 @@
         </form>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
-</div>
 

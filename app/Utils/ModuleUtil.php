@@ -2,7 +2,7 @@
 
 namespace App\Utils;
 
-use \Module;
+use Nwidart\Modules\Facades\Module;
 use App\Models\BusinessLocation;
 use App\Models\User;
 use App\Models\Product;

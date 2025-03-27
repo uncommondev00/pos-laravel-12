@@ -148,7 +148,7 @@
                     <div class="clearfix"></div>
                     <div class="col-sm-12">
                         @if(($contact->total_purchase - $contact->purchase_paid) > 0)
-                            <a href="{{action('TransactionPaymentController@getPayContactDue', [$contact->id])}}?type=purchase" class="pay_purchase_due btn btn-primary btn-sm pull-right"><i class="fa fa-money" aria-hidden="true"></i> @lang("contact.pay_due_amount")</a>
+                            <a href="{{route('payments.getPayContactDue', [$contact->id])}}?type=purchase" class="pay_purchase_due btn btn-primary btn-sm pull-right"><i class="fa fa-money" aria-hidden="true"></i> @lang("contact.pay_due_amount")</a>
                         @endif
                     </div>
                 @endif
@@ -361,7 +361,7 @@ $(document).ready( function(){
         processing: true,
         serverSide: true,
         aaSorting: [[0, 'desc']],
-        ajax: '{{action("TransactionPaymentController@getOpeningBalancePayments", $contact->id)}}',
+        ajax: '{{route("payments.getOpeningBalancePayments", $contact->id)}}',
         columns: [
             { data: 'payment_ref_no', name: 'payment_ref_no'  },
             { data: 'paid_on', name: 'paid_on'  },

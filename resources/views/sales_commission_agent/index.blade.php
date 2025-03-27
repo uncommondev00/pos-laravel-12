@@ -13,13 +13,4 @@
 
 @section('javascript')
     @livewireScripts
-    <script>
-        window.addEventListener('show-modal', () => {
-            $('.commission_agent_modal').modal('show');
-        });
-    
-        window.addEventListener('close-modal', () => {
-            $('.commission_agent_modal').modal('hide');
-        });
-    </script>
 @endsection

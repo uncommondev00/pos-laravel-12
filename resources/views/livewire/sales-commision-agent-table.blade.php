@@ -13,7 +13,8 @@
         @can('user.create')
             @slot('tool')
                 <div class="box-tools">
-                    <button class="btn btn-primary pull-right" wire:click="openModalCreate()"><i class="fa fa-plus"></i> @lang( 'messages.add' )</button>
+                    <button type="button" class="btn btn-primary btn-modal pull-right"
+                        data-href="{{route('sales-commission-agents.create')}}" data-container=".commission_agent_modal"><i class="fa fa-plus"></i> @lang( 'messages.add' )</button>
                 </div>
             @endslot
             
@@ -73,17 +74,10 @@
             </div>
         @endcan
     @endcomponent
-
-    @if($showModalCreate)
-
-            @include('sales_commission_agent.create')
-
-    @endif
-
-    @if($showModalEdit)
-            @include('sales_commission_agent.edit')
-    @endif
-
+    
+    <div class="modal fade commission_agent_modal" tabindex="-1" role="dialog" 
+    	aria-labelledby="gridSystemModalLabel">
+    </div>
 </section>
 <!-- /.content -->
 </div>

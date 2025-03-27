@@ -7,13 +7,14 @@ use Illuminate\Http\Request;
 use App\Utils\TransactionUtil;
 use App\Utils\ModuleUtil;
 
-use App\TransactionPayment;
-use App\Contact;
-use App\Transaction;
-use App\Account;
+use App\Models\TransactionPayment;
+use App\Models\Contact;
+use App\Models\Transaction;
+use App\Models\Account;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use Datatables;
+use Carbon\Carbon;
 
 use App\Events\TransactionPaymentAdded;
 use App\Events\TransactionPaymentUpdated;
@@ -77,7 +78,7 @@ class TransactionPaymentController extends Controller
                 $inputs = $request->only(['amount', 'method', 'note', 'card_number', 'card_holder_name',
                 'card_transaction_number', 'card_type', 'card_month', 'card_year', 'card_security',
                 'cheque_number', 'bank_account_number']);
-                $inputs['paid_on'] = \Carbon::createFromFormat('m/d/Y', $request->input('paid_on'))->toDateTimeString();
+                $inputs['paid_on'] = Carbon::createFromFormat('m/d/Y', $request->input('paid_on'))->toDateTimeString();
                 $inputs['transaction_id'] = $transaction->id;
                 $inputs['amount'] = $this->transactionUtil->num_uf($inputs['amount']);
                 $inputs['created_by'] = auth()->user()->id;
@@ -218,7 +219,7 @@ class TransactionPaymentController extends Controller
             $inputs = $request->only(['amount', 'method', 'note', 'card_number', 'card_holder_name',
             'card_transaction_number', 'card_type', 'card_month', 'card_year', 'card_security',
             'cheque_number', 'bank_account_number']);
-            $inputs['paid_on'] = \Carbon::createFromFormat('m/d/Y', $request->input('paid_on'))->toDateTimeString();
+            $inputs['paid_on'] = Carbon::createFromFormat('m/d/Y', $request->input('paid_on'))->toDateTimeString();
             $inputs['amount'] = $this->transactionUtil->num_uf($inputs['amount']);
 
             if ($inputs['method'] == 'custom_pay_1') {
@@ -363,7 +364,7 @@ class TransactionPaymentController extends Controller
                 $payment_line = new TransactionPayment();
                 $payment_line->amount = $amount;
                 $payment_line->method = 'cash';
-                $payment_line->paid_on = \Carbon::now()->toDateString();
+                $payment_line->paid_on = Carbon::now()->toDateString();
 
                 //Accounts
                 $accounts = $this->moduleUtil->accountsDropdown($business_id, true);
@@ -473,14 +474,15 @@ class TransactionPaymentController extends Controller
             $contact_details->total_paid = empty($contact_details->total_paid) ? 0 : $contact_details->total_paid;
             
             $payment_line->method = 'cash';
-            $payment_line->paid_on = \Carbon::now()->toDateString();
+            $payment_line->paid_on = Carbon::now()->toDateString();
                    
             $payment_types = $this->transactionUtil->payment_types();
 
             //Accounts
             $accounts = $this->moduleUtil->accountsDropdown($business_id, true);
-
+            
             if ($payment_line->amount > 0) {
+                
                 return view('transaction_payment.pay_supplier_due_modal')
                         ->with(compact('contact_details', 'payment_types', 'payment_line', 'due_payment_type', 'ob_due', 'amount_formated', 'accounts'));
             }
@@ -504,7 +506,7 @@ class TransactionPaymentController extends Controller
             $inputs = $request->only(['amount', 'method', 'note', 'card_number', 'card_holder_name',
                 'card_transaction_number', 'card_type', 'card_month', 'card_year', 'card_security',
                 'cheque_number', 'bank_account_number']);
-            $inputs['paid_on'] = \Carbon::createFromFormat('m/d/Y', $request->input('paid_on'))->toDateTimeString();
+            $inputs['paid_on'] = Carbon::createFromFormat('m/d/Y', $request->input('paid_on'))->toDateTimeString();
             $inputs['amount'] = $this->transactionUtil->num_uf($inputs['amount']);
             $inputs['created_by'] = auth()->user()->id;
             $inputs['payment_for'] = $contact_id;

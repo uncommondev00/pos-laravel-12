@@ -16,11 +16,6 @@ class SalesCommisionAgentTable extends Component
     public $perPageOptions = [5, 10, 25, 50, 100]; // Dropdown options
     public $sortColumn = 'full_name'; // Default sort column
     public $sortDirection = 'asc'; // Default sort direction
-    public $showModalCreate = false;
-    public $showModalEdit = false;
-    public $userId = null;
-
-    protected $listeners = ['closeModal'];
 
     protected $paginationTheme = 'bootstrap';
 
@@ -50,28 +45,6 @@ class SalesCommisionAgentTable extends Component
             $this->sortColumn = $column;
             $this->sortDirection = 'asc';
         }
-    }
-
-
-    public function openModalCreate($userId = null)
-    {
-        $this->userId = $userId;
-        $this->showModalCreate = true;
-        $this->dispatch('show-modal'); // 👈 Ensure modal is forced to be shown
-    }
-
-    public function openModalEdit($userId = null)
-    {
-        $this->userId = $userId;
-        $this->showModalEdit = true;
-        $this->dispatch('show-modal'); // 👈 Ensure modal is forced to be shown
-    }
-
-    public function closeModal()
-    {
-        $this->showModalCreate = false;
-        $this->showModalEdit = false;
-        $this->reset('userId');
     }
 
     public function render()
