@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Product;
-use App\Brands;
-use App\Category;
-use App\Unit;
-use App\TaxRate;
-use App\VariationTemplate;
-use App\ProductVariation;
-use App\Variation;
-use App\Business;
-use App\PurchaseLine;
-use App\VariationLocationDetails;
-use App\BusinessLocation;
-use App\SellingPriceGroup;
-use App\VariationGroupPrice;
-use App\ProductPriceLog;
+use App\Models\Product;
+use App\Models\Brands;
+use App\Models\Category;
+use App\Models\Unit;
+use App\Models\TaxRate;
+use App\Models\VariationTemplate;
+use App\Models\ProductVariation;
+use App\Models\Variation;
+use App\Models\Business;
+use App\Models\PurchaseLine;
+use App\Models\VariationLocationDetails;
+use App\Models\BusinessLocation;
+use App\Models\SellingPriceGroup;
+use App\Models\VariationGroupPrice;
+use App\Models\ProductPriceLog;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +33,7 @@ class ProductController extends Controller
      *
      */
     protected $productUtil;
-
+    protected $moduleUtil;
     private $barcode_types;
 
     /**

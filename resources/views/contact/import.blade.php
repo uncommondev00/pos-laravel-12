@@ -30,23 +30,24 @@
     <div class="row">
         <div class="col-sm-12">
             @component('components.widget', ['class' => 'box-primary'])
-                {!! Form::open(['url' => action('ContactController@postImportContacts'), 'method' => 'post', 'enctype' => 'multipart/form-data' ]) !!}
-                    <div class="row">
-                        <div class="col-sm-6">
+            <form action="{{ route('contacts.postImportContacts') }}" method="post" enctype="multipart/form-data">
+                @csrf
+                <div class="row">
+                    <div class="col-sm-6">
                         <div class="col-sm-8">
                             <div class="form-group">
-                                {!! Form::label('name', __( 'product.file_to_import' ) . ':') !!}
-                                {!! Form::file('contacts_csv', ['accept'=> '.csv', 'required' => 'required']); !!}
-                              </div>
+                                <label for="contacts_csv">{{ __('product.file_to_import') }}:</label>
+                                <input type="file" name="contacts_csv" accept=".csv" required="required">
+                            </div>
                         </div>
                         <div class="col-sm-4">
-                        <br>
+                            <br>
                             <button type="submit" class="btn btn-primary">@lang('messages.submit')</button>
                         </div>
-                        </div>
                     </div>
-
-                {!! Form::close() !!}
+                </div>
+            </form>
+            
                 <br><br>
                 <div class="row">
                     <div class="col-sm-4">
