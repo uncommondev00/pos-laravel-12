@@ -187,23 +187,23 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::resource('pos', SellPosController::class);
 
     //products
-    Route::post('/products/mass-deactivate', [ProductController::class, 'massDeactivate']);
-    Route::get('/products/activate/{id}', [ProductController::class, 'activate']);
-    Route::get('/products/view-product-group-price/{id}', [ProductController::class, 'viewGroupPrice']);
-    Route::get('/products/add-selling-prices/{id}', [ProductController::class, 'addSellingPrices']);
-    Route::post('/products/save-selling-prices', [ProductController::class, 'saveSellingPrices']);
-    Route::post('/products/mass-delete', [ProductController::class, 'massDestroy']);
-    Route::get('/products/view/{id}', [ProductController::class, 'view']);
-    Route::get('/products/list', [ProductController::class, 'getProducts']);
-    Route::get('/products/list-no-variation', [ProductController::class, 'getProductsWithoutVariations']);
-    Route::post('/products/get_sub_categories', [ProductController::class, 'getSubCategories']);
-    Route::post('/products/product_form_part', [ProductController::class, 'getProductVariationFormPart']);
-    Route::post('/products/get_product_variation_row', [ProductController::class, 'getProductVariationRow']);
-    Route::post('/products/get_variation_template', [ProductController::class, 'getVariationTemplate']);
-    Route::get('/products/get_variation_value_row', [ProductController::class, 'getVariationValueRow']);
-    Route::post('/products/check_product_sku', [ProductController::class, 'checkProductSku']);
-    Route::get('/products/quick_add', [ProductController::class, 'quickAdd']);
-    Route::post('/products/save_quick_product', [ProductController::class, 'saveQuickProduct']);
+    Route::post('/products/mass-deactivate', [ProductController::class, 'massDeactivate'])->name('products.massDeactivate');
+    Route::get('/products/activate/{id}', [ProductController::class, 'activate'])->name('products.activate');
+    Route::get('/products/view-product-group-price/{id}', [ProductController::class, 'viewGroupPrice'])->name('products.viewGroupPrice');
+    Route::get('/products/add-selling-prices/{id}', [ProductController::class, 'addSellingPrices'])->name('products.addSellingPrices');
+    Route::post('/products/save-selling-prices', [ProductController::class, 'saveSellingPrices'])->name('products.saveSellingPrices');
+    Route::post('/products/mass-delete', [ProductController::class, 'massDestroy'])->name('products.massDestroy');
+    Route::get('/products/view/{id}', [ProductController::class, 'view'])->name('products.view');
+    Route::get('/products/list', [ProductController::class, 'getProducts'])->name('products.getProducts');
+    Route::get('/products/list-no-variation', [ProductController::class, 'getProductsWithoutVariations'])->name('products.getProductsWithoutVariations');
+    Route::post('/products/get_sub_categories', [ProductController::class, 'getSubCategories'])->name('products.getSubCategories');
+    Route::post('/products/product_form_part', [ProductController::class, 'getProductVariationFormPart'])->name('products.getProductVariationFormPart');
+    Route::post('/products/get_product_variation_row', [ProductController::class, 'getProductVariationRow'])->name('products.getProductVariationRow');
+    Route::post('/products/get_variation_template', [ProductController::class, 'getVariationTemplate'])->name('products.getVariationTemplate');
+    Route::get('/products/get_variation_value_row', [ProductController::class, 'getVariationValueRow'])->name('products.getVariationValueRow');
+    Route::post('/products/check_product_sku', [ProductController::class, 'checkProductSku'])->name('products.checkProductSku');
+    Route::get('/products/quick_add', [ProductController::class, 'quickAdd'])->name('products.quickAdd');
+    Route::post('/products/save_quick_product', [ProductController::class, 'saveQuickProduct'])->name('products.saveQuickProduct');
     Route::resource('products', ProductController::class);
 
     //Print Labels
