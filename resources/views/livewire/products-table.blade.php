@@ -87,6 +87,7 @@
             <div class="box-body">
                 @can('product.view')
                     <div class="table-responsive">
+                        <input type="text" wire:model.live="search" class="form-control mb-3" placeholder="Search products...">
                         <table class="table table-bordered table-striped ajax_view table-text-center" id="product_table">
                             <thead>
                                 <tr>
@@ -128,21 +129,92 @@
                                         </td>
                                         <td>
                                             <div class="btn-group">
-                                                <button type="button" class="btn btn-info dropdown-toggle btn-xs" data-toggle="dropdown" aria-expanded="false">
-                                                    @lang('messages.actions') <span class="caret"></span>
+                                                <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
+                                                        data-toggle="dropdown" 
+                                                        aria-expanded="false">
+                                                    {{ __("messages.actions") }}
+                                                    <span class="caret"></span>
+                                                    <span class="sr-only">Toggle Dropdown</span>
                                                 </button>
-                                                <ul class="dropdown-menu dropdown-menu-right">
+                                                
+                                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                                    <!-- Barcode/Label -->
+                                                    <li>
+                                                        <a href="{{ route('labels.show') }}?product_id={{ $product->id }}" 
+                                                           data-toggle="tooltip" 
+                                                           title="Print Barcode/Label">
+                                                            <i class="fa fa-barcode"></i> {{ __('barcode.labels') }}
+                                                        </a>
+                                                    </li>
+                                            
+                                                    <!-- View Product -->
                                                     @can('product.view')
-                                                        <li><a href="#" data-href="{{ route('products.view', $product->id) }}" class="view-product"><i class="fa fa-eye"></i> @lang('messages.view')</a></li>
+                                                        <li>
+                                                            <a href="{{ route('products.view', [$product->id]) }}" 
+                                                               class="view-product">
+                                                                <i class="fa fa-eye"></i> {{ __("messages.view") }}
+                                                            </a>
+                                                        </li>
                                                     @endcan
+                                            
+                                                    <!-- Edit Product -->
                                                     @can('product.update')
-                                                        <li><a href="{{ route('products.edit', $product->id) }}"><i class="fa fa-edit"></i> @lang('messages.edit')</a></li>
+                                                        <li>
+                                                            <a href="{{ route('products.edit', [$product->id]) }}">
+                                                                <i class="glyphicon glyphicon-edit"></i> {{ __("messages.edit") }}
+                                                            </a>
+                                                        </li>
                                                     @endcan
-                                                    @if($product->is_inactive == 1)
-                                                        <li><a href="{{ route('products.activate', $product->id) }}" class="activate-product"><i class="fa fa-circle-o"></i> @lang('lang_v1.reactivate')</a></li>
-                                                    @endif
+                                            
+                                                    <!-- Delete Product -->
                                                     @can('product.delete')
-                                                        <li><a href="{{ route('products.destroy', $product->id) }}" class="delete-product"><i class="fa fa-trash"></i> @lang('messages.delete')</a></li>
+                                                        <li>
+                                                            <a href="{{ route('products.destroy', [$product->id]) }}" 
+                                                               class="delete-product">
+                                                                <i class="fa fa-trash"></i> {{ __("messages.delete") }}
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                            
+                                                    <!-- Reactivate Product -->
+                                                    @if($product->is_inactive == 1)
+                                                        <li>
+                                                            <a href="{{ route('products.activate', [$product->id]) }}" 
+                                                               class="activate-product">
+                                                                <i class="fa fa-circle-o"></i> {{ __("lang_v1.reactivate") }}
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                            
+                                                    <li class="divider"></li>
+                                            
+                                                    @can('product.create')
+                                                        <!-- Opening Stock -->
+                                                        @if(auth()->user()->can('product.opening_stock') && $product->enable_stock == 1)
+                                                            <li>
+                                                                <a href="#" 
+                                                                   data-href="{{ route('opening-stocks.add', ['product_id' => $product->id]) }}" 
+                                                                   class="add-opening-stock">
+                                                                    <i class="fa fa-database"></i> {{ __("lang_v1.add_edit_opening_stock") }}
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                            
+                                                        <!-- Selling Price Group -->
+                                                        @if($selling_price_group_count > 0)
+                                                            <li>
+                                                                <a href="{{ route('products.addSellingPrices', [$product->id]) }}">
+                                                                    <i class="fa fa-money"></i> {{ __("lang_v1.add_selling_price_group_prices") }}
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                            
+                                                        <!-- Duplicate Product -->
+                                                        <li>
+                                                            <a href="{{ route('products.create', ["d" => $product->id]) }}">
+                                                                <i class="fa fa-copy"></i> {{ __("lang_v1.duplicate_product") }}
+                                                            </a>
+                                                        </li>
                                                     @endcan
                                                 </ul>
                                             </div>

@@ -4,16 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Product;
-use App\Variation;
-use App\Business;
-use App\BusinessLocation;
-use App\Transaction;
+use App\Models\Product;
+use App\Models\Variation;
+use App\Models\Business;
+use App\Models\BusinessLocation;
+use App\Models\Transaction;
 
 use App\Utils\ProductUtil;
 
 use Excel;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class ImportOpeningStockController extends Controller
 {

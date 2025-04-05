@@ -16,43 +16,92 @@
           <?php $count = $loop->index; ?>
           <tr class="variation_row">
             <td>
-              {!! Form::text('product_variation[' . $loop->index . '][name]', $product_variation->name,
-              ['class' => 'form-control input-sm variation_name', 'required']); !!}
-              <input type="hidden" class="row_index" value="{{  $loop->index }}">
-              {!! Form::hidden('product_variation[' . $loop->index . '][product_variation_id]', $product_variation->id); !!}
+                <input type="text" 
+                       name="product_variation[{{ $loop->index }}][name]" 
+                       value="{{ $product_variation->name }}" 
+                       class="form-control input-sm variation_name" 
+                       required>
+                       
+                <input type="hidden" 
+                       class="row_index" 
+                       value="{{ $loop->index }}">
+                       
+                <input type="hidden" 
+                       name="product_variation[{{ $loop->index }}][product_variation_id]" 
+                       value="{{ $product_variation->id }}">
             </td>
             <td>
                 <table class="table table-condensed table-bordered blue-header variation_value_table">
                     <tr>
                         <th>@lang('product.value')</th>
-                        <th>@lang('product.default_purchase_price') &nbsp;&nbsp;<b><i class="fa fa-info-circle" aria-hidden="true" data-toggle="popover" data-html="true" data-trigger="hover" data-content="<p class='text-primary'>Drag the mouse over the table cells to copy input values</p>" data-placement="top"></i></b></th>
-                        <th>@lang('product.default_selling_price') &nbsp;&nbsp;<b><i class="fa fa-info-circle" aria-hidden="true" data-toggle="popover" data-html="true" data-trigger="hover" data-content="<p class='text-primary'>Drag the mouse over the table cells to copy input values</p>" data-placement="top"></i></b></th>
+                        <th>
+                            @lang('product.default_purchase_price') &nbsp;&nbsp;
+                            <b><i class="fa fa-info-circle" 
+                                  aria-hidden="true" 
+                                  data-toggle="popover" 
+                                  data-html="true" 
+                                  data-trigger="hover" 
+                                  data-content="<p class='text-primary'>Drag the mouse over the table cells to copy input values</p>" 
+                                  data-placement="top"></i></b>
+                        </th>
+                        <th>
+                            @lang('product.default_selling_price') &nbsp;&nbsp;
+                            <b><i class="fa fa-info-circle" 
+                                  aria-hidden="true" 
+                                  data-toggle="popover" 
+                                  data-html="true" 
+                                  data-trigger="hover" 
+                                  data-content="<p class='text-primary'>Drag the mouse over the table cells to copy input values</p>" 
+                                  data-placement="top"></i></b>
+                        </th>
                         <th><button type="button" class="btn btn-success btn-xs add_variation_value_row">+</button></th>
                     </tr>
-                    @foreach($product_variation->variations as $variation )
+                    @foreach($product_variation->variations as $variation)
                     <tr>
                         <td>
-                          {!! Form::text('product_variation[' . $loop->parent->index . '][variations][' . $loop->index . '][value]',
-                          $variation->name, ['class' => 'form-control input-sm variation_value_name', 'required']); !!}
-                          {!! Form::hidden('product_variation[' . $loop->parent->index . '][variations][' . $loop->index . '][variation_id]', $variation->id); !!}
+                            <input type="text" 
+                                   name="product_variation[{{ $loop->parent->index }}][variations][{{ $loop->index }}][value]" 
+                                   value="{{ $variation->name }}" 
+                                   class="form-control input-sm variation_value_name" 
+                                   required>
+                                   
+                            <input type="hidden" 
+                                   name="product_variation[{{ $loop->parent->index }}][variations][{{ $loop->index }}][variation_id]" 
+                                   value="{{ $variation->id }}">
                         </td>
                         <td class="drag-select">
-                          {!! Form::number('product_variation[' . $loop->parent->index . '][variations][' . $loop->index . '][default_purchase_price]',
-                          $variation->default_purchase_price, ['class' => 'form-control input-sm dpp', 'min' => '0']); !!}
+                            <input type="number" 
+                                   name="product_variation[{{ $loop->parent->index }}][variations][{{ $loop->index }}][default_purchase_price]" 
+                                   value="{{ $variation->default_purchase_price }}" 
+                                   class="form-control input-sm dpp" 
+                                   min="0">
                         </td>
                         <td class="drag-select">
-                          {!! Form::number('product_variation[' . $loop->parent->index . '][variations][' . $loop->index . '][default_sell_price]',
-                          $variation->default_sell_price, ['class' => 'form-control input-sm variable_dsp', 'min' => '0', 'placeholder' => __('product.exc_of_tax')]); !!}
-                          {!! Form::number('product_variation[' . $loop->parent->index . '][variations][' . $loop->index . '][sell_price_inc_tax]',
-                          $variation->sell_price_inc_tax, ['class' => 'form-control input-sm variable_dsp_inc_tax', 'min' => '0', 'placeholder' => __('product.inc_of_tax')]); !!}
+                            <input type="number" 
+                                   name="product_variation[{{ $loop->parent->index }}][variations][{{ $loop->index }}][default_sell_price]" 
+                                   value="{{ $variation->default_sell_price }}" 
+                                   class="form-control input-sm variable_dsp" 
+                                   min="0" 
+                                   placeholder="{{ __('product.exc_of_tax') }}">
+                                   
+                            <input type="number" 
+                                   name="product_variation[{{ $loop->parent->index }}][variations][{{ $loop->index }}][sell_price_inc_tax]" 
+                                   value="{{ $variation->sell_price_inc_tax }}" 
+                                   class="form-control input-sm variable_dsp_inc_tax" 
+                                   min="0" 
+                                   placeholder="{{ __('product.inc_of_tax') }}">
                         </td>
-                        <td><button type="button" class="btn btn-danger btn-xs remove_variation_value_row">-</button>
-                        <input type="hidden" class="variation_row_index" value="{{ $loop->index }}"></td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-xs remove_variation_value_row">-</button>
+                            <input type="hidden" 
+                                   class="variation_row_index" 
+                                   value="{{ $loop->index }}">
+                        </td>
                     </tr>
                     @endforeach
                 </table>
             </td>
-          </tr>
+        </tr>
         @endforeach
         </tbody>
     </table>

@@ -33,6 +33,13 @@ class ProductsTable extends Component
         'tax_id' => ['except' => '']
     ];
 
+    public function mount()
+    {
+        if (!auth()->user()->can('product.view') && !auth()->user()->can('product.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function render()
     {
         $business_id = request()->session()->get('user.business_id');

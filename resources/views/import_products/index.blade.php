@@ -30,30 +30,39 @@
     <div class="row">
         <div class="col-sm-12">
             @component('components.widget', ['class' => 'box-primary'])
-                {!! Form::open(['url' => action('ImportProductsController@store'), 'method' => 'post', 'enctype' => 'multipart/form-data' ]) !!}
+                <form action="{{ route('import-products.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
                     <div class="row">
                         <div class="col-sm-6">
-                        <div class="col-sm-8">
-                            <div class="form-group">
-                                {!! Form::label('name', __( 'product.file_to_import' ) . ':') !!}
-                                {!! Form::file('products_csv', ['accept'=> '.csv', 'required' => 'required']); !!}
-                              </div>
-                        </div>
-                        <div class="col-sm-4">
-                        <br>
-                            <button type="submit" class="btn btn-primary">@lang('messages.submit')</button>
-                        </div>
-                        </div>
-                    </div>
-
-                {!! Form::close() !!}
-                <br><br>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <a href="{{ asset('uploads/files/import_products_csv_template.csv') }}" class="btn btn-success" download><i class="fa fa-download"></i> @lang('product.download_csv_file_template')</a>
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <label for="products_csv">{{ __('product.file_to_import') }}:</label>
+                        <input type="file" 
+                               name="products_csv" 
+                               id="products_csv" 
+                               accept=".csv" 
+                               required>
                     </div>
                 </div>
-            @endcomponent
+                <div class="col-sm-4">
+                    <br>
+                    <button type="submit" class="btn btn-primary">{{ __('messages.submit') }}</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <br><br>
+    <div class="row">
+        <div class="col-sm-4">
+            <a href="{{ asset('uploads/files/import_products_csv_template.csv') }}" 
+               class="btn btn-success" 
+               download>
+                <i class="fa fa-download"></i> 
+                {{ __('product.download_csv_file_template') }}
+            </a>
+        </div>
+    </div>
+@endcomponent
         </div>
     </div>
     <div class="row">

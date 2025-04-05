@@ -20,24 +20,40 @@
 			</thead>
 			<tbody>
 		@foreach($locations as $key => $value)
-			<tr>
-				<td>{{$value}}</td>
-				<td>{!! Form::text('opening_stock[' . $key . '][quantity]', 0, ['class' => 'form-control input-sm input_number purchase_quantity', 'required']); !!}</td>
-				<td>{!! Form::text('opening_stock[' . $key . '][purchase_price]', null , ['class' => 'form-control input-sm input_number unit_price', 'required']); !!}</td>
-				@if($enable_expiry)
-					<td>
-						{!! Form::text('opening_stock[' . $key . '][exp_date]', null , ['class' => 'form-control input-sm os_exp_date', 'readonly']); !!}
-					</td>
-				@endif
-				@if($enable_lot)
-					<td>
-						{!! Form::text('opening_stock[' . $key . '][lot_number]', null , ['class' => 'form-control input-sm']); !!}
-					</td>
-				@endif
+		<tr>
+			<td>{{ $value }}</td>
+			<td>
+				<input type="text" 
+					   name="opening_stock[{{ $key }}][quantity]" 
+					   value="0" 
+					   class="form-control input-sm input_number purchase_quantity" 
+					   required>
+			</td>
+			<td>
+				<input type="text" 
+					   name="opening_stock[{{ $key }}][purchase_price]" 
+					   class="form-control input-sm input_number unit_price" 
+					   required>
+			</td>
+			@if($enable_expiry)
 				<td>
-					<span class="row_subtotal_before_tax">0</span>
+					<input type="text" 
+						   name="opening_stock[{{ $key }}][exp_date]" 
+						   class="form-control input-sm os_exp_date" 
+						   readonly>
 				</td>
-			</tr>
+			@endif
+			@if($enable_lot)
+				<td>
+					<input type="text" 
+						   name="opening_stock[{{ $key }}][lot_number]" 
+						   class="form-control input-sm">
+				</td>
+			@endif
+			<td>
+				<span class="row_subtotal_before_tax">0</span>
+			</td>
+		</tr>
 		@endforeach
 		</tbody>
 		</table>

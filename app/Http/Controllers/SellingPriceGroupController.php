@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\SellingPriceGroup;
+use App\Models\SellingPriceGroup;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Spatie\Permission\Models\Permission;

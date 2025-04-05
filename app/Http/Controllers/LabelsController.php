@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Product;
-use App\Barcode;
+use App\Models\Product;
+use App\Models\Barcode;
 
 use App\Utils\TransactionUtil;
 use App\Utils\ProductUtil;

@@ -11,11 +11,11 @@
 	      				<b>@lang('product.sku'):</b>
 						{{$product->sku }}<br>
 						<b>@lang('product.brand'): </b>
-						{{$product->brand->name or '--' }}<br>
+						{{$product->brand->name ?? '--' }}<br>
 						<b>@lang('product.unit'): </b>
-						{{$product->unit->short_name or '--' }}<br>
+						{{$product->unit->short_name ?? '--' }}<br>
 						<b>@lang('product.barcode_type'): </b>
-						{{$product->barcode_type or '--' }}
+						{{$product->barcode_type ?? '--' }}
 
 						@if(!empty($product->product_custom_field1))
 							<br/>
@@ -44,9 +44,9 @@
 
 	      			<div class="col-sm-4 invoice-col">
 						<b>@lang('product.category'): </b>
-						{{$product->category->name or '--' }}<br>
+						{{$product->category->name ?? '--' }}<br>
 						<b>@lang('product.sub_category'): </b>
-						{{$product->sub_category->name or '--' }}<br>	
+						{{$product->sub_category->name ?? '--' }}<br>	
 						
 						<b>@lang('product.manage_stock'): </b>
 						@if($product->enable_stock)
@@ -57,7 +57,7 @@
 						<br>
 						@if($product->enable_stock)
 							<b>@lang('product.alert_quantity'): </b>
-							{{$product->alert_quantity or '--' }}
+							{{$product->alert_quantity ?? '--' }}
 						@endif
 	      			</div>
 					
@@ -77,7 +77,7 @@
 							{{$product->weight }}<br>
 						@endif
 						<b>@lang('product.applicable_tax'): </b>
-						{{$product->product_tax->name or __('lang_v1.none') }}<br>
+						{{$product->product_tax->name ?? __('lang_v1.none') }}<br>
 						@php
 							$tax_type = ['inclusive' => __('product.inclusive'), 'exclusive' => __('product.exclusive')];
 						@endphp

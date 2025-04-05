@@ -339,7 +339,7 @@
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="type">{{ __('product.product_type') }}:*</label> @show_tooltip(__('tooltip.product_type'))
-                <select name="type" class="form-control select2" required 
+                <select id="type" name="type" class="form-control select2" required 
                     data-action="{{ !empty($duplicate_product) ? 'duplicate' : 'add' }}"
                     data-product_id="{{ !empty($duplicate_product) ? $duplicate_product->id : '0' }}">
                     <option value="single" {{ !empty($duplicate_product->type) && $duplicate_product->type == 'single' ? 'selected' : '' }}>

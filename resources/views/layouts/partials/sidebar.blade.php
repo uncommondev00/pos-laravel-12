@@ -157,10 +157,10 @@
                 <li class="{{ $request->segment(1) == 'variation-templates' ? 'active' : '' }}"><a href="{{route('variation-templates.index')}}"><i class="fa fa-circle-o"></i><span>@lang('product.variations')</span></a></li>
               @endcan
               @can('product.create')
-                <li class="{{ $request->segment(1) == 'import-products' ? 'active' : '' }}"><a href="{{route('import_products.index')}}"><i class="fa fa-download"></i><span>@lang('product.import_products')</span></a></li>
+                <li class="{{ $request->segment(1) == 'import-products' ? 'active' : '' }}"><a href="{{route('import-products.index')}}"><i class="fa fa-download"></i><span>@lang('product.import_products')</span></a></li>
               @endcan
               @can('product.opening_stock')
-                <li class="{{ $request->segment(1) == 'import-opening-stock' ? 'active' : '' }}"><a href="{{route('import_opening_stock.index')}}"><i class="fa fa-download"></i><span>@lang('lang_v1.import_opening_stock')</span></a></li>
+                <li class="{{ $request->segment(1) == 'import-opening-stock' ? 'active' : '' }}"><a href="{{route('import-opening-stock.index')}}"><i class="fa fa-download"></i><span>@lang('lang_v1.import_opening_stock')</span></a></li>
               @endcan
               @can('product.create')
                 <li class="{{ $request->segment(1) == 'selling-price-group' ? 'active' : '' }}"><a href="{{route('selling-price-group.index')}}"><i class="fa fa-circle-o"></i><span>@lang('lang_v1.selling_price_group')</span></a></li>

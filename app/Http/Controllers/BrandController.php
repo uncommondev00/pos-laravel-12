@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Brands;
+use App\Models\Brands;
 
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;

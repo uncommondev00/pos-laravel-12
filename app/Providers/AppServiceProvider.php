@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -109,6 +111,20 @@ class AppServiceProvider extends ServiceProvider
                 return null;
             }
         });
+
+        if (config('app.debug')) {
+            DB::listen(function($query) {
+                if ($query->time > 100) {
+                    Log::channel('queries')->info(
+                        'Slow query: ' . $query->sql,
+                        [
+                            'time' => $query->time,
+                            'bindings' => $query->bindings
+                        ]
+                    );
+                }
+            });
+        }
 
         $this->registerCommands();
     }

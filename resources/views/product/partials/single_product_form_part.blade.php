@@ -21,34 +21,70 @@
         <tr>
           <td>
             <div class="col-sm-5">
-              {!! Form::label('single_dpp', trans('product.exc_of_tax') . ':*') !!}
-
-              {!! Form::text('single_dpp', $default, ['class' => 'form-control input-sm dpp input_number', 'placeholder' => __('product.exc_of_tax'), 'required']); !!}
+                <label for="single_dpp">{{ trans('product.exc_of_tax') }}:*</label>
+        
+                <input type="text" 
+                       name="single_dpp" 
+                       id="single_dpp"
+                       value="{{ $default }}" 
+                       class="form-control input-sm dpp input_number" 
+                       placeholder="{{ __('product.exc_of_tax') }}" 
+                       required>
             </div>
-
+        
             <div class="col-sm-5">
-              {!! Form::label('single_dpp_inc_tax', trans('product.inc_of_tax') . ':*') !!}
-            
-              {!! Form::text('single_dpp_inc_tax', $default, ['class' => 'form-control input-sm dpp_inc_tax input_number', 'placeholder' => __('product.inc_of_tax'), 'required']); !!}
+                <label for="single_dpp_inc_tax">{{ trans('product.inc_of_tax') }}:*</label>
+                
+                <input type="text" 
+                       name="single_dpp_inc_tax" 
+                       id="single_dpp_inc_tax"
+                       value="{{ $default }}" 
+                       class="form-control input-sm dpp_inc_tax input_number" 
+                       placeholder="{{ __('product.inc_of_tax') }}" 
+                       required>
             </div>
+        
             <div class="col-sm-2">
-               {!! Form::label('add_p', trans('Add') . '') !!}
-            
-              {!! Form::text('add_p',$default, ['class' => 'form-control input-sm add_p input_number','required']); !!}
+                <label for="add_p">{{ trans('Add') }}</label>
+                
+                <input type="text" 
+                       name="add_p" 
+                       id="add_p"
+                       value="{{ $default }}" 
+                       class="form-control input-sm add_p input_number" 
+                       required>
             </div>
-          </td>
-
-          <td>
+        </td>
+        
+        <td>
             <br/>
-            {!! Form::text('profit_percent', @num_format($profit_percent), ['class' => 'form-control input-sm input_number', 'id' => 'profit_percent', 'required']); !!}
-          </td>
-
-          <td>
-            <label><span class="dsp_label">@lang('product.exc_of_tax')</span></label>
-            {!! Form::text('single_dsp', $default, ['class' => 'form-control input-sm dsp input_number', 'placeholder' => __('product.exc_of_tax'), 'id' => 'single_dsp', 'required']); !!}
-
-            {!! Form::text('single_dsp_inc_tax', $default, ['class' => 'form-control input-sm hide input_number', 'placeholder' => __('product.inc_of_tax'), 'id' => 'single_dsp_inc_tax', 'required']); !!}
-          </td>
+            <input type="text" 
+                   name="profit_percent" 
+                   id="profit_percent"
+                   value="{{ @num_format($profit_percent) }}" 
+                   class="form-control input-sm input_number" 
+                   required>
+        </td>
+        
+        <td>
+            <label><span class="dsp_label">{{ __('product.exc_of_tax') }}</span></label>
+            
+            <input type="text" 
+                   name="single_dsp" 
+                   id="single_dsp"
+                   value="{{ $default }}" 
+                   class="form-control input-sm dsp input_number" 
+                   placeholder="{{ __('product.exc_of_tax') }}" 
+                   required>
+        
+            <input type="text" 
+                   name="single_dsp_inc_tax" 
+                   id="single_dsp_inc_tax"
+                   value="{{ $default }}" 
+                   class="form-control input-sm hide input_number" 
+                   placeholder="{{ __('product.inc_of_tax') }}" 
+                   required>
+        </td>
         </tr>
     </table>
     </div>

@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Contact;
-use App\Product;
-use App\Variation;
-use App\TaxRate;
-use App\Transaction;
-use App\PurchaseLine;
-use App\BusinessLocation;
-use App\Business;
-use App\CustomerGroup;
-use App\User;
-use App\Unit;
-use App\AccountTransaction;
-use App\ProductPurchasePriceLog;
+use App\Models\Contact;
+use App\Models\Product;
+use App\Models\Variation;
+use App\Models\TaxRate;
+use App\Models\Transaction;
+use App\Models\PurchaseLine;
+use App\Models\BusinessLocation;
+use App\Models\Business;
+use App\Models\CustomerGroup;
+use App\Models\User;
+use App\Models\Unit;
+use App\Models\AccountTransaction;
+use App\Models\ProductPurchasePriceLog;
 
 
 use Illuminate\Http\Request;
@@ -37,6 +37,8 @@ class PurchaseController extends Controller
     protected $productUtil;
     protected $transactionUtil;
     protected $moduleUtil;
+    protected $businessUtil;
+    protected $dummyPaymentLine;
 
     /**
      * Constructor

@@ -238,7 +238,7 @@ class ProductController extends Controller
         if (!$this->moduleUtil->isSubscribed($business_id)) {
             return $this->moduleUtil->expiredResponse();
         } elseif (!$this->moduleUtil->isQuotaAvailable('products', $business_id)) {
-            return $this->moduleUtil->quotaExpiredResponse('products', $business_id, action('ProductController@index'));
+            return $this->moduleUtil->quotaExpiredResponse('products', $business_id, route('products.index'));
         }
 
         $categories = Category::where('business_id', $business_id)
@@ -792,6 +792,7 @@ class ProductController extends Controller
         $profit_percent = $business->default_profit_percent;
 
         $action = $request->input('action');
+
         if ($request->input('action') == "add") {
             if ($request->input('type') == 'single') {
                 return view('product.partials.single_product_form_part')

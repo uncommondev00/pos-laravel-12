@@ -28,24 +28,28 @@
     <div class="row">
         <div class="col-sm-12">
             @component('components.widget', ['class' => 'box-primary'])
-                {!! Form::open(['url' => action('ImportOpeningStockController@store'), 'method' => 'post', 'enctype' => 'multipart/form-data' ]) !!}
-                    <div class="row">
-                        <div class="col-sm-6">
+            <form action="{{ route('import-opening-stock.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="row">
+                    <div class="col-sm-6">
                         <div class="col-sm-8">
                             <div class="form-group">
-                                {!! Form::label('name', __( 'product.file_to_import' ) . ':') !!}
+                                <label for="products_csv">{{ __('product.file_to_import') }}:</label>
                                 @show_tooltip(__('lang_v1.tooltip_import_opening_stock'))
-                                {!! Form::file('products_csv', ['accept'=> '.csv', 'required' => 'required']); !!}
-                              </div>
+                                <input type="file" 
+                                       name="products_csv" 
+                                       id="products_csv" 
+                                       accept=".csv" 
+                                       required>
+                            </div>
                         </div>
                         <div class="col-sm-4">
-                        <br>
-                            <button type="submit" class="btn btn-primary">@lang('messages.submit')</button>
-                        </div>
+                            <br>
+                            <button type="submit" class="btn btn-primary">{{ __('messages.submit') }}</button>
                         </div>
                     </div>
-
-                {!! Form::close() !!}
+                </div>
+            </form>
                 <br><br>
                 <div class="row">
                     <div class="col-sm-4">

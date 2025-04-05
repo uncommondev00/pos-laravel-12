@@ -755,9 +755,11 @@ $(document).ready(function() {
         get_sub_categories();
     });
     if ($('.product_form').length) {
+        
         show_product_type_form();
     }
     $('#type').change(function() {
+        //alert('type');
         show_product_type_form();
     });
 
@@ -1979,21 +1981,29 @@ function get_sub_categories() {
     });
 }
 function show_product_type_form() {
+    
     var product_type = 'single';
     if ($('#type').val() === 'variable') {
         product_type = 'variable';
     }
     var action = $('#type').attr('data-action');
     var product_id = $('#type').attr('data-product_id');
+
     $.ajax({
         method: 'POST',
-        url: '/products/product_form_part',
+        url: 'http://pos-laravel-12.test/products/product_form_part',
         dataType: 'html',
         data: { type: product_type, product_id: product_id, action: action },
+        headers: {
+            '_token': $('meta[name="csrf-token"]').attr('content')
+        },
         success: function(result) {
             if (result) {
                 $('#product_form_part').html(result);
                 toggle_dsp_input();
+            }
+            else {
+                console.error('Empty result received from server');
             }
         },
     });

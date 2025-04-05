@@ -24,6 +24,7 @@
         @endcan
         @can('customer.view')
             <div class="table-responsive">
+                <input type="text" wire:model.live="search" class="form-control mb-3" placeholder="Search customer groups...">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>

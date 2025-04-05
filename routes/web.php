@@ -23,6 +23,7 @@ use App\Http\Controllers\LabelsController;
 use App\Http\Controllers\ManageUserController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\NotificationTemplateController;
+use App\Http\Controllers\OpeningStockController;
 use App\Http\Controllers\PrinterController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
@@ -96,6 +97,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezone'])->group(function () {
+
+    
 
     //Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -206,6 +209,11 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::post('/products/save_quick_product', [ProductController::class, 'saveQuickProduct'])->name('products.saveQuickProduct');
     Route::resource('products', ProductController::class);
 
+    //Opening Stock
+    Route::get('/opening-stocks/add', [OpeningStockController::class, 'add'])->name('opening-stocks.add');
+    Route::post('/opening-stock/save', [OpeningStockController::class, 'save'])->name('opening-stocks.save');  
+
+
     //Print Labels
     Route::get('/labels/show', [LabelsController::class, 'show'])->name('labels.show');
     Route::get('/labels/add-product-row', [LabelsController::class, 'addProductRow'])->name('labels.addProductRow');
@@ -215,12 +223,12 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::resource('variation-templates', VariationTemplateController::class);
 
     //Import products
-    Route::get('/import-products', [ImportProductsController::class, 'index'])->name('import_products.index');
-    Route::post('/import-products/store', [ImportProductsController::class, 'store'])->name('import_products.store');
+    Route::get('/import-products', [ImportProductsController::class, 'index'])->name('import-products.index');
+    Route::post('/import-products/store', [ImportProductsController::class, 'store'])->name('import-products.store');
 
     //Import opening stock
-    Route::get('/import-opening-stock', [ImportOpeningStockController::class, 'index'])->name('import_opening_stock.index');
-    Route::post('/import-opening-stock/store', [ImportOpeningStockController::class, 'store'])->name('import_opening_stock.store');
+    Route::get('/import-opening-stock', [ImportOpeningStockController::class, 'index'])->name('import-opening-stock.index');
+    Route::post('/import-opening-stock/store', [ImportOpeningStockController::class, 'store'])->name('import-opening-stock.store');
 
     //Selling Price Group
     Route::resource('selling-price-group', SellingPriceGroupController::class);
