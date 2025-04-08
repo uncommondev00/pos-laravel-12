@@ -183,16 +183,25 @@ $(document).ready(function() {
     }
 
     $(document).on('click', '.remove_purchase_entry_row', function() {
-        swal({
+        Swal.fire({
             title: LANG.sure,
+            text: 'Are you sure you want to remove this item?',
             icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then(value => {
-            if (value) {
-                $(this)
-                    .closest('tr')
-                    .remove();
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, remove it!',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+            focusCancel: true,
+            customClass: {
+                confirmButton: 'btn btn-danger',
+                cancelButton: 'btn btn-default'
+            },
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(this).closest('tr').remove();
                 update_table_total();
                 update_grand_total();
                 update_table_sr_number();

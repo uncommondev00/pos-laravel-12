@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Transaction;
-use App\NotificationTemplate;
-use App\Restaurant\Booking;
+use App\Models\Transaction;
+use App\Models\NotificationTemplate;
+use App\Models\Restaurant\Booking;
 
 use \Notification;
 

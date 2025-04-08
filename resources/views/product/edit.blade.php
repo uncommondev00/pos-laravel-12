@@ -194,7 +194,7 @@
                               <div class="col-sm-8">
                                   <div class="form-group">
                                       <label for="product_description">{{ __('lang_v1.product_description') }}:</label>
-                                      <textarea name="product_description" 
+                                      <textarea id="product_description" name="product_description" 
                                                 class="form-control">{{ $product->product_description }}</textarea>
                                   </div>
                               </div>

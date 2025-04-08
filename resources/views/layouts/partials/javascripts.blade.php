@@ -61,6 +61,9 @@
 <script src="{{ asset('plugins/screenfull.min.js?v=' . $asset_v) }}""></script>
 
 <script src="{{ asset('plugins/moment-timezone-with-data.min.js?v=' . $asset_v) }}"></script>
+
+<!-- In your layout file -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @php
     $business_date_format = session('business.date_format');
     $datepicker_date_format = str_replace('d', 'dd', $business_date_format);

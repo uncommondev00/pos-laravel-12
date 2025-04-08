@@ -173,7 +173,7 @@ class PurchaseTable extends Component
 
         if ($purchase->return_exists) {
             $return_due = $purchase->amount_return - $purchase->return_paid;
-            $due_html .= '<br><strong>' . __('lang_v1.purchase_return') . ':</strong> <a href="' . action("TransactionPaymentController@show", [$purchase->id]) . '" class="view_purchase_return_payment_modal no-print"><span class="display_currency purchase_return" data-currency_symbol="true" data-orig-value="' . $return_due . '">' . $return_due . '</span></a><span class="display_currency print_section" data-currency_symbol="true">' . $return_due . '</span>';
+            $due_html .= '<br><strong>' . __('lang_v1.purchase_return') . ':</strong> <a href="' . route("payments.show", [$purchase->id]) . '" class="view_purchase_return_payment_modal no-print"><span class="display_currency purchase_return" data-currency_symbol="true" data-orig-value="' . $return_due . '">' . $return_due . '</span></a><span class="display_currency print_section" data-currency_symbol="true">' . $return_due . '</span>';
         }
         return $due_html;
     }

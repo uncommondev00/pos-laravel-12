@@ -73,7 +73,7 @@
 <div class="modal-footer">
   <div class="col-sm-12 text-right">
     <div class="col-sm-6">
-      <p> Total Qty:  <span class="display_currency" >{{ \App\Product::sum_qty($purchase->id)}}</span></p>
+      <p> Total Qty:  <span class="display_currency" >{{ \App\Models\Product::sum_qty($purchase->id)}}</span></p>
     </div>
     <div class="col-sm-6">
       <p> Total Amount:  <span class="display_currency" data-currency_symbol="true">{{ $purchase->final_total }}</span></p>

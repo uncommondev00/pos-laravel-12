@@ -3,72 +3,10 @@
 
 @section('content')
 
-<!-- Content Header (Page header) -->
-<section class="content-header no-print">
-    <h1>@lang('lang_v1.purchase_return')
-    </h1>
-</section>
-
-<!-- Main content -->
-<section class="content no-print">
-    @component('components.widget', ['class' => 'box-primary', 'title' => __('lang_v1.all_purchase_returns')])
-        @can('purchase.view')
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <div class="input-group">
-                          <button type="button" class="btn btn-primary" id="daterange-btn">
-                            <span>
-                              <i class="fa fa-calendar"></i> {{ __('messages.filter_by_date') }}
-                            </span>
-                            <i class="fa fa-caret-down"></i>
-                          </button>
-                        </div>
-                      </div>
-                </div>
-            </div>
-            <div class="table-responsive">
-            <table class="table table-bordered table-striped ajax_view" id="purchase_return_datatable">
-                <thead>
-                    <tr>
-                        <th>@lang('messages.date')</th>
-                        <th>@lang('purchase.ref_no')</th>
-                        <th>@lang('lang_v1.parent_purchase')</th>
-                        <th>@lang('purchase.location')</th>
-                        <th>@lang('purchase.supplier')</th>
-                        <th>@lang('purchase.payment_status')</th>
-                        <th>@lang('purchase.grand_total')</th>
-                        <th>@lang('purchase.payment_due') &nbsp;&nbsp;<i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="{{ __('messages.purchase_due_tooltip')}}" aria-hidden="true"></i></th>
-                        <th>@lang('messages.action')</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr class="bg-gray font-17 text-center footer-total">
-                        <td colspan="5"><strong>@lang('sale.total'):</strong></td>
-                        <td id="footer_payment_status_count"></td>
-                        <td><span class="display_currency" id="footer_purchase_return_total" data-currency_symbol ="true"></span></td>
-                        <td><span class="display_currency" id="footer_total_due" data-currency_symbol ="true"></span></td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            </table>
-            </div>
-        @endcan
-    @endcomponent
-
-    <div class="modal fade payment_modal" tabindex="-1" role="dialog" 
-        aria-labelledby="gridSystemModalLabel">
-    </div>
-
-    <div class="modal fade edit_payment_modal" tabindex="-1" role="dialog" 
-        aria-labelledby="gridSystemModalLabel">
-    </div>
-
-</section>
-
-<!-- /.content -->
+<livewire:purchase-return-table />
 @stop
 @section('javascript')
+@livewireScripts
 <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
 <script>
     $(document).ready( function(){
