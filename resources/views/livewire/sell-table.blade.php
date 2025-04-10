@@ -1,12 +1,11 @@
 <div>
     {{-- The Master doesn't talk, he acts. --}}
-    <!-- Content Header (Page header) -->
     <section class="content-header no-print">
         <h1>@lang('sale.sells')
             <small></small>
         </h1>
     </section>
-
+    
     <!-- Main content -->
     <section class="content no-print">
         @component('components.filters', ['title' => __('report.filters')])
@@ -78,7 +77,7 @@
                                 </td>
                                 <td><span class="display_currency" id="footer_total_paid" data-currency_symbol ="true"></span>
                                 </td>
-
+    
                                 <td class="text-left"><small>@lang('lang_v1.sell_due') - <span class="display_currency"
                                             id="footer_total_remaining"
                                             data-currency_symbol ="true"></span><br>@lang('lang_v1.sell_return_due') - <span
@@ -99,4 +98,6 @@
         @endcomponent
     </section>
     <!-- /.content -->
+    
+    
 </div>
