@@ -63,7 +63,9 @@ class SellController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        return view('sell.index');
+        $is_woocommerce = $this->moduleUtil->isModuleInstalled('Woocommerce');
+
+        return view('sell.index')->with(compact('is_woocommerce'));
         
         
     }
