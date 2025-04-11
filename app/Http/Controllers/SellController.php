@@ -14,12 +14,13 @@ use App\Models\SellingPriceGroup;
 use App\Models\Contact;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 use App\Utils\ContactUtil;
 use App\Utils\BusinessUtil;
 use App\Utils\TransactionUtil;
 use App\Utils\ModuleUtil;
 use App\Utils\ProductUtil;
+use Carbon\Carbon;
 
 class SellController extends Controller
 {
@@ -520,7 +521,7 @@ class SellController extends Controller
             }
             $duplicate_transaction_data['status'] = 'draft';
             $duplicate_transaction_data['payment_status'] = null;
-            $duplicate_transaction_data['transaction_date'] =  \Carbon::now();
+            $duplicate_transaction_data['transaction_date'] =  Carbon::now();
             $duplicate_transaction_data['created_by'] = $user_id;
 
             DB::beginTransaction();
@@ -552,7 +553,7 @@ class SellController extends Controller
                         ];
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+            Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
             
             $output = ['success' => 0,
                             'msg' => trans("messages.something_went_wrong")
@@ -561,9 +562,9 @@ class SellController extends Controller
 
         if (!empty($duplicate_transaction)) {
             if ($duplicate_transaction->is_direct_sale == 1) {
-                return redirect()->action('SellController@edit', [$duplicate_transaction->id])->with(['status', $output]);
+                return redirect()->route('sells.edit', [$duplicate_transaction->id])->with(['status', $output]);
             } else {
-                return redirect()->action('SellPosController@edit', [$duplicate_transaction->id])->with(['status', $output]);
+                return redirect()->route('pos.edit', [$duplicate_transaction->id])->with(['status', $output]);
             }
         } else {
             abort(404, 'Not Found.');

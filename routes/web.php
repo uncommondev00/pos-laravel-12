@@ -39,7 +39,7 @@ use App\Http\Controllers\StockTransferController;
 use App\Http\Controllers\TaxRateController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\VoidTransactionController;
-
+use App\Http\Controllers\DenominationController;
 use App\Http\Controllers\Restaurant\BookingController;
 use App\Http\Controllers\Restaurant\DataController;
 use App\Http\Controllers\Restaurant\KitchenController;
@@ -273,6 +273,11 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/sell-return/print/{id}', [SellReturnController::class, 'printInvoice'])->name('sell-return.printInvoice');
     Route::get('/sell-return/add/{id}', [SellReturnController::class, 'add'])->name('sell-return.add');
     Route::resource('sell-return', SellReturnController::class);
+
+    //for denomination in close register
+    Route::get('/denomination', [DenominationController::class, 'getDenonimation'])->name('denomination.getDenonimation');
+
+    Route::get('/open_drawer', [DenominationController::class, 'openDrawer'])->name('denomination.openDrawer');
 
     //Voided Transaction
     Route::resource('voids', VoidTransactionController::class);

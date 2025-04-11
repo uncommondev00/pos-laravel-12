@@ -73,12 +73,14 @@ class SellTable extends Component
                 'transactions.discount_type',
                 'transactions.total_before_tax',
                 'transactions.is_suspend',
-                // DB::raw('(SELECT SUM(TP2.amount) FROM transaction_payments AS TP2 WHERE
-                //         TP2.transaction_id=transactions.return_parent_id ) as return_paid'),
-                // DB::raw('COALESCE(SUM(IF(tp.is_return = 1,-1*tp.amount,tp.amount)), 0) as total_paid'),
+                DB::raw('(SELECT SUM(TP2.amount) FROM transaction_payments AS TP2 WHERE
+                        TP2.transaction_id=transactions.return_parent_id ) as return_paid'),
+                DB::raw('COALESCE(SUM(IF(tp.is_return = 1,-1*tp.amount,tp.amount)), 0) as total_paid'),
                 // DB::raw('(SELECT COUNT(*) FROM transactions as sr WHERE sr.return_parent_id = transactions.id) as return_exists'),
                 // DB::raw('(SELECT COALESCE(SUM(final_total), 0) FROM transactions as sr WHERE sr.return_parent_id = transactions.id) as amount_return'),
-                // 'transactions.return_parent_id as return_transaction_id'
+                // DB::raw('(SELECT COUNT(1) FROM transactions sr WHERE sr.return_parent_id = transactions.id) as return_exists'),
+                // DB::raw('COALESCE((SELECT SUM(final_total) FROM transactions sr WHERE sr.return_parent_id = transactions.id), 0) as amount_return'),
+                'transactions.return_parent_id as return_transaction_id'
             ])
             ->leftJoin('transaction_payments as tp', 'transactions.id', '=', 'tp.transaction_id')
             ->where('transactions.business_id', $businessId)

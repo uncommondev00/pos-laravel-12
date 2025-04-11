@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-use App\BusinessLocation;
-use App\Transaction;
-use App\TaxRate;
+use App\Models\BusinessLocation;
+use App\Models\Transaction;
+use App\Models\TaxRate;
 
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;

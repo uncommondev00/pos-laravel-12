@@ -188,8 +188,8 @@
     </div>
   </div>
   <div class="modal-footer">
-    <a href="#" class="print-invoice btn btn-primary" data-href="{{route('sell.printInvoice', [$sell->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a>
-     <a href="#" class="invoice-print btn btn-success hide" data-href="{{route('sell.invoicePrint', [$sell->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a>
+    <a href="#" class="print-invoice btn btn-primary" data-href="{{route('pos.printInvoice', [$sell->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a>
+     <a href="#" class="invoice-print btn btn-success hide" data-href="{{route('pos.invoicePrint', [$sell->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a>
       <button type="button" class="btn btn-default no-print" data-dismiss="modal">@lang( 'messages.close' )</button>
     </div>
   </div>

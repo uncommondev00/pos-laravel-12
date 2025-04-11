@@ -1,78 +1,124 @@
-<div class="row" >
-	<input type="hidden" class="payment_row_index" value="{{ $row_index}}">
-	@php
-		$col_class = 'col-md-6';
-		if(!empty($accounts)){
-			$col_class = 'col-md-4';
-		}
-	@endphp
-	<div class="{{$col_class}}">
-		<div class="form-group">
-			{!! Form::label("amount_$row_index" ,__('sale.amount') . ':*') !!}
-			<div class="input-group">
-				<span class="input-group-addon">
-					<i class="fa fa-money"></i>
-				</span>
-				{!! Form::text("payment[$row_index][amount]", @num_format($payment_line['amount']), ['class' => 'form-control payment-amount input_number', 'required', 'id' => "amount_$row_index", 'placeholder' => __('sale.amount')]); !!}
-			</div>
-		</div>
-	</div>
-	<div class="{{$col_class}}">
-		<div class="form-group">
-			{!! Form::label("method_$row_index" , __('lang_v1.payment_method') . ':*') !!}
-			<div class="input-group">
-				<span class="input-group-addon">
-					<i class="fa fa-money"></i>
-				</span>
-				{!! Form::select("payment[$row_index][method]", $payment_types, $payment_line['method'], ['class' => 'form-control col-md-12 payment_types_dropdown', 'required', 'id' => "method_$row_index", 'style' => 'width:100%;']); !!}
-			</div>
-		</div>
-	</div>
-	@if(!empty($accounts))
-		<div class="{{$col_class}}">
-			<div class="form-group">
-				{!! Form::label("account_$row_index" , __('lang_v1.payment_account') . ':') !!}
-				<div class="input-group">
-					<span class="input-group-addon">
-						<i class="fa fa-money"></i>
-					</span>
-					{!! Form::select("payment[$row_index][account_id]", $accounts, !empty($payment_line['account_id']) ? $payment_line['account_id'] : '' , ['class' => 'form-control select2', 'id' => "account_$row_index", 'style' => 'width:100%;']); !!}
-				</div>
-			</div>
-		</div>
-	@endif
-	<div class="clearfix"></div>
-		@include('sale_pos.partials.payment_type_details')
-	<!--hidden payment note-->	
-	<div class="col-md-12">
-		<div class="form-group">
-			{!! Form::label("note_$row_index", __('sale.payment_note') . ':') !!}
-			{!! Form::textarea("payment[$row_index][note]", $payment_line['note'], ['class' => 'form-control', 'rows' => 3, 'id' => "note_$row_index"]); !!}
-		</div>
-	</div>
-	<div class="points_section hide">
-	<div class="col-md-6">
+<div class="row">
+    <input type="hidden" class="payment_row_index" value="{{ $row_index }}">
+    @php
+        $col_class = 'col-md-6';
+        if(!empty($accounts)){
+            $col_class = 'col-md-4';
+        }
+    @endphp
+    
+    <!-- Amount Field -->
+    <div class="{{ $col_class }}">
         <div class="form-group">
-          {!! Form::label("total_points" ,__('Total Points') . ':') !!}
-          <div class="input-group">
-            <span class="input-group-addon">
-              <i class="fa fa-credit-card"></i>
-            </span>
-            {!! Form::text("input_total_points", 0, ['class' => 'form-control input_total_points']); !!}
-          </div>
+            <label for="amount_{{ $row_index }}">@lang('sale.amount')<span class="required">*</span></label>
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-money"></i>
+                </span>
+                <input type="text" 
+                    name="payment[{{ $row_index }}][amount]" 
+                    id="amount_{{ $row_index }}" 
+                    class="form-control payment-amount input_number" 
+                    value="{{ @num_format($payment_line['amount']) }}" 
+                    required 
+                    placeholder="@lang('sale.amount')">
+            </div>
         </div>
-      </div>
+    </div>
 
-      <div class="col-md-6">
+    <!-- Payment Method Field -->
+    <div class="{{ $col_class }}">
         <div class="form-group">
-          {!! Form::label("points_use" ,__('Points to Use') . ':') !!}
-          <div class="input-group">
-            <span class="input-group-addon">
-              <i class="fa fa-credit-card"></i>
-            </span>
-            {!! Form::text("points_to_use", 0, ['class' => 'form-control input_points_to_use']); !!}
-          </div>
+            <label for="method_{{ $row_index }}">@lang('lang_v1.payment_method')<span class="required">*</span></label>
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-money"></i>
+                </span>
+                <select name="payment[{{ $row_index }}][method]" 
+                    id="method_{{ $row_index }}" 
+                    class="form-control col-md-12 payment_types_dropdown" 
+                    required 
+                    style="width:100%;">
+                    @foreach($payment_types as $key => $value)
+                        <option value="{{ $key }}" {{ $payment_line['method'] == $key ? 'selected' : '' }}>
+                            {{ $value }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
         </div>
-      </div>
-  </div>
+    </div>
+
+    <!-- Payment Account Field -->
+    @if(!empty($accounts))
+        <div class="{{ $col_class }}">
+            <div class="form-group">
+                <label for="account_{{ $row_index }}">@lang('lang_v1.payment_account'):</label>
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-money"></i>
+                    </span>
+                    <select name="payment[{{ $row_index }}][account_id]" 
+                        id="account_{{ $row_index }}" 
+                        class="form-control select2" 
+                        style="width:100%;">
+                        @foreach($accounts as $key => $value)
+                            <option value="{{ $key }}" {{ !empty($payment_line['account_id']) && $payment_line['account_id'] == $key ? 'selected' : '' }}>
+                                {{ $value }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <div class="clearfix"></div>
+    @include('sale_pos.partials.payment_type_details')
+
+    <!-- Payment Note Field -->
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="note_{{ $row_index }}">@lang('sale.payment_note'):</label>
+            <textarea name="payment[{{ $row_index }}][note]" 
+                id="note_{{ $row_index }}" 
+                class="form-control" 
+                rows="3">{{ $payment_line['note'] }}</textarea>
+        </div>
+    </div>
+
+    <!-- Points Section -->
+    <div class="points_section hide">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="input_total_points_{{ $row_index }}">@lang('Total Points'):</label>
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-credit-card"></i>
+                    </span>
+                    <input type="text" 
+                        name="input_total_points" 
+                        id="input_total_points_{{ $row_index }}" 
+                        class="form-control input_total_points" 
+                        value="0">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="points_to_use_{{ $row_index }}">@lang('Points to Use'):</label>
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-credit-card"></i>
+                    </span>
+                    <input type="text" 
+                        name="points_to_use" 
+                        id="points_to_use_{{ $row_index }}" 
+                        class="form-control input_points_to_use" 
+                        value="0">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

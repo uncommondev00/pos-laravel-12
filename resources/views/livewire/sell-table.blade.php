@@ -66,6 +66,119 @@
                                     <td></td>
                                     <td></td>
                                     <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
+                                                    data-toggle="dropdown" 
+                                                    aria-expanded="false">
+                                                @lang('messages.actions')
+                                                <span class="caret"></span>
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            
+                                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                                @if(auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access"))
+                                                    <li>
+                                                        <a href="#" 
+                                                           data-href="{{ route('sells.show', [$sale->id]) }}" 
+                                                           class="btn-modal" 
+                                                           data-container=".view_modal">
+                                                            <i class="fa fa-external-link" aria-hidden="true"></i> @lang('messages.view')
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                        
+                                                @if($sale->is_direct_sale == 0)
+                                                    @can('sell.update')
+                                                        <li>
+                                                            <a target="_blank" href="{{ route('sells.edit', [$sale->id]) }}">
+                                                                <i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                @else
+                                                    @can('direct_sell.access')
+                                                        <li>
+                                                            <a target="_blank" href="{{ route('sells.edit', [$sale->id]) }}">
+                                                                <i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                @endif
+                                        
+                                                @if(request()->session()->get('user.id') == 1)
+                                                    @can('direct_sell.delete')
+                                                        <li>
+                                                            <a href="{{ route('sells.destroy', [$sale->id]) }}" 
+                                                               class="delete-sale">
+                                                                <i class="fa fa-trash"></i> @lang('messages.delete')
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                @endif
+                                        
+                                                @if(auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access"))
+                                                    <li>
+                                                        <a href="#" 
+                                                           class="print-invoice" 
+                                                            data-href="{{ route('pos.printInvoice', [$sale->id]) }}">
+                                                            <i class="fa fa-print" aria-hidden="true"></i> @lang('messages.print')
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                        
+                                                <li class="divider"></li>
+                                        
+                                                @if($sale->payment_status != "paid" && (auth()->user()->can("sell.create") || auth()->user()->can("direct_sell.access")))
+                                                    <li>
+                                                        <a href="{{ route('payments.addPayment', [$sale->id]) }}" 
+                                                           class="add_payment_modal">
+                                                            <i class="fa fa-money"></i> @lang('purchase.add_payment')
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                        
+                                                <li>
+                                                    <a href="{{ route('payments.show', [$sale->id]) }}" 
+                                                       class="view_payment_modal">
+                                                        <i class="fa fa-money"></i> @lang('purchase.view_payments')
+                                                    </a>
+                                                </li>
+                                        
+                                                @can('sell.create')
+                                                    <li>
+                                                        <a href="{{ route('sells.duplicateSell', [$sale->id]) }}">
+                                                            <i class="fa fa-copy"></i> @lang('lang_v1.duplicate_sell')
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ route('sell-return.add', [$sale->id]) }}">
+                                                            <i class="fa fa-undo"></i> @lang('lang_v1.sell_return')
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ route('pos.showInvoiceUrl', [$sale->id]) }}" 
+                                                           class="view_invoice_url">
+                                                            <i class="fa fa-external-link"></i> @lang('lang_v1.view_invoice_url')
+                                                        </a>
+                                                    </li>
+                                                @endcan
+                                        
+                                                @can('send_notification')
+                                                    <li>
+                                                        <a href="#" 
+                                                           data-href="{{ route('notification.getTemplate', ['transaction_id' => $sale->id, 'template_for' => 'new_sale']) }}" 
+                                                           class="btn-modal" 
+                                                           data-container=".view_modal">
+                                                            <i class="fa fa-envelope" aria-hidden="true"></i> @lang('lang_v1.new_sale_notification')
+                                                        </a>
+                                                    </li>
+                                                @endcan
+                                            </ul>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

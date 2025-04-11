@@ -84,7 +84,7 @@
 					<div class="col-md-12 text-center " >
 						<div class="col-md-4 text-center " ></div>
 						    <div class="col-md-4 text-center">
-						            {!! Form::label('discount_amount_modal', __('Discount Percentage') . ':*' ) !!}
+									<label id="discount_amount_modal">Discount Percentage:*</label>
 						            <div class="input-group text-center">
 						                <span class="input-group-addon">
 						                    <i class="fa fa-info"></i>

@@ -27,24 +27,24 @@
 
 namespace App\Http\Controllers;
 
-use App\TaxRate;
-use App\TransactionPayment;
-use App\Transaction;
-use App\TransactionSellLine;
-use App\BusinessLocation;
-use App\Business;
-use App\User;
-use App\Category;
-use App\Brands;
-use App\Product;
-use App\CustomerGroup;
-use App\SellingPriceGroup;
-use App\NotificationTemplate;
-use App\Account;
-use App\AccountTransaction;
-use App\Contact;
-use App\Media;
-use App\VoidTransaction;
+use App\Models\TaxRate;
+use App\Models\TransactionPayment;
+use App\Models\Transaction;
+use App\Models\TransactionSellLine;
+use App\Models\BusinessLocation;
+use App\Models\Business;
+use App\Models\User;
+use App\Models\Category;
+use App\Models\Brands;
+use App\Models\Product;
+use App\Models\CustomerGroup;
+use App\Models\SellingPriceGroup;
+use App\Models\NotificationTemplate;
+use App\Models\Account;
+use App\Models\AccountTransaction;
+use App\Models\Contact;
+use App\Models\Media;
+use App\Models\VoidTransaction;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -59,7 +59,7 @@ use App\Utils\ModuleUtil;
 use App\Utils\NotificationUtil;
 
 use Yajra\DataTables\Facades\DataTables;
-
+use Carbon\Carbon;
 class SellPosController extends Controller
 {
     /**
@@ -73,7 +73,7 @@ class SellPosController extends Controller
     protected $cashRegisterUtil;
     protected $moduleUtil;
     protected $notificationUtil;
-
+    protected $dummyPaymentLine;
     /**
      * Constructor
      *
@@ -300,7 +300,7 @@ class SellPosController extends Controller
                 DB::beginTransaction();
 
                 if (empty($request->input('transaction_date'))) {
-                    $input['transaction_date'] =  \Carbon::now();
+                    $input['transaction_date'] =  Carbon::now();
                 } else {
                     $input['transaction_date'] = $this->productUtil->uf_date($request->input('transaction_date'), true);
                 }
@@ -356,8 +356,8 @@ class SellPosController extends Controller
                             'points_red' => $points_red,
                             'points_add' => $input['points_tobe_added'],
                             'points_balance' => $points_bal,
-                            'created_at' =>  \Carbon\Carbon::now(), # new \Datetime()
-                            'updated_at' => \Carbon\Carbon::now()  # new \Datetime()
+                            'created_at' =>  Carbon::now(), # new \Datetime()
+                            'updated_at' => Carbon::now()  # new \Datetime()
                         ]);
                     }
                    
@@ -1115,8 +1115,8 @@ class SellPosController extends Controller
                                 'points_red' => $points_red,
                                 'points_add' => $input['points_tobe_added'],
                                 'points_balance' => $points_bal,
-                                'created_at' =>  \Carbon\Carbon::now(), # new \Datetime()
-                                'updated_at' => \Carbon\Carbon::now()  # new \Datetime()
+                                'created_at' =>  Carbon::now(), # new \Datetime()
+                                'updated_at' => Carbon::now()  # new \Datetime()
                             ]);
                         }
                        
@@ -1876,7 +1876,7 @@ class SellPosController extends Controller
                 })
                 ->addColumn('upcoming_invoice', function ($row) {
                     if (empty($row->recur_stopped_on)) {
-                        $last_generated = !empty($row->subscription_invoices) ? \Carbon::parse($row->subscription_invoices->max('transaction_date')) : \Carbon::parse($row->transaction_date);
+                        $last_generated = !empty($row->subscription_invoices) ? Carbon::parse($row->subscription_invoices->max('transaction_date')) : Carbon::parse($row->transaction_date);
                         if ($row->recur_interval_type == 'days') {
                             $upcoming_invoice = $last_generated->addDays($row->recur_interval);
                         } elseif ($row->recur_interval_type == 'months') {
@@ -1915,7 +1915,7 @@ class SellPosController extends Controller
                             ->findorfail($id);
 
             if (empty($transaction->recur_stopped_on)) {
-                $transaction->recur_stopped_on = \Carbon::now();
+                $transaction->recur_stopped_on = Carbon::now();
             } else {
                 $transaction->recur_stopped_on = null;
             }

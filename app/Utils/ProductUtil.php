@@ -21,6 +21,7 @@ use App\Models\Unit;
 use App\Models\TransactionSellLinesPurchaseLines;
 use App\Models\Discount;
 use App\Models\ProductStockLog;
+use Carbon\Carbon;
 
 class ProductUtil extends Util
 {
@@ -793,8 +794,8 @@ class ProductUtil extends Util
                         'rack' => !empty($detail['rack']) ? $detail['rack'] : null,
                         'row' => !empty($detail['row']) ? $detail['row'] : null,
                         'position' => !empty($detail['position']) ? $detail['position'] : null,
-                        'created_at' => \Carbon::now()->toDateTimeString(),
-                        'updated_at' => \Carbon::now()->toDateTimeString()
+                        'created_at' => Carbon::now()->toDateTimeString(),
+                        'updated_at' => Carbon::now()->toDateTimeString()
                     ];
             }
 
@@ -940,7 +941,7 @@ class ProductUtil extends Util
 
                 $exp_date = null;
                 if (!empty($value['exp_date'])) {
-                    $exp_date = \Carbon::createFromFormat('d-m-Y', $value['exp_date'])->format('Y-m-d');
+                    $exp_date = Carbon::createFromFormat('d-m-Y', $value['exp_date'])->format('Y-m-d');
                 }
 
                 $lot_number = null;
@@ -1309,7 +1310,7 @@ class ProductUtil extends Util
      */
     public function getProductDiscount($product, $business_id, $location_id, $is_cg = false, $is_spg = false)
     {
-        $now = \Carbon::now()->toDateTimeString();
+        $now = Carbon::now()->toDateTimeString();
 
         //Search if both category and brand matches
         $query1 = Discount::where('business_id', $business_id)

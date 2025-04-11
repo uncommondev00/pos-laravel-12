@@ -31,7 +31,7 @@ use App\Events\TransactionPaymentUpdated;
 use App\Events\TransactionPaymentDeleted;
 
 use Carbon\Carbon;
-
+use Illuminate\Support\Str;
 class TransactionUtil extends Util
 {
     /**
@@ -1460,8 +1460,8 @@ class TransactionUtil extends Util
 
             return $invoice_no;
         } else {
-            return str_random(5);
-        }
+            return Str::random(5);
+        }   
     }
 
     private function getInvoiceScheme($business_id, $location_id)
