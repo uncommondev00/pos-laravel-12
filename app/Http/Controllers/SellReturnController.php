@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\DB;  
+use Illuminate\Support\Facades\Log;
 use App\Models\BusinessLocation;
 use App\Models\Transaction;
 use App\Models\TaxRate;
@@ -253,7 +253,7 @@ class SellReturnController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        try {
+        // try {
             $input = $request->except('_token');
 
             if (!empty($input['products'])) {
@@ -355,20 +355,20 @@ class SellReturnController extends Controller
                             'receipt' => $receipt
                         ];
             }
-        } catch (\Exception $e) {
-            DB::rollBack();
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
 
-            if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
-                $msg = $e->getMessage();
-            } else {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-                $msg = __('messages.something_went_wrong');
-            }
+        //     if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
+        //         $msg = $e->getMessage();
+        //     } else {
+        //         Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+        //         $msg = __('messages.something_went_wrong');
+        //     }
 
-            $output = ['success' => 0,
-                            'msg' => $msg
-                        ];
-        }
+        //     $output = ['success' => 0,
+        //                     'msg' => $msg
+        //                 ];
+        // }
 
         return $output;
     }
