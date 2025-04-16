@@ -48,6 +48,15 @@ class LoginController extends Controller
 
         $user = Auth::user();
 
+        // Set business date format
+        if (!empty($user->business)) {
+            // Get the business model
+            $business = $user->business;
+            
+            // Store the entire business object in session if needed
+            session(['business' => $business]);
+        }
+
         // Business and user active checks
         if (!$user->business->is_active) {
             Auth::logout();

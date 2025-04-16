@@ -80,7 +80,7 @@
                     <tbody>
                         @forelse($sells as $sell)
                             <tr>
-                                <td>{{ \Carbon\Carbon::parse($sell->transaction_date)->format(config('app.date_format')) }}</td>
+                                <td>@format_date($sell->transaction_date)</td>
                                 <td>{{ $sell->invoice_no }}</td>
                                 <td>{{ $sell->customer_name }}</td>
                                 <td>{{ $sell->business_location }}</td>

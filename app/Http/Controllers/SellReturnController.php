@@ -252,8 +252,8 @@ class SellReturnController extends Controller
         if (!auth()->user()->can('sell.create')) {
             abort(403, 'Unauthorized action.');
         }
-
-        // try {
+        
+        try {
             $input = $request->except('_token');
 
             if (!empty($input['products'])) {
@@ -355,20 +355,21 @@ class SellReturnController extends Controller
                             'receipt' => $receipt
                         ];
             }
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
 
-        //     if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
-        //         $msg = $e->getMessage();
-        //     } else {
-        //         Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-        //         $msg = __('messages.something_went_wrong');
-        //     }
+        } catch (\Exception $e) {
+            DB::rollBack();
 
-        //     $output = ['success' => 0,
-        //                     'msg' => $msg
-        //                 ];
-        // }
+            if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
+                $msg = $e->getMessage();
+            } else {
+                Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+                $msg = __('messages.something_went_wrong');
+            }
+
+            $output = ['success' => 0,
+                            'msg' => $msg
+                        ];
+        }
 
         return $output;
     }

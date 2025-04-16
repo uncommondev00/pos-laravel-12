@@ -28,6 +28,7 @@ $(document).ready(function() {
                     data: data,
                     dataType: 'json',
                     success: function(result) {
+                        console.log(result);
                         if (result.success == 1) {
                             toastr.success(result.msg);
                             //Check if enabled or not

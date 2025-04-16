@@ -15,6 +15,7 @@ use Spatie\Permission\Models\Role;
 
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class Util
 {
@@ -194,6 +195,7 @@ class Util
     public function uf_date($date, $time = false)
     {
         $date_format = session('business.date_format');
+
         $mysql_format = 'Y-m-d';
         if ($time) {
             if (session('business.time_format') == 12) {

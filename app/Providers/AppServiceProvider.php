@@ -92,11 +92,10 @@ class AppServiceProvider extends ServiceProvider
         //Blade directive to convert.
         Blade::directive('format_date', function ($date) {
             if (!empty($date)) {
-                return Carbon::createFromTimestamp(strtotime($date))->format(session('business.date_format'));
+                return "<?php echo Carbon\\Carbon::createFromTimestamp(strtotime($date))->format(session('business.date_format')) ?>";
             } else {
                 return null;
             }
-            
         });
 
         //Blade directive to convert.

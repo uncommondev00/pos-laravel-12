@@ -31,7 +31,7 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <strong>@lang('sale.invoice_no'):</strong> {{ $sell->invoice_no }} <br>
-                        <strong>@lang('messages.date'):</strong> {{ @format_date($sell->transaction_date) }}
+                        <strong>@lang('messages.date'):</strong> @format_date($sell->transaction_date)
                     </div>
                     <div class="col-sm-4">
                         <strong>@lang('contact.customer'):</strong> {{ $sell->contact->name }} <br>
@@ -64,12 +64,14 @@
                                 </span>
                                 @php
                                     $transaction_date = !empty($sell->return_parent->transaction_date) ? $sell->return_parent->transaction_date : 'now';
+
+                                    echo $sell->return_parent;
                                 @endphp
                                 <input type="text" 
                                        name="transaction_date" 
                                        id="transaction_date" 
                                        class="form-control" 
-                                       value="{{ @format_date($transaction_date) }}" 
+                                       value="@format_date($transaction_date)" 
                                        readonly 
                                        required>
                             </div>
