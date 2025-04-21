@@ -9,14 +9,14 @@
    <div class="row">
       <div class="col-sm-6 col-xs-6">
         <h4>@lang('lang_v1.sell_return_details'):</h4>
-        <strong>@lang('lang_v1.return_date'):</strong> {{@format_date($sell->return_parent->transaction_date)}}<br>
+        <strong>@lang('lang_v1.return_date'):</strong> @format_date($sell->return_parent->transaction_date)<br>
         <strong>@lang('contact.customer'):</strong> {{ $sell->contact->name }} <br>
         <strong>@lang('purchase.business_location'):</strong> {{ $sell->location->name }}
       </div>
       <div class="col-sm-6 col-xs-6">
         <h4>@lang('lang_v1.sell_details'):</h4>
         <strong>@lang('sale.invoice_no'):</strong> {{ $sell->invoice_no }} <br>
-        <strong>@lang('messages.date'):</strong> {{@format_date($sell->transaction_date)}}
+        <strong>@lang('messages.date'):</strong> @format_date($sell->transaction_date)
       </div>
     </div>
     <br>
@@ -121,7 +121,7 @@
     </div>
 </div>
 <div class="modal-footer">
-    <a href="#" class="print-invoice btn btn-primary" data-href="{{action('SellReturnController@printInvoice', [$sell->return_parent->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a>
+    <a href="#" class="print-invoice btn btn-primary" data-href="{{route('sell-return.printInvoice', [$sell->return_parent->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a>
       <button type="button" class="btn btn-default no-print" data-dismiss="modal">@lang( 'messages.close' )</button>
     </div>
   </div>

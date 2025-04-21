@@ -265,7 +265,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/sells/duplicate/{id}', [SellController::class, 'duplicateSell'])->name('sells.duplicateSell');
     Route::get('/sells/drafts', [SellController::class, 'getDrafts'])->name('sells.getDrafts');
     Route::get('/sells/quotations', [SellController::class, 'getQuotations'])->name('sells.getQuotations');
-    Route::get('/sells/draft-dt', [SellController::class, 'getDraftsDatatable'])->name('sells.getDraftsDatatable');
+    Route::get('/sells/draft-dt', [SellController::class, 'getDraftDatables'])->name('sells.getDraftDatables');
     Route::resource('sells', SellController::class);
 
     //Sell Return

@@ -64,8 +64,6 @@
                                 </span>
                                 @php
                                     $transaction_date = !empty($sell->return_parent->transaction_date) ? $sell->return_parent->transaction_date : 'now';
-
-                                    echo $sell->return_parent;
                                 @endphp
                                 <input type="text" 
                                        name="transaction_date" 

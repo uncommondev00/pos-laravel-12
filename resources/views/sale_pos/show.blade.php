@@ -8,7 +8,7 @@
 <div class="modal-body">
     <div class="row">
       <div class="col-xs-12">
-          <p class="pull-right"><b>@lang('messages.date'):</b> {{ @format_date($sell->transaction_date) }}</p>
+          <p class="pull-right"><b>@lang('messages.date'):</b> @format_date($sell->transaction_date)</p>
       </div>
     </div>
     <div class="row">
@@ -93,7 +93,7 @@
               @endphp
               <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ @format_date($payment_line->paid_on) }}</td>
+                <td>@format_date($payment_line->paid_on)</td>
                 <td>{{ $payment_line->payment_ref_no }}</td>
                 <td><span class="display_currency" data-currency_symbol="true">{{ $payment_line->amount }}</span></td>
                 <td>

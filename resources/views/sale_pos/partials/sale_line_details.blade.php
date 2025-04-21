@@ -36,7 +36,7 @@
             @if( session()->get('business.enable_lot_number') == 1)
                 <td>{{ $sell_line->lot_details->lot_number or '--' }}
                     @if( session()->get('business.enable_product_expiry') == 1 && !empty($sell_line->lot_details->exp_date))
-                    ({{@format_date($sell_line->lot_details->exp_date)}})
+                    (@format_date($sell_line->lot_details->exp_date))
                     @endif
                 </td>
             @endif

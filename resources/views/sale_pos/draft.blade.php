@@ -2,50 +2,12 @@
 @section('title', __( 'sale.drafts'))
 @section('content')
 
-<!-- Content Header (Page header) -->
-<section class="content-header no-print">
-    <h1>@lang('sale.drafts')
-    </h1>
-</section>
-
-<!-- Main content -->
-<section class="content no-print">
-    @component('components.widget', ['class' => 'box-primary'])
-        @slot('tool')
-            <div class="box-tools">
-                <a class="btn btn-block btn-primary" href="{{action('SellPosController@create')}}">
-                <i class="fa fa-plus"></i> @lang('messages.add')</a>
-            </div>
-        @endslot
-        <div class="form-group">
-            <div class="input-group">
-              <button type="button" class="btn btn-primary" id="daterange-btn">
-                <span>
-                  <i class="fa fa-calendar"></i> Filter By Date
-                </span>
-                <i class="fa fa-caret-down"></i>
-              </button>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped ajax_view" id="sell_table">
-                <thead>
-                    <tr>
-                        <th>@lang('messages.date')</th>
-                        <th>@lang('purchase.ref_no')</th>
-                        <th>@lang('sale.customer_name')</th>
-                        <th>@lang('sale.location')</th>
-                        <th>@lang('messages.action')</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    @endcomponent
-</section>
-<!-- /.content -->
+<livewire:drafts-table />
 @stop
 @section('javascript')
+@livewireScripts
 <script type="text/javascript">
+
 $(document).ready( function(){
     sell_table = $('#sell_table').DataTable({
         processing: true,

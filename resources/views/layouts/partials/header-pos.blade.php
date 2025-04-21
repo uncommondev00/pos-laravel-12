@@ -6,7 +6,7 @@
     <div class="col-md-10">
 
 
-      <strong>{{ @format_date('now') }}</strong>
+      <strong>@format_date('now')</strong>
       
       
 
