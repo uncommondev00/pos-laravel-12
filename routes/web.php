@@ -40,6 +40,8 @@ use App\Http\Controllers\TaxRateController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\VoidTransactionController;
 use App\Http\Controllers\DenominationController;
+use App\Http\Controllers\GroupTaxController;
+use App\Http\Controllers\InvoiceLayoutController;
 use App\Http\Controllers\Restaurant\BookingController;
 use App\Http\Controllers\Restaurant\DataController;
 use App\Http\Controllers\Restaurant\KitchenController;
@@ -59,18 +61,18 @@ include_once('install_r.php');
 Route::middleware(['IsInstalled'])->group(function () {
 
     Route::get('/', function () {
-        
+
         return view('welcome');
     });
 
     //clear cache if uploaded to NAS
-    Route::get('/clear', function() {
-    $exitCode = Artisan::call('config:clear');
-    $exitCode = Artisan::call('cache:clear');
-    $exitCode = Artisan::call('config:cache');
-    $exitCode = Artisan::call('view:clear');
-    $exitCode = Artisan::call('route:clear');
-    return 'DONE'; //Return anything
+    Route::get('/clear', function () {
+        $exitCode = Artisan::call('config:clear');
+        $exitCode = Artisan::call('cache:clear');
+        $exitCode = Artisan::call('config:cache');
+        $exitCode = Artisan::call('view:clear');
+        $exitCode = Artisan::call('route:clear');
+        return 'DONE'; //Return anything
     });
 
 
@@ -98,7 +100,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezone'])->group(function () {
 
-    
+
 
     //Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -129,7 +131,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
 
     //Sales Commission Agent
     Route::resource('sales-commission-agents', SalesCommissionAgentController::class);
-    
+
     //Business
     Route::get('/business/settings', [BusinessController::class, 'getBusinessSettings'])->name('business.getBusinessSettings');
     Route::post('/business/update', [BusinessController::class, 'postBusinessSettings'])->name('business.postBusinessSettings');
@@ -143,6 +145,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     //Invoice schemes..
     Route::get('/invoice-schemes/set_default/{id}', [InvoiceSchemeController::class, 'setDefault'])->name('invoice-schemes.setDefault');
     Route::resource('invoice-schemes', InvoiceSchemeController::class);
+    Route::resource('invoice-layouts', InvoiceLayoutController::class);
 
     //Barcodes
     Route::get('/barcodes/set_default/{id}', [BarcodeController::class, 'setDefault'])->name('barcodes.setDefault');
@@ -150,6 +153,8 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
 
     //Printers...
     Route::resource('printers', PrinterController::class);
+    // group taxes
+    Route::resource('group-taxes', GroupTaxController::class);
 
     //Contacts
     Route::get('/contacts/import', [ContactController::class, 'getImportContacts'])->name('contacts.import');
@@ -211,7 +216,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
 
     //Opening Stock
     Route::get('/opening-stocks/add', [OpeningStockController::class, 'add'])->name('opening-stocks.add');
-    Route::post('/opening-stock/save', [OpeningStockController::class, 'save'])->name('opening-stocks.save');  
+    Route::post('/opening-stock/save', [OpeningStockController::class, 'save'])->name('opening-stocks.save');
 
 
     //Print Labels
@@ -235,7 +240,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
 
     //Brands
     Route::resource('brands', BrandController::class);
-    
+
     //Payment Account
     //Route::resource('payment-account', PaymentAccountController::class);
 
@@ -261,7 +266,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/purchase-return/add/{id}', [PurchaseReturnController::class, 'add'])->name('purchase-return.add');
     Route::resource('/purchase-return', PurchaseReturnController::class);
 
-    //Sell 
+    //Sell
     Route::get('/sells/duplicate/{id}', [SellController::class, 'duplicateSell'])->name('sells.duplicateSell');
     Route::get('/sells/drafts', [SellController::class, 'getDrafts'])->name('sells.getDrafts');
     Route::get('/sells/quotations', [SellController::class, 'getQuotations'])->name('sells.getQuotations');
@@ -299,7 +304,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
 
     //Account
     Route::group(['prefix' => 'account'], function () {
-        
+
         Route::get('/fund-transfer/{id}', [AccountController::class, 'getFundTransfer'])->name('account.getFundTransfer');
         Route::post('/fund-transfer', [AccountController::class, 'postFundTransfer'])->name('account.postFundTransfer');
         Route::get('/deposit/{id}', [AccountController::class, 'getDeposit'])->name('account.getDeposit');
@@ -315,8 +320,6 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
         Route::get('/payment-account-report', [AccountReportsController::class, 'paymentAccountReport'])->name('account-reports.paymentAccountReport');
         Route::get('/link-account/{id}', [AccountReportsController::class, 'getLinkAccount'])->name('account-reports.getLinkAccount');
         Route::post('/link-account', [AccountReportsController::class, 'postLinkAccount'])->name('account-reports.postLinkAccount');
-        
-
     });
 
     //Reports...
@@ -360,7 +363,9 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('backup/download/{file_name}', [BackUpController::class, 'download'])->name('backup.download');
     Route::get('backup/delete/{file_name}', [BackUpController::class, 'delete'])->name('backup.delete');
     Route::resource('backup', BackUpController::class, ['only' => [
-        'index', 'create', 'store'
+        'index',
+        'create',
+        'store'
     ]]);
 
     //Restaurant module

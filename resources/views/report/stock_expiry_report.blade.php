@@ -5,7 +5,7 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1>{{ __('report.stock_expiry_report')}}</h1>
+    <h1>{{ __('report.stock_expiry_report') }}</h1>
 </section>
 
 <!-- Main content -->
@@ -13,47 +13,82 @@
     <div class="row">
         <div class="col-md-12">
             @component('components.filters', ['title' => __('report.filters')])
-              {!! Form::open(['url' => action('ReportController@getStockExpiryReport'), 'method' => 'get', 'id' => 'stock_report_filter_form' ]) !!}
-                <div class="col-md-3">
-                    <div class="form-group">
-                        {!! Form::label('location_id',  __('purchase.business_location') . ':') !!}
-                        {!! Form::select('location_id', $business_locations, null, ['class' => 'form-control select2', 'style' => 'width:100%']); !!}
+            <form action="{{ route('reports.getStockExpiryReport') }}" method="get" id="stock_report_filter_form">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="location_id">{{ __('purchase.business_location') }}:</label>
+                            <select name="location_id" id="location_id" class="form-control select2" style="width:100%">
+                                @foreach($business_locations as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="category_id">Category:</label>
+                            <select name="category" id="category_id" class="form-control select2" style="width:100%">
+                                <option value="">{{ __('messages.all') }}</option>
+                                @foreach($categories as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="sub_category_id">Sub Category:</label>
+                            <select name="sub_category" id="sub_category_id" class="form-control select2" style="width:100%">
+                                <option value="">{{ __('messages.all') }}</option>
+                                {{-- Sub-categories will be loaded dynamically --}}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="brand">Brand:</label>
+                            <select name="brand" id="brand" class="form-control select2" style="width:100%">
+                                <option value="">{{ __('messages.all') }}</option>
+                                @foreach($brands as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="unit">Unit:</label>
+                            <select name="unit" id="unit" class="form-control select2" style="width:100%">
+                                <option value="">{{ __('messages.all') }}</option>
+                                @foreach($units as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="view_stock_filter">{{ __('report.view_stocks') }}:</label>
+                            <select name="view_stock_filter" id="view_stock_filter" class="form-control select2" style="width:100%">
+                                <option value="">{{ __('messages.all') }}</option>
+                                @foreach($view_stock_filter as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        {!! Form::label('category_id','Category:') !!}
-                        {!! Form::select('category', $categories, null, ['placeholder' => 'All', 'class' => 'form-control select2', 'style' => 'width:100%', 'id' => 'category_id']); !!}
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        {!! Form::label('sub_category_id','Sub Category:') !!}
-                        {!! Form::select('sub_category', array(), null, ['placeholder' => 'All', 'class' => 'form-control select2', 'style' => 'width:100%', 'id' => 'sub_category_id']); !!}
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        {!! Form::label('brand','Brand:') !!}
-                        {!! Form::select('brand', $brands, null, ['placeholder' => 'All', 'class' => 'form-control select2', 'style' => 'width:100%']); !!}
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        {!! Form::label('unit','Unit:') !!}
-                        {!! Form::select('unit', $units, null, ['placeholder' => 'All', 'class' => 'form-control select2', 'style' => 'width:100%']); !!}
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        {!! Form::label('view_stock_filter', __('report.view_stocks') . ':') !!}
-                        {!! Form::select('view_stock_filter', $view_stock_filter, null, ['placeholder' => __('messages.all'), 'class' => 'form-control select2', 'style' => 'width:100%']); !!}
-                    </div>
-                </div>
-                {!! Form::close() !!}
+            </form>
             @endcomponent
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             @component('components.widget', ['class' => 'box-primary'])
@@ -85,12 +120,11 @@
         </div>
     </div>
 </section>
-<!-- /.content -->
 
 <div class="modal fade exp_update_modal" tabindex="-1" role="dialog">
 </div>
 @endsection
 
 @section('javascript')
-    <script src="{{ asset('js/report.js?v=' . $asset_v) }}"></script>
+<script src="{{ asset('js/report.js?v=' . $asset_v) }}"></script>
 @endsection

@@ -5,74 +5,88 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1>{{ __('report.sales_representative')}}</h1>
+    <h1>{{ __('report.sales_representative') }}</h1>
 </section>
 
 <!-- Main content -->
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            @component('components.filters', ['title' => __('report.filters')])
-              {!! Form::open(['url' => action('ReportController@getStockReport'), 'method' => 'get', 'id' => 'sales_representative_filter_form' ]) !!}
-                <div class="col-md-4">
-                    <div class="form-group">
-                        {!! Form::label('sr_id',  __('report.user') . ':') !!}
-                        {!! Form::select('sr_id', $users, null, ['class' => 'form-control select2', 'style' => 'width:100%', 'placeholder' => __('report.all_users')]); !!}
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        {!! Form::label('sr_business_id',  __('business.business_location') . ':') !!}
-                        {!! Form::select('sr_business_id', $business_locations, null, ['class' => 'form-control select2', 'style' => 'width:100%']); !!}
-                    </div>
-                </div>
+            <div class="box box-solid">
+                <div class="box-body">
+                    <form action="{{ route('reports.getStockReport') }}" method="get" id="sales_representative_filter_form">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="sr_id">{{ __('report.user') }}:</label>
+                                <select name="sr_id" class="form-control select2" style="width:100%" placeholder="{{ __('report.all_users') }}">
+                                    @foreach($users as $userId => $userName)
+                                    <option value="{{ $userId }}">{{ $userName }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="sr_business_id">{{ __('business.business_location') }}:</label>
+                                <select name="sr_business_id" class="form-control select2" style="width:100%">
+                                    @foreach($business_locations as $businessId => $businessName)
+                                    <option value="{{ $businessId }}">{{ $businessName }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
 
-                <div class="col-md-3">
-                    <div class="form-group">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="sr_date_filter">{{ __('report.date_range') }}:</label>
+                                <input type="text" name="date_range" placeholder="{{ __('lang_v1.select_a_date_range') }}" class="form-control" id="sr_date_filter" readonly>
+                            </div>
+                        </div>
 
-                        {!! Form::label('sr_date_filter', __('report.date_range') . ':') !!}
-                        {!! Form::text('date_range', null, ['placeholder' => __('lang_v1.select_a_date_range'), 'class' => 'form-control', 'id' => 'sr_date_filter', 'readonly']); !!}
-                    </div>
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary pull-right">{{ __('messages.filter') }}</button>
+                        </div>
+                    </form>
                 </div>
-
-                {!! Form::close() !!}
-            @endcomponent
+            </div>
         </div>
     </div>
 
     <!-- Summary -->
     <div class="row">
         <div class="col-sm-12">
-            @component('components.widget', ['title' => __('report.summary')])
-                <h3 class="text-muted">
-                    {{ __('report.total_sell') }} - {{ __('lang_v1.total_sales_return') }}: 
-                    <span id="sr_total_sales">
-                        <i class="fa fa-refresh fa-spin fa-fw"></i>
-                    </span>
-                    -
-                    <span id="sr_total_sales_return">
-                        <i class="fa fa-refresh fa-spin fa-fw"></i>
-                    </span>
-                    =
-                    <span id="sr_total_sales_final">
-                        <i class="fa fa-refresh fa-spin fa-fw"></i>
-                    </span>
-                </h3>
-                <div class="hide" id="total_commission_div">
+            <div class="box box-solid">
+                <div class="box-body">
                     <h3 class="text-muted">
-                        {{ __('lang_v1.total_sale_commission') }}: 
-                        <span id="sr_total_commission">
+                        {{ __('report.total_sell') }} - {{ __('lang_v1.total_sales_return') }}:
+                        <span id="sr_total_sales">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                        -
+                        <span id="sr_total_sales_return">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                        =
+                        <span id="sr_total_sales_final">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                    </h3>
+                    <div class="hide" id="total_commission_div">
+                        <h3 class="text-muted">
+                            {{ __('lang_v1.total_sale_commission') }}:
+                            <span id="sr_total_commission">
+                                <i class="fa fa-refresh fa-spin fa-fw"></i>
+                            </span>
+                        </h3>
+                    </div>
+                    <h3 class="text-muted">
+                        {{ __('report.total_expense') }}:
+                        <span id="sr_total_expenses">
                             <i class="fa fa-refresh fa-spin fa-fw"></i>
                         </span>
                     </h3>
                 </div>
-                <h3 class="text-muted">
-                    {{ __('report.total_expense') }}: 
-                    <span id="sr_total_expenses">
-                        <i class="fa fa-refresh fa-spin fa-fw"></i>
-                    </span>
-                </h3>
-            @endcomponent
+            </div>
         </div>
     </div>
 
@@ -107,26 +121,26 @@
                         @include('report.partials.sales_representative_expenses')
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
 </section>
 <!-- /.content -->
-<div class="modal fade view_register" tabindex="-1" role="dialog" 
+
+<div class="modal fade view_register" tabindex="-1" role="dialog"
     aria-labelledby="gridSystemModalLabel">
 </div>
-<div class="modal fade payment_modal" tabindex="-1" role="dialog" 
-        aria-labelledby="gridSystemModalLabel">
+<div class="modal fade payment_modal" tabindex="-1" role="dialog"
+    aria-labelledby="gridSystemModalLabel">
 </div>
-<div class="modal fade edit_payment_modal" tabindex="-1" role="dialog" 
+<div class="modal fade edit_payment_modal" tabindex="-1" role="dialog"
     aria-labelledby="gridSystemModalLabel">
 </div>
 
 @endsection
 
 @section('javascript')
-    <script src="{{ asset('js/report.js?v=' . $asset_v) }}"></script>
-    <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
+<script src="{{ asset('js/report.js?v=' . $asset_v) }}"></script>
+<script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
 @endsection

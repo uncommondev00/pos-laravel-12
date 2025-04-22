@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Datatables;
-use App\Printer;
+use App\Models\Printer;
 
 class PrinterController extends Controller
 {
@@ -19,8 +19,16 @@ class PrinterController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $printer = Printer::where('business_id', $business_id)
-                        ->select(['name', 'connection_type',
-                            'capability_profile', 'char_per_line', 'ip_address', 'port', 'path', 'id']);
+                ->select([
+                    'name',
+                    'connection_type',
+                    'capability_profile',
+                    'char_per_line',
+                    'ip_address',
+                    'port',
+                    'path',
+                    'id'
+                ]);
 
             return Datatables::of($printer)
                 ->editColumn('capability_profile', function ($row) {
@@ -74,8 +82,7 @@ class PrinterController extends Controller
             $input = $request->only(['name', 'connection_type', 'capability_profile', 'ip_address', 'port', 'path', 'char_per_line']);
 
             $input['business_id'] = $business_id;
-            $input['created_by'] = $request->session()->get('user.id');
-            ;
+            $input['created_by'] = $request->session()->get('user.id');;
 
             if ($input['connection_type'] == 'network') {
                 $input['path'] = '';
@@ -87,15 +94,17 @@ class PrinterController extends Controller
             $printer = new Printer;
             $printer->fill($input)->save();
 
-            $output = ['success' => 1,
-                            'msg' => __('printer.added_success')
-                        ];
+            $output = [
+                'success' => 1,
+                'msg' => __('printer.added_success')
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return redirect('printers')->with('status', $output);
@@ -154,15 +163,17 @@ class PrinterController extends Controller
 
             $printer->fill($input)->save();
 
-            $output = ['success' => true,
-                        'msg' => __("printer.updated_success")
-                        ];
+            $output = [
+                'success' => true,
+                'msg' => __("printer.updated_success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-        
-            $output = ['success' => false,
-                        'msg' => __("messages.something_went_wrong")
-                    ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return redirect('printers')->with('status', $output);
@@ -183,15 +194,17 @@ class PrinterController extends Controller
                 $printer = Printer::where('business_id', $business_id)->findOrFail($id);
                 $printer->delete();
 
-                $output = ['success' => true,
-                            'msg' => __("printer.deleted_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("printer.deleted_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
