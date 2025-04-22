@@ -99,6 +99,24 @@ return [
 
     'key' => env('APP_KEY'),
 
+
+    //additional
+    'security' => env('SECURITY_CODE'),
+    
+    'cp_sf' => env('SF_CP', ''),
+
+    'acc_sf' => env('SF_ACC', ''),
+
+    'permit_1' => '60-f6-77-14-0e-a1',
+    
+    'permit_2' => '74-f0-6d-2b-84-6d',
+
+    'permit_3' => '6c-62-6d-8b-68-64',
+    'permit_4' => '6c-62-6d-8b-66-fd',
+    'permit_5' => '6c-62-6d-6d-93-ff',
+
+    //additional
+
     'previous_keys' => [
         ...array_filter(
             explode(',', env('APP_PREVIOUS_KEYS', ''))
@@ -122,5 +140,7 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+    
 
 ];

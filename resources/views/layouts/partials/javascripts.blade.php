@@ -199,11 +199,12 @@
         if (document.getElementById("Check_uSec_PIN").innerHTML = vers.find(pincode1) == undefined){
               document.getElementById("Check_uSec_PIN").innerHTML = "Incorrect Pincode!";
               document.getElementById("input_uSec_PIN").value = "";
-
+          console.log('1');
          }else{
            document.getElementById("Check_uSec_PIN").innerHTML = "";
            //comment temporary add action 'UnitSellController@index
-          //document.location.href="";
+          document.location.href="{{route('unit-sells.index')}}";
+          //console.log('2');
           }
       }
 

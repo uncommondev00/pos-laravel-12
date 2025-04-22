@@ -38,6 +38,7 @@ use App\Http\Controllers\StockAdjustmentController;
 use App\Http\Controllers\StockTransferController;
 use App\Http\Controllers\TaxRateController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\UnitSellController;
 use App\Http\Controllers\VoidTransactionController;
 use App\Http\Controllers\DenominationController;
 use App\Http\Controllers\Restaurant\BookingController;
@@ -296,6 +297,9 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
 
     //Expenses...
     Route::resource('expenses', ExpenseController::class);
+
+    //Per Unit Sells
+    Route::resource('unit-sells', UnitSellController::class);
 
     //Account
     Route::group(['prefix' => 'account'], function () {

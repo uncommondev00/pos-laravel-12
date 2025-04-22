@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Transaction;
-
 use Illuminate\Http\Request;
-
-use App\BusinessLocation;
-use App\PurchaseLine;
-
+use App\Models\Transaction;
+use App\Models\BusinessLocation;
+use App\Models\PurchaseLine;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use App\Utils\ModuleUtil;
-
-use Datatables;
-use DB;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class StockAdjustmentController extends Controller
 {

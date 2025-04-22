@@ -209,7 +209,7 @@
 
         @if(auth()->user()->can('sell.view') || auth()->user()->can('sell.create') || auth()->user()->can('direct_sell.access') )
           
-          <li class="treeview {{  in_array( $request->segment(1), ['sells', 'unit_sells', 'voids', 'pos', 'sell-return', 'ecommerce', 'discount']) ? 'active active-sub' : '' }}" id="tour_step7">
+          <li class="treeview {{  in_array( $request->segment(1), ['sells', 'unit-sells', 'voids', 'pos', 'sell-return', 'ecommerce', 'discount']) ? 'active active-sub' : '' }}" id="tour_step7">
             <a  href="#" id="tour_step7_menu"><i class="fa fa-arrow-circle-up"></i> <span>@lang('sale.sale')</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
@@ -253,7 +253,7 @@
               @endif
 
               @can('sell.view')
-                <li class="{{ $request->segment(1) == 'unit_sells' && $request->segment(2) == null ? 'active' : '' }}" id="veri"><a href="#"><i class="fa fa-list"></i>Per Unit Sales</a></li>
+                <li class="{{ $request->segment(1) == 'unit-sells' && $request->segment(2) == null ? 'active' : '' }}" id="veri"><a href="#"><i class="fa fa-list"></i>Per Unit Sales</a></li>
               @endcan
               
               @can('sell.view')

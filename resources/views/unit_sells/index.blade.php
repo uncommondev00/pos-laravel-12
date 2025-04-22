@@ -3,77 +3,7 @@
 
 @section('content')
 
-<!-- Content Header (Page header) -->
-<section class="content-header no-print">
-    <h1>@lang( 'Per Unit Sales')
-        <small></small>
-    </h1>
-</section>
-
-
-<!-- Main content -->
-<section class="content no-print">
-    @component('components.filters', ['title' => __('report.filters')])
-        @include('sell.partials.sell_list_filters')
-        @if($is_woocommerce)
-            <div class="col-md-4">
-                <div class="form-group">
-                    <div class="checkbox">
-                        <label>
-                          {!! Form::checkbox('only_woocommerce_sells', 1, false, 
-                          [ 'class' => 'input-icheck', 'id' => 'synced_from_woocommerce']); !!} {{ __('lang_v1.synced_from_woocommerce') }}
-                        </label>
-                    </div>
-                </div>
-            </div>
-        @endif
-    @endcomponent
-    @component('components.widget', ['class' => 'box-primary', 'title' => __( 'Per Unit Sales')])
-        @can('sell.view')
-            <div class="table-responsive">
-                
-                <table class="table table-bordered table-striped ajax_view" id="sell_table">
-                    <thead>
-                        <tr>
-                            <th>@lang('messages.date')</th>
-                            <th>@lang('sale.invoice_no')</th>
-                            <th>@lang('sale.customer_name')</th>
-                            <th>@lang('sale.location')</th>
-                            <th>@lang('sale.payment_status')</th>
-                            <th>@lang('sale.total_amount')</th>
-                            <th>@lang('sale.total_paid')</th>
-                            <th>@lang('purchase.payment_due')</th>
-                            <th>Vatable</th>
-                            <th>Vat@12%</th>
-                            <th>Vat Exempt</th>
-                            <th>Vat Zero Rated</th>
-                             <th>MAC Address</th>
-                             <th>IP Address</th>
-                            
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr class="bg-gray font-17 footer-total text-center">
-                            <td colspan="4"><strong>@lang('sale.total'):</strong></td>
-                            <td id="footer_payment_status_count"></td>
-                            <td><span class="display_currency" id="footer_sale_total" data-currency_symbol ="true"></span></td>
-                            <td><span class="display_currency" id="footer_total_paid" data-currency_symbol ="true"></span></td>
-
-                            <td class="text-left"><small>@lang('lang_v1.sell_due') - <span class="display_currency" id="footer_total_remaining" data-currency_symbol ="true"></span><br>@lang('lang_v1.sell_return_due') - <span class="display_currency" id="footer_total_sell_return_due" data-currency_symbol ="true"></span></small></td>
-                            <td><span class="display_currency" id="footer_vatable" data-currency_symbol ="true"></span></td>
-                            <td><span class="display_currency" id="footer_vat" data-currency_symbol ="true"></span></td>
-                            <td><span class="display_currency" id="footer_vat_exempt" data-currency_symbol ="true"></span></td>
-                            <td><span class="display_currency" id="footer_vzr" data-currency_symbol ="true"></span></td>
-                            <td></td>
-                            <td></td>
-                            
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        @endcan
-    @endcomponent
-</section>
+<livewire:unit-sell-table />
 <!-- /.content -->
 <div class="modal fade payment_modal" tabindex="-1" role="dialog" 
     aria-labelledby="gridSystemModalLabel">
@@ -90,6 +20,7 @@
 @stop
 
 @section('javascript')
+@livewireScripts
 <script type="text/javascript">
 $(document).ready( function(){
     //Date range as a button

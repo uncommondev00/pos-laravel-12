@@ -2,7 +2,7 @@
   <div class="col-xs-12">
     <h2 class="page-header">
       @lang('lang_v1.stock_transfers') (<b>@lang('purchase.ref_no'):</b> #{{ $sell_transfer->ref_no }})
-      <small class="pull-right"><b>@lang('messages.date'):</b> {{ @format_date($sell_transfer->transaction_date) }}</small>
+      <small class="pull-right"><b>@lang('messages.date'):</b> @format_date($sell_transfer->transaction_date)</small>
     </h2>
   </div>
 </div>
@@ -61,7 +61,7 @@
 
   <div class="col-sm-4 invoice-col">
     <b>@lang('purchase.ref_no'):</b> #{{ $sell_transfer->ref_no }}<br/>
-    <b>@lang('messages.date'):</b> {{ @format_date($sell_transfer->transaction_date) }}<br/>
+    <b>@lang('messages.date'):</b> @format_date($sell_transfer->transaction_date)<br/>
   </div>
 </div>
 
@@ -96,7 +96,7 @@
                   {{$sell_lines->lot_details->lot_number}}
                 @endif
                 @if(!empty($sell_lines->lot_details->exp_date))
-                  - {{@format_date($sell_lines->lot_details->exp_date)}}
+                  - @format_date($sell_lines->lot_details->exp_date)
                 @endif
                @endif
             </td>

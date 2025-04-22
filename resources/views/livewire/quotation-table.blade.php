@@ -1,8 +1,9 @@
 <div>
-    {{-- The whole world belongs to you. --}}
+    {{-- Success is as dangerous as failure. --}}
     <!-- Content Header (Page header) -->
 <section class="content-header no-print">
-    <h1>@lang('sale.drafts')
+    <h1>@lang('lang_v1.list_quotations')
+        <small></small>
     </h1>
 </section>
 
@@ -52,18 +53,18 @@
                             <td>{{ $sale->contact_name }}</td>
                             <td>{{ $sale->business_location }}</td>
                             <td>
-                                        <a href="#" data-href="{{ route('sells.show', [$sale->id]) }}" class="btn btn-xs btn-success btn-modal" data-container=".view_modal"><i class="fa fa-eye"></i> @lang('messages.view')</a>
+                                <a href="#" data-href="{{ route('sells.show', [$sale->id]) }}" class="btn btn-xs btn-success btn-modal" data-container=".view_modal"><i class="fa fa-eye"></i> @lang('messages.view')</a>
 
-                                        @if($sale->is_direct_sale == 1)
-                                            <a target="_blank" href="{{route('sells.edit', [$sale->id])}}" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i>  @lang("messages.edit")</a>
-                                        @else
-                                        <a target="_blank" href="{{route('pos.edit', [$sale->id])}}" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i>  @lang("messages.edit")</a>
-                                        @endif
+                                @if($sale->is_direct_sale == 1)
+                                    <a target="_blank" href="{{route('sells.edit', [$sale->id])}}" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i>  @lang("messages.edit")</a>
+                                @else
+                                <a target="_blank" href="{{route('pos.edit', [$sale->id])}}" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i>  @lang("messages.edit")</a>
+                                @endif
 
-                                        &nbsp; 
-                                        <a href="#" class="print-invoice btn btn-xs btn-info" data-href="{{route('pos.printInvoice', [$sale->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a>
+                                &nbsp; 
+                                <a href="#" class="print-invoice btn btn-xs btn-info" data-href="{{route('pos.printInvoice', [$sale->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a>
 
-                                        <a href="{{ route('sells.destroy', [$sale->id]) }}" class="btn btn-xs btn-danger delete-sale"><i class="fa fa-trash"></i> @lang('messages.delete')</a>
+                                <a href="{{ route('sells.destroy', [$sale->id]) }}" class="btn btn-xs btn-danger delete-sale"><i class="fa fa-trash"></i> @lang('messages.delete')</a>
                                     
                             </td>
                         </tr>

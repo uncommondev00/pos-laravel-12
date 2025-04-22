@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\BusinessLocation;
-use App\Transaction;
-use App\TransactionSellLinesPurchaseLines;
-use App\PurchaseLine;
+use App\Models\BusinessLocation;
+use App\Models\Transaction;
+use App\Models\TransactionSellLinesPurchaseLines;
+use App\Models\PurchaseLine;
 
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;

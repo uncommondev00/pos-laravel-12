@@ -4,17 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\TaxRate;
-use App\Transaction;
-use App\BusinessLocation;
-use App\TransactionSellLine;
-use App\User;
-use App\CustomerGroup;
-use App\SellingPriceGroup;
-use App\Contact;
-use App\VoidTransaction;
+use App\Models\TaxRate;
+use App\Models\Transaction;
+use App\Models\BusinessLocation;
+use App\Models\TransactionSellLine;
+use App\Models\User;
+use App\Models\CustomerGroup;
+use App\Models\SellingPriceGroup;
+use App\Models\Contact;
+use App\Models\VoidTransaction;
 use Yajra\DataTables\Facades\DataTables;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 use App\Utils\ContactUtil;
 use App\Utils\BusinessUtil;
@@ -32,7 +32,8 @@ class VoidTransactionController extends Controller
     protected $businessUtil;
     protected $transactionUtil;
     protected $productUtil;
-
+    protected $moduleUtil;
+    protected $dummyPaymentLine;
 
     /**
      * Constructor
