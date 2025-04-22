@@ -17,49 +17,49 @@
 <!-- Main content -->
 <section class="content">
     @component('components.widget', ['class' => 'box-primary', 'title' => __('barcode.all_your_barcode')])
-        @slot('tool')
-            <div class="box-tools">
-                <a class="btn btn-block btn-primary" href="{{action('BarcodeController@create')}}">
-                <i class="fa fa-plus"></i> @lang('barcode.add_new_setting')</a>
-            </div>
-        @endslot
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped" id="barcode_table">
-                <thead>
-                    <tr>
-                        <th>@lang('barcode.setting_name')</th>
-                        <th>@lang('barcode.setting_description')</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
+    @slot('tool')
+    <div class="box-tools">
+        <a class="btn btn-block btn-primary" href="{{route('barcodes.create')}}">
+            <i class="fa fa-plus"></i> @lang('barcode.add_new_setting')</a>
+    </div>
+    @endslot
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped" id="barcode_table">
+            <thead>
+                <tr>
+                    <th>@lang('barcode.setting_name')</th>
+                    <th>@lang('barcode.setting_description')</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
     @endcomponent
 </section>
 <!-- /.content -->
 @stop
 @section('javascript')
 <script type="text/javascript">
-    $(document).ready( function(){
+    $(document).ready(function() {
         var barcode_table = $('#barcode_table').DataTable({
             processing: true,
             serverSide: true,
-            buttons:[],
+            buttons: [],
             ajax: '/barcodes',
             bPaginate: false,
-            columnDefs: [ {
+            columnDefs: [{
                 "targets": 2,
                 "orderable": false,
                 "searchable": false
-            } ]
+            }]
         });
-        $(document).on('click', 'button.delete_barcode_button', function(){
+        $(document).on('click', 'button.delete_barcode_button', function() {
             swal({
-              title: LANG.sure,
-              text: LANG.confirm_delete_barcode,
-              icon: "warning",
-              buttons: true,
-              dangerMode: true,
+                title: LANG.sure,
+                text: LANG.confirm_delete_barcode,
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
             }).then((willDelete) => {
                 if (willDelete) {
                     var href = $(this).data('href');
@@ -70,8 +70,8 @@
                         url: href,
                         dataType: "json",
                         data: data,
-                        success: function(result){
-                            if(result.success === true){
+                        success: function(result) {
+                            if (result.success === true) {
                                 toastr.success(result.msg);
                                 barcode_table.ajax.reload();
                             } else {
@@ -82,7 +82,7 @@
                 }
             });
         });
-        $(document).on('click', 'button.set_default', function(){
+        $(document).on('click', 'button.set_default', function() {
             var href = $(this).data('href');
             var data = $(this).serialize();
 
@@ -91,8 +91,8 @@
                 url: href,
                 dataType: "json",
                 data: data,
-                success: function(result){
-                    if(result.success === true){
+                success: function(result) {
+                    if (result.success === true) {
                         toastr.success(result.msg);
                         barcode_table.ajax.reload();
                     } else {

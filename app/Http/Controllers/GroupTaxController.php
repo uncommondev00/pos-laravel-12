@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\TaxRate;
+use App\Models\TaxRate;
 use App\GroupSubTax;
 use Datatables;
 
@@ -21,8 +21,8 @@ class GroupTaxController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $tax_rates = TaxRate::where('business_id', $business_id)
-                        ->where('is_tax_group', '1')
-                        ->with(['sub_taxes']);
+                ->where('is_tax_group', '1')
+                ->with(['sub_taxes']);
 
             return Datatables::of($tax_rates)
                 ->addColumn(
@@ -54,7 +54,7 @@ class GroupTaxController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $taxes = TaxRate::where('business_id', $business_id)->where('is_tax_group', '0')->pluck('name', 'id');
         return view('tax_group.create')
-                ->with(compact('taxes'));
+            ->with(compact('taxes'));
     }
 
     /**
@@ -74,7 +74,7 @@ class GroupTaxController extends Controller
             $sub_taxes = TaxRate::whereIn('id', $sub_tax_ids)->get();
             $amount = 0;
             foreach ($sub_taxes as $sub_tax) {
-                $amount += $sub_tax->amount ;
+                $amount += $sub_tax->amount;
             }
             $input['amount'] = $amount;
             $input['is_tax_group'] = 1;
@@ -82,15 +82,17 @@ class GroupTaxController extends Controller
             $tax_rate = TaxRate::create($input);
             $tax_rate->sub_taxes()->sync($sub_tax_ids);
 
-            $output = ['success' => true,
-                            'msg' => __("tax_rate.tax_group_added_success")
-                        ];
+            $output = [
+                'success' => true,
+                'msg' => __("tax_rate.tax_group_added_success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -147,24 +149,26 @@ class GroupTaxController extends Controller
                 $sub_taxes = TaxRate::whereIn('id', $sub_tax_ids)->get();
                 $amount = 0;
                 foreach ($sub_taxes as $sub_tax) {
-                    $amount += $sub_tax->amount ;
+                    $amount += $sub_tax->amount;
                 }
-           
+
                 $tax_rate = TaxRate::where('business_id', $business_id)->findOrFail($id);
                 $tax_rate->name = $request->input('name');
                 $tax_rate->amount = $amount;
                 $tax_rate->save();
                 $tax_rate->sub_taxes()->sync($sub_tax_ids);
 
-                $output = ['success' => true,
-                            'msg' => __("tax_rate.tax_group_updated_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("tax_rate.tax_group_updated_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -186,15 +190,17 @@ class GroupTaxController extends Controller
                 $tax_rate = TaxRate::where('business_id', $business_id)->findOrFail($id);
                 $tax_rate->delete();
 
-                $output = ['success' => true,
-                            'msg' => __("tax_rate.deleted_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("tax_rate.deleted_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;

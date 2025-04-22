@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\InvoiceScheme;
-use App\InvoiceLayout;
+use App\Models\InvoiceScheme;
+use App\Models\InvoiceLayout;
 use Illuminate\Http\Request;
 use Datatables;
 
@@ -23,7 +23,7 @@ class InvoiceSchemeController extends Controller
         $business_id = request()->session()->get('user.business_id');
         if (request()->ajax()) {
             $schemes = InvoiceScheme::where('business_id', $business_id)
-                            ->select(['id', 'name', 'scheme_type', 'prefix', 'start_number', 'invoice_count', 'total_digits', 'is_default']);
+                ->select(['id', 'name', 'scheme_type', 'prefix', 'start_number', 'invoice_count', 'total_digits', 'is_default']);
 
             return Datatables::of($schemes)
                 ->addColumn(
@@ -42,29 +42,29 @@ class InvoiceSchemeController extends Controller
                     if ($row->scheme_type == 'year') {
                         return date('Y') . '-';
                     } else {
-                        return $row->prefix ;
+                        return $row->prefix;
                     }
                 })
                 ->editColumn('name', function ($row) {
                     if ($row->is_default == 1) {
-                        return $row->name . ' &nbsp; <span class="label label-success">' . __("barcode.default") .'</span>' ;
+                        return $row->name . ' &nbsp; <span class="label label-success">' . __("barcode.default") . '</span>';
                     } else {
-                        return $row->name ;
+                        return $row->name;
                     }
                 })
                 ->removeColumn('id')
                 ->removeColumn('is_default')
                 ->removeColumn('scheme_type')
-                ->rawColumns([5,0])
+                ->rawColumns([5, 0])
                 ->make(false);
         }
 
         $invoice_layouts = InvoiceLayout::where('business_id', $business_id)
-                                        ->with(['locations'])
-                                        ->get();
+            ->with(['locations'])
+            ->get();
 
         return view('invoice_scheme.index')
-                    ->with(compact('invoice_layouts'));
+            ->with(compact('invoice_layouts'));
     }
 
     /**
@@ -101,20 +101,22 @@ class InvoiceSchemeController extends Controller
             if (!empty($request->input('is_default'))) {
                 //get_default
                 $default = InvoiceScheme::where('business_id', $business_id)
-                                ->where('is_default', 1)
-                                ->update(['is_default' => 0 ]);
+                    ->where('is_default', 1)
+                    ->update(['is_default' => 0]);
                 $input['is_default'] = 1;
             }
             InvoiceScheme::create($input);
-            $output = ['success' => true,
-                            'msg' => __("invoice.added_success")
-                        ];
+            $output = [
+                'success' => true,
+                'msg' => __("invoice.added_success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -172,15 +174,17 @@ class InvoiceSchemeController extends Controller
 
             $invoice = InvoiceScheme::where('id', $id)->update($input);
 
-            $output = ['success' => true,
-                            'msg' => __('invoice.updated_success')
-                        ];
+            $output = [
+                'success' => true,
+                'msg' => __('invoice.updated_success')
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -203,20 +207,23 @@ class InvoiceSchemeController extends Controller
                 $invoice = InvoiceScheme::find($id);
                 if ($invoice->is_default != 1) {
                     $invoice->delete();
-                    $output = ['success' => true,
-                                'msg' => __("invoice.deleted_success")
-                                ];
+                    $output = [
+                        'success' => true,
+                        'msg' => __("invoice.deleted_success")
+                    ];
                 } else {
-                    $output = ['success' => false,
-                                'msg' => __("messages.something_went_wrong")
-                                ];
+                    $output = [
+                        'success' => false,
+                        'msg' => __("messages.something_went_wrong")
+                    ];
                 }
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -233,28 +240,30 @@ class InvoiceSchemeController extends Controller
         if (!auth()->user()->can('invoice_settings.access')) {
             abort(403, 'Unauthorized action.');
         }
-        
+
         if (request()->ajax()) {
             try {
                 //get_default
                 $business_id = request()->session()->get('user.business_id');
                 $default = InvoiceScheme::where('business_id', $business_id)
-                                ->where('is_default', 1)
-                                 ->update(['is_default' => 0 ]);
-                                 
+                    ->where('is_default', 1)
+                    ->update(['is_default' => 0]);
+
                 $invoice = InvoiceScheme::find($id);
                 $invoice->is_default = 1;
                 $invoice->save();
 
-                $output = ['success' => true,
-                            'msg' => __("barcode.default_set_success")
-                        ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("barcode.default_set_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
             return $output;
         }
