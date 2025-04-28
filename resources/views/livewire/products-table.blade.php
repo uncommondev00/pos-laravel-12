@@ -17,7 +17,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="type">{{ __('product.product_type') }}:</label>
-                            <select name="type" id="product_list_filter_type" class="form-control select2" style="width:100%">
+                            <select wire:model="type" name="type" class="form-control select2" style="width:100%">
                                 <option value="">{{ __('lang_v1.all') }}</option>
                                 <option value="single">Single</option>
                                 <option value="variable">Variable</option>
@@ -27,7 +27,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="category_id">{{ __('product.category') }}:</label>
-                            <select name="category_id" id="product_list_filter_category_id" class="form-control select2" style="width:100%">
+                            <select wire:model.live="category_id" name="category_id" id="product_list_filter_category_id" class="form-control select2" style="width:100%">
                                 <option value="">{{ __('lang_v1.all') }}</option>
                                 @foreach($categories as $id => $name)
                                     <option value="{{ $id }}">{{ $name }}</option>
@@ -38,7 +38,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="unit_id">{{ __('product.unit') }}:</label>
-                            <select name="unit_id" id="product_list_filter_unit_id" class="form-control select2" style="width:100%">
+                            <select wire:model.live="unit_id" name="unit_id" id="product_list_filter_unit_id" class="form-control select2" style="width:100%">
                                 <option value="">{{ __('lang_v1.all') }}</option>
                                 @foreach($units as $id => $name)
                                     <option value="{{ $id }}">{{ $name }}</option>
@@ -49,7 +49,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="tax_id">{{ __('product.tax') }}:</label>
-                            <select name="tax_id" id="product_list_filter_tax_id" class="form-control select2" style="width:100%">
+                            <select wire:model.live="tax_id" name="tax_id" id="product_list_filter_tax_id" class="form-control select2" style="width:100%">
                                 <option value="">{{ __('lang_v1.all') }}</option>
                                 @foreach($taxes as $id => $name)
                                     <option value="{{ $id }}">{{ $name }}</option>
@@ -60,7 +60,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="brand_id">{{ __('product.brand') }}:</label>
-                            <select name="brand_id" id="product_list_filter_brand_id" class="form-control select2" style="width:100%">
+                            <select wire:model.live="brand_id" name="brand_id" id="product_list_filter_brand_id" class="form-control select2" style="width:100%">
                                 <option value="">{{ __('lang_v1.all') }}</option>
                                 @foreach($brands as $id => $name)
                                     <option value="{{ $id }}">{{ $name }}</option>
@@ -87,7 +87,46 @@
             <div class="box-body">
                 @can('product.view')
                     <div class="table-responsive">
-                        <input type="text" wire:model.live="search" class="form-control mb-3" placeholder="Search products...">
+                        <div class="row mb-3">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_length">
+                                    <label>
+                                        Show 
+                                        <select wire:model.live="perPage" class="form-control form-control-sm" style="width: auto; display: inline-block;">
+                                            @foreach($perPageOptions as $option)
+                                                @if($option === -1)
+                                                    <option value="{{ $option }}">All</option>
+                                                @else
+                                                    <option value="{{ $option }}">{{ $option }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                        entries
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <div class="dataTables_filter">
+                                    <label>
+                                        Search:
+                                        <div class="input-group" style="display: inline-flex; width: auto;">
+                                            <input type="search" 
+                                                wire:model.live.debounce.500ms="search" 
+                                                class="form-control form-control-sm" 
+                                                placeholder="Type to search..."
+                                                style="width: 200px;">
+                                            @if($search)
+                                                <div class="input-group-append">
+                                                    <button wire:click="$set('search', '')" class="btn btn-sm btn-default">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                         <table class="table table-bordered table-striped ajax_view table-text-center" id="product_table">
                             <thead>
                                 <tr>
@@ -249,6 +288,46 @@
                                 </tr>
                             </tfoot>
                         </table>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-5">
+                            <div class="dataTables_info" role="status" aria-live="polite">
+                                Showing {{ $products->firstItem() ?? 0 }} to {{ $products->lastItem() ?? 0 }} of {{ $products->total() }} entries
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-7">
+                            <div class="dataTables_paginate paging_simple_numbers">
+                                <ul class="pagination" style="margin: 2px 0; white-space: nowrap;">
+                                    {{-- Previous Page Link --}}
+                                    <li class="paginate_button page-item {{ $products->onFirstPage() ? 'disabled' : '' }}">
+                                        <a class="page-link" wire:click.prevent="previousPage" href="#" tabindex="-1">Previous</a>
+                                    </li>
+    
+                                    {{-- Pagination Elements --}}
+                                    @for ($i = 1; $i <= $products->lastPage(); $i++)
+                                        @if ($i == $products->currentPage())
+                                            <li class="paginate_button page-item active">
+                                                <a class="page-link" href="#">{{ $i }}</a>
+                                            </li>
+                                        @elseif ($i == 1 || $i == $products->lastPage() || abs($products->currentPage() - $i) <= 2)
+                                            <li class="paginate_button page-item">
+                                                <a class="page-link" wire:click.prevent="gotoPage({{ $i }})" href="#">{{ $i }}</a>
+                                            </li>
+                                        @elseif (abs($products->currentPage() - $i) == 3)
+                                            <li class="paginate_button page-item disabled">
+                                                <a class="page-link" href="#">...</a>
+                                            </li>
+                                        @endif
+                                    @endfor
+    
+                                    {{-- Next Page Link --}}
+                                    <li class="paginate_button page-item {{ !$products->hasMorePages() ? 'disabled' : '' }}">
+                                        <a class="page-link" wire:click.prevent="nextPage" href="#">Next</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 @endcan
             </div>

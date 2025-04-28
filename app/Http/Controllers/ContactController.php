@@ -64,8 +64,15 @@ class ContactController extends Controller
             }
         }
 
+        // $contact = Contact::all()->withRelationshipAutoloading()->where('type', $type);
+        // $contacts = $contact->paginate(10);
+
+
         return view('contact.index')
             ->with(compact('type'));
+
+        // return view('contact._index')
+        //     ->with(compact('contacts', 'type'));
     }
 
     /**
@@ -78,6 +85,8 @@ class ContactController extends Controller
         if (!auth()->user()->can('supplier.view')) {
             abort(403, 'Unauthorized action.');
         }
+
+        
 
         $business_id = request()->session()->get('user.business_id');
 

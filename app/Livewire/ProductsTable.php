@@ -17,26 +17,69 @@ class ProductsTable extends Component
     use WithPagination;
 
     public $search = '';
-    public $type;
-    public $category_id;
-    public $brand_id;
-    public $unit_id;
-    public $tax_id;
+    public $type = '';
+    public $category_id = '';
+    public $unit_id = '';
+    public $tax_id = '';
+    public $brand_id = '';
     public $perPage = 10;
+    public $perPageOptions = [10, 25, 50, 100, -1];
+    public $sortField = 'name';
+    public $sortDirection = 'asc';
     
+    protected $paginationTheme = 'bootstrap';
+
     protected $queryString = [
-        'search' => ['except' => ''],
         'type' => ['except' => ''],
         'category_id' => ['except' => ''],
-        'brand_id' => ['except' => ''],
         'unit_id' => ['except' => ''],
-        'tax_id' => ['except' => '']
+        'tax_id' => ['except' => ''],
+        'brand_id' => ['except' => ''],
+        'search' => ['except' => ''],
+        'sortField' => ['except' => 'name'],
+        'sortDirection' => ['except' => 'asc'],
+        'perPage' => ['except' => 10],
     ];
 
     public function mount()
     {
         if (!auth()->user()->can('product.view') && !auth()->user()->can('product.create')) {
             abort(403, 'Unauthorized action.');
+        }
+
+        $this->search = request()->query('search', $this->search);
+        $this->type = request()->query('type', $this->type);
+        $this->category_id = request()->query('category_id', $this->category_id);
+        $this->unit_id = request()->query('unit_id', $this->unit_id);
+        $this->tax_id = request()->query('tax_id', $this->tax_id);
+        $this->brand_id = request()->query('brand_id', $this->brand_id);
+        $this->sortField = request()->query('sortField', $this->sortField);
+        $this->sortDirection = request()->query('sortDirection', $this->sortDirection);
+        $this->perPage = request()->query('perPage', $this->perPage);
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function updatePerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
         }
     }
 
@@ -85,8 +128,8 @@ class ProductsTable extends Component
                 $join->on('products.id', '=', 'stocks.product_id');
             })
             ->select('products.*', 'stocks.total_stock')
-            ->orderBy('products.name')
-            ->paginate($this->perPage);
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate($this->perPage == -1 ? 9999 : $this->perPage);
 
         return view('livewire.products-table', [
             'products' => $products,
@@ -101,8 +144,4 @@ class ProductsTable extends Component
         ]);
     }
 
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
 }

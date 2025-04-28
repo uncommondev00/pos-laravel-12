@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Database\Eloquent\Model;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -26,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        //Model::automaticallyEagerLoadRelationships();
+        
         if (request()->has('lang')) {
             App::setLocale(request()->get('lang'));
         }

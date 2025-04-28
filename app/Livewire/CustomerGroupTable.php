@@ -11,41 +11,54 @@ class CustomerGroupTable extends Component
 {
     use WithPagination;
 
-    public $search = ''; // Search input
-    public $perPage = 5; // Items per page
-    public $perPageOptions = [5, 10, 25, 50, 100]; // Dropdown options
-    public $sortColumn = 'name'; // Default sort column
-    public $sortDirection = 'asc'; // Default sort direction
+    public $search = '';
+    public $perPage = 10;
+    public $perPageOptions = [10, 25, 50, 100, -1];
+    public $sortField = 'name';
+    public $sortDirection = 'asc';
 
     protected $paginationTheme = 'bootstrap';
 
     protected $queryString = [
-        'search',
-        'perPage'
+        'search' => ['except' => ''],
+        'sortField' => ['except' => 'name'],
+        'sortDirection' => ['except' => 'asc'],
+        'perPage' => ['except' => 10],
     ];
 
-    public function updatingSearch(){
+    public function mount()
+    {
+        $this->search = request()->query('search', $this->search);
+        $this->sortField = request()->query('sortField', $this->sortField);
+        $this->sortDirection = request()->query('sortDirection', $this->sortDirection);
+        $this->perPage = request()->query('perPage', $this->perPage);
+    }
+
+    public function updatingSearch()
+    {
         $this->resetPage();
     }
 
-    public function updatingPerPage(){
+    public function updatingPerPage()
+    {
         $this->resetPage();
     }
 
     public function updatePerPage()
-     {
-         $this->resetPage();
-     }
-
-    public function sortBy($column)
     {
-        if ($this->sortColumn === $column) {
+        $this->resetPage();
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
-            $this->sortColumn = $column;
+            $this->sortField = $field;
             $this->sortDirection = 'asc';
         }
     }
+
     public function render()
     {
         if (!auth()->user()->can('customer.view')) {
@@ -55,7 +68,7 @@ class CustomerGroupTable extends Component
         $business_id = request()->session()->get('user.business_id');
 
         $customer_groups = CustomerGroup::where('business_id', $business_id)
-                            ->select(['name', 'amount', 'id']);
+            ->select(['name', 'amount', 'id']);
 
         $this->search = trim($this->search);
 
@@ -65,8 +78,8 @@ class CustomerGroupTable extends Component
             });
         }
 
-        $customer_groups = $customer_groups->orderBy($this->sortColumn, $this->sortDirection)
-            ->paginate($this->perPage);
+        $customer_groups = $customer_groups->orderBy($this->sortField, $this->sortDirection)
+        ->paginate($this->perPage == -1 ? 9999 : $this->perPage);
 
         return view('livewire.customer-group-table', ['customer_groups' => $customer_groups]);
     }
