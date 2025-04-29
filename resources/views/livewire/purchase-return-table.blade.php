@@ -24,26 +24,43 @@
                         </div>
                     </div>
                 </div>
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3 class="card-title">{{ __('Filters') }}</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <input type="text" 
-                                       wire:model.debounce.300ms="search" 
-                                       class="form-control" 
-                                       placeholder="{{ __('Search Reference or Supplier...') }}">
-                            </div>
-                            <div class="col-md-2">
-                                <select wire:model="perPage" class="form-control">
-                                    <option value="10">10 {{ __('per page') }}</option>
-                                    <option value="25">25 {{ __('per page') }}</option>
-                                    <option value="50">50 {{ __('per page') }}</option>
-                                    <option value="100">100 {{ __('per page') }}</option>
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="dataTables_length">
+                            <label>
+                                Show 
+                                <select wire:model.live="perPage" class="form-control form-control-sm" style="width: auto; display: inline-block;">
+                                    @foreach($perPageOptions as $option)
+                                        @if($option === -1)
+                                            <option value="{{ $option }}">All</option>
+                                        @else
+                                            <option value="{{ $option }}">{{ $option }}</option>
+                                        @endif
+                                    @endforeach
                                 </select>
-                            </div>
+                                entries
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <div class="dataTables_filter">
+                            <label>
+                                Search:
+                                <div class="input-group" style="display: inline-flex; width: auto;">
+                                    <input type="search" 
+                                        wire:model.live.debounce.500ms="search" 
+                                        class="form-control form-control-sm" 
+                                        placeholder="Type to search..."
+                                        style="width: 200px;">
+                                    @if($search)
+                                        <div class="input-group-append">
+                                            <button wire:click="$set('search', '')" class="btn btn-sm btn-default">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    @endif
+                                </div>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -68,7 +85,7 @@
                         <tbody>
                             @forelse($purchaseReturns as $return)
                                 <tr>
-                                    <td>{{ @format_date($return->transaction_date) }}</td>
+                                    <td>@format_date($return->transaction_date)</td>
                                     <td>{{ $return->ref_no }}</td>
                                     <td>
                                         <a href="#" 
@@ -101,13 +118,13 @@
                                         @can('purchase.view')
                                             <a data-href="{{ route('purchase-return.show', [$return->return_parent_id]) }}"
                                                class="btn btn-info btn-xs btn-modal" data-container=".view_modal">
-                                                <i class="fas fa-eye"></i> {{ __('View') }}
+                                                <i class="fa fa-eye"></i> {{ __('View') }}
                                             </a>
                                         @endcan
                                         @can('purchase.update')
                                             <a href="{{ route('purchase-return.add', [$return->return_parent_id]) }}"
                                                class="btn btn-primary btn-xs">
-                                                <i class="fas fa-edit"></i> {{ __('Edit') }}
+                                                <i class="fa fa-edit"></i> {{ __('Edit') }}
                                             </a>
                                         @endcan
                                     </td>
@@ -134,20 +151,43 @@
                     
                 </div>
 
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <div>
-                            {{ __('Showing') }} 
-                            {{ $purchaseReturns->firstItem() ?? 0 }} 
-                            {{ __('to') }} 
-                            {{ $purchaseReturns->lastItem() ?? 0 }} 
-                            {{ __('of') }} 
-                            {{ $purchaseReturns->total() }} 
-                            {{ __('entries') }}
+                <div class="row">
+                    <div class="col-sm-12 col-md-5">
+                        <div class="dataTables_info" role="status" aria-live="polite">
+                            Showing {{ $purchaseReturns->firstItem() ?? 0 }} to {{ $purchaseReturns->lastItem() ?? 0 }} of {{ $purchaseReturns->total() }} entries
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        {{ $purchaseReturns->links() }}
+                    <div class="col-sm-12 col-md-7">
+                        <div class="dataTables_paginate paging_simple_numbers">
+                            <ul class="pagination" style="margin: 2px 0; white-space: nowrap;">
+                                {{-- Previous Page Link --}}
+                                <li class="paginate_button page-item {{ $purchaseReturns->onFirstPage() ? 'disabled' : '' }}">
+                                    <a class="page-link" wire:click.prevent="previousPage" href="#" tabindex="-1">Previous</a>
+                                </li>
+    
+                                {{-- Pagination Elements --}}
+                                @for ($i = 1; $i <= $purchaseReturns->lastPage(); $i++)
+                                    @if ($i == $purchaseReturns->currentPage())
+                                        <li class="paginate_button page-item active">
+                                            <a class="page-link" href="#">{{ $i }}</a>
+                                        </li>
+                                    @elseif ($i == 1 || $i == $purchaseReturns->lastPage() || abs($purchaseReturns->currentPage() - $i) <= 2)
+                                        <li class="paginate_button page-item">
+                                            <a class="page-link" wire:click.prevent="gotoPage({{ $i }})" href="#">{{ $i }}</a>
+                                        </li>
+                                    @elseif (abs($purchaseReturns->currentPage() - $i) == 3)
+                                        <li class="paginate_button page-item disabled">
+                                            <a class="page-link" href="#">...</a>
+                                        </li>
+                                    @endif
+                                @endfor
+    
+                                {{-- Next Page Link --}}
+                                <li class="paginate_button page-item {{ !$purchaseReturns->hasMorePages() ? 'disabled' : '' }}">
+                                    <a class="page-link" wire:click.prevent="nextPage" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             @endcan

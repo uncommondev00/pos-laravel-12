@@ -26,7 +26,46 @@
         @endcan
         @can('category.view')
             <div class="table-responsive">
-                <input type="text" wire:model.live="search" class="form-control mb-3" placeholder="Search category...">
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="dataTables_length">
+                            <label>
+                                Show 
+                                <select wire:model.live="perPage" class="form-control form-control-sm" style="width: auto; display: inline-block;">
+                                    @foreach($perPageOptions as $option)
+                                        @if($option === -1)
+                                            <option value="{{ $option }}">All</option>
+                                        @else
+                                            <option value="{{ $option }}">{{ $option }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                entries
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <div class="dataTables_filter">
+                            <label>
+                                Search:
+                                <div class="input-group" style="display: inline-flex; width: auto;">
+                                    <input type="search" 
+                                        wire:model.live.debounce.500ms="search" 
+                                        class="form-control form-control-sm" 
+                                        placeholder="Type to search..."
+                                        style="width: 200px;">
+                                    @if($search)
+                                        <div class="input-group-append">
+                                            <button wire:click="$set('search', '')" class="btn btn-sm btn-default">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    @endif
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
                 <table class="table table-bordered table-striped" id="">
                     <thead>
                         <tr>
@@ -62,9 +101,44 @@
                         @endforeach
                     </tbody>
                 </table>
-                <div class="row">
-                    <div class="col-sm-12">
-                        {{ $categories->links() }}
+                
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-5">
+                    <div class="dataTables_info" role="status" aria-live="polite">
+                        Showing {{ $categories->firstItem() ?? 0 }} to {{ $categories->lastItem() ?? 0 }} of {{ $categories->total() }} entries
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-7">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination" style="margin: 2px 0; white-space: nowrap;">
+                            {{-- Previous Page Link --}}
+                            <li class="paginate_button page-item {{ $categories->onFirstPage() ? 'disabled' : '' }}">
+                                <a class="page-link" wire:click.prevent="previousPage" href="#" tabindex="-1">Previous</a>
+                            </li>
+    
+                            {{-- Pagination Elements --}}
+                            @for ($i = 1; $i <= $categories->lastPage(); $i++)
+                                @if ($i == $categories->currentPage())
+                                    <li class="paginate_button page-item active">
+                                        <a class="page-link" href="#">{{ $i }}</a>
+                                    </li>
+                                @elseif ($i == 1 || $i == $categories->lastPage() || abs($categories->currentPage() - $i) <= 2)
+                                    <li class="paginate_button page-item">
+                                        <a class="page-link" wire:click.prevent="gotoPage({{ $i }})" href="#">{{ $i }}</a>
+                                    </li>
+                                @elseif (abs($categories->currentPage() - $i) == 3)
+                                    <li class="paginate_button page-item disabled">
+                                        <a class="page-link" href="#">...</a>
+                                    </li>
+                                @endif
+                            @endfor
+    
+                            {{-- Next Page Link --}}
+                            <li class="paginate_button page-item {{ !$categories->hasMorePages() ? 'disabled' : '' }}">
+                                <a class="page-link" wire:click.prevent="nextPage" href="#">Next</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

@@ -16,39 +16,82 @@ class PurchaseTable extends Component
     use WithPagination;
 
     public $search = '';
-    public $supplier_id;
-    public $location_id;
-    public $payment_status;
-    public $status;
-    public $start_date;
-    public $end_date;
+    public $location_id = '';
+    public $supplier_id = '';
+    public $order_status = '';
+    public $payment_status = '';
+    public $start_date = '';
+    public $end_date = '';
     public $perPage = 10;
-
+    public $perPageOptions = [10, 25, 50, 100, -1];
+    public $sortField = 'ref_no';
+    public $sortDirection = 'asc';
+    
     protected $paginationTheme = 'bootstrap';
-
-    protected $queryString = [
-        'search' => ['except' => ''],
-        'page' => ['except' => 1],
-        'status' => ['except' => ''],
-        'payment_status' => ['except' => ''],
-    ];
-
-    protected $listeners = ['refreshTable' => '$refresh'];
 
     protected $productUtil;
 
-    public function mount(ProductUtil $productUtil)
+    protected $queryString = [
+        'location_id' => ['except' => ''],
+        'supplier_id' => ['except' => ''],
+        'payment_status' => ['except' => ''],
+        'start_date' => ['except' => ''],
+        'end_date' => ['except' => ''],
+        'search' => ['except' => ''],
+        'sortField' => ['except' => 'ref_no'],
+        'sortDirection' => ['except' => 'asc'],
+        'perPage' => ['except' => 10],
+    ];
+
+    public function boot(ProductUtil $productUtil)
     {
+        $this->productUtil = $productUtil;
+        
         if (!auth()->user()->can('purchase.view') && !auth()->user()->can('purchase.create')) {
             abort(403, 'Unauthorized action.');
         }
-        $this->productUtil = $productUtil;
+    }
+
+    public function mount()
+    {
+
+        $this->search = request()->query('search', $this->search);
+        $this->location_id = request()->query('location_id', $this->location_id);
+        $this->supplier_id = request()->query('supplier_id', $this->supplier_id);
+        $this->order_status = request()->query('order_status', $this->order_status);
+        $this->payment_status = request()->query('payment_status', $this->payment_status);
+        $this->start_date = request()->query('start_date', $this->start_date);
+        $this->end_date = request()->query('end_date', $this->end_date);
+        $this->sortField = request()->query('sortField', $this->sortField);
+        $this->sortDirection = request()->query('sortDirection', $this->sortDirection);
+        $this->perPage = request()->query('perPage', $this->perPage);
     }
 
     public function updatingSearch()
     {
         $this->resetPage();
     }
+
+    public function updatingPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function updatePerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
 
     private function getBaseQuery()
     {
@@ -124,15 +167,16 @@ class PurchaseTable extends Component
                 ->when($this->payment_status, function ($query) {
                     $query->where('payment_status', $this->payment_status);
                 })
-                ->when($this->status, function ($query) {
-                    $query->where('status', $this->status);
+                ->when($this->order_status, function ($query) {
+                    $query->where('status', $this->order_status);
                 })
                 ->when($this->start_date && $this->end_date, function ($query) {
                     $query->whereDate('transaction_date', '>=', $this->start_date)
                         ->whereDate('transaction_date', '<=', $this->end_date);
                 })
                 ->latest('transaction_date')
-                ->paginate($this->perPage);
+                ->orderBy($this->sortField, $this->sortDirection)
+                ->paginate($this->perPage == -1 ? 9999 : $this->perPage);
         });
         $business_locations = BusinessLocation::forDropdown($business_id);
         $suppliers = Contact::suppliersDropdown($business_id, false);
@@ -156,7 +200,7 @@ class PurchaseTable extends Component
             $this->supplier_id ?? 'null',
             $this->location_id ?? 'null',
             $this->payment_status ?? 'null',
-            $this->status ?? 'null',
+            $this->order_status ?? 'null',
             $this->start_date ?? 'null',
             $this->end_date ?? 'null',
             $this->page ?? 1,
@@ -252,8 +296,8 @@ class PurchaseTable extends Component
                 ->when($this->payment_status, function ($query) {
                     return $query->where('payment_status', $this->payment_status);
                 })
-                ->when($this->status, function ($query) {
-                    return $query->where('status', $this->status);
+                ->when($this->order_status, function ($query) {
+                    return $query->where('status', $this->order_status);
                 })
                 ->when($this->start_date && $this->end_date, function ($query) {
                     return $query->whereDate('transaction_date', '>=', $this->start_date)

@@ -35,6 +35,46 @@
             @endcan
             @can('direct_sell.access')
                 <div class="table-responsive">
+                    <div class="row mb-3">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="dataTables_length">
+                                <label>
+                                    Show 
+                                    <select wire:model.live="perPage" class="form-control form-control-sm" style="width: auto; display: inline-block;">
+                                        @foreach($perPageOptions as $option)
+                                            @if($option === -1)
+                                                <option value="{{ $option }}">All</option>
+                                            @else
+                                                <option value="{{ $option }}">{{ $option }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    entries
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <div class="dataTables_filter">
+                                <label>
+                                    Search:
+                                    <div class="input-group" style="display: inline-flex; width: auto;">
+                                        <input type="search" 
+                                            wire:model.live.debounce.500ms="search" 
+                                            class="form-control form-control-sm" 
+                                            placeholder="Type to search..."
+                                            style="width: 200px;">
+                                        @if($search)
+                                            <div class="input-group-append">
+                                                <button wire:click="$set('search', '')" class="btn btn-sm btn-default">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                     <table class="table table-bordered table-striped ajax_view" id="">
                         <thead>
                             <tr>
@@ -58,8 +98,8 @@
                                 <tr>
                                     <td>{{ $sale->transaction_date }}</td>
                                     <td>{{ $sale->invoice_no }}</td>
-                                    <td>{{ $sale->customer_name }}</td>
-                                    <td>{{ $sale->business_location }}</td>
+                                    <td>{{ $sale->contact->name ?? 'test' }}</td>
+                                    <td>{{ $sale->location->name ?? 'test' }}</td>
                                     <td>{{ ucfirst($sale->payment_status) }}</td>
                                     <td>{{ number_format($sale->final_total, 2) }}</td>
                                     <td>{{ number_format($sale->total_paid, 2) }}</td>
@@ -205,7 +245,46 @@
                             </tr>
                         </tfoot>
                     </table>
-                    {{ $sales->links() }}
+                   
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-5">
+                        <div class="dataTables_info" role="status" aria-live="polite">
+                            Showing {{ $sales->firstItem() ?? 0 }} to {{ $sales->lastItem() ?? 0 }} of {{ $sales->total() }} entries
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        <div class="dataTables_paginate paging_simple_numbers">
+                            <ul class="pagination" style="margin: 2px 0; white-space: nowrap;">
+                                {{-- Previous Page Link --}}
+                                <li class="paginate_button page-item {{ $sales->onFirstPage() ? 'disabled' : '' }}">
+                                    <a class="page-link" wire:click.prevent="previousPage" href="#" tabindex="-1">Previous</a>
+                                </li>
+        
+                                {{-- Pagination Elements --}}
+                                @for ($i = 1; $i <= $sales->lastPage(); $i++)
+                                    @if ($i == $sales->currentPage())
+                                        <li class="paginate_button page-item active">
+                                            <a class="page-link" href="#">{{ $i }}</a>
+                                        </li>
+                                    @elseif ($i == 1 || $i == $sales->lastPage() || abs($sales->currentPage() - $i) <= 2)
+                                        <li class="paginate_button page-item">
+                                            <a class="page-link" wire:click.prevent="gotoPage({{ $i }})" href="#">{{ $i }}</a>
+                                        </li>
+                                    @elseif (abs($sales->currentPage() - $i) == 3)
+                                        <li class="paginate_button page-item disabled">
+                                            <a class="page-link" href="#">...</a>
+                                        </li>
+                                    @endif
+                                @endfor
+        
+                                {{-- Next Page Link --}}
+                                <li class="paginate_button page-item {{ !$sales->hasMorePages() ? 'disabled' : '' }}">
+                                    <a class="page-link" wire:click.prevent="nextPage" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             @endcan
         @endcomponent

@@ -17,9 +17,8 @@
     <div class="col-md-3">
         <div class="form-group">
             <label for="purchase_list_filter_location_id">{{ __('purchase.business_location') }}:</label>
-            <select name="purchase_list_filter_location_id" 
-                    id="purchase_list_filter_location_id" 
-                    class="form-control select2" 
+            <select wire:model.live="location_id"
+                    class="form-control" 
                     style="width:100%">
                 <option value="">{{ __('lang_v1.all') }}</option>
                 @foreach($business_locations as $key => $location)
@@ -32,9 +31,8 @@
     <div class="col-md-3">
         <div class="form-group">
             <label for="purchase_list_filter_supplier_id">{{ __('purchase.supplier') }}:</label>
-            <select name="purchase_list_filter_supplier_id" 
-                    id="purchase_list_filter_supplier_id" 
-                    class="form-control select2" 
+            <select wire:model.live="supplier_id"
+                    class="form-control" 
                     style="width:100%">
                 <option value="">{{ __('lang_v1.all') }}</option>
                 @foreach($suppliers as $key => $supplier)
@@ -47,11 +45,11 @@
     <div class="col-md-3">
         <div class="form-group">
             <label for="purchase_list_filter_status">{{ __('purchase.purchase_status') }}:</label>
-            <select name="purchase_list_filter_status" 
-                    id="purchase_list_filter_status" 
-                    class="form-control select2" 
+            <select wire:model.live="order_status"
+                    class="form-control " 
                     style="width:100%">
                 <option value="">{{ __('lang_v1.all') }}</option>
+                
                 @foreach($orderStatuses as $key => $status)
                     <option value="{{ $key }}">{{ $status }}</option>
                 @endforeach
@@ -62,9 +60,8 @@
     <div class="col-md-3">
         <div class="form-group">
             <label for="purchase_list_filter_payment_status">{{ __('purchase.payment_status') }}:</label>
-            <select name="purchase_list_filter_payment_status" 
-                    id="purchase_list_filter_payment_status" 
-                    class="form-control select2" 
+            <select wire:model.live="payment_status"
+                    class="form-control" 
                     style="width:100%">
                 <option value="">{{ __('lang_v1.all') }}</option>
                 <option value="paid">{{ __('lang_v1.paid') }}</option>
@@ -77,7 +74,7 @@
     <div class="col-md-3">
         <div class="form-group">
             <label for="purchase_list_filter_date_range">{{ __('report.date_range') }}:</label>
-            <input type="text" 
+            <input wire:model.live="dateRange" type="text" 
                    name="purchase_list_filter_date_range" 
                    id="purchase_list_filter_date_range" 
                    class="form-control" 
@@ -98,7 +95,46 @@
         @endcan
         @can('purchase.view')
             <div class="table-responsive">
-                <input type="text" wire:model.live="search" class="form-control mb-3" placeholder="Search purchase...">
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="dataTables_length">
+                            <label>
+                                Show 
+                                <select wire:model.live="perPage" class="form-control form-control-sm" style="width: auto; display: inline-block;">
+                                    @foreach($perPageOptions as $option)
+                                        @if($option === -1)
+                                            <option value="{{ $option }}">All</option>
+                                        @else
+                                            <option value="{{ $option }}">{{ $option }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                entries
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <div class="dataTables_filter">
+                            <label>
+                                Search:
+                                <div class="input-group" style="display: inline-flex; width: auto;">
+                                    <input type="search" 
+                                        wire:model.live.debounce.500ms="search" 
+                                        class="form-control form-control-sm" 
+                                        placeholder="Type to search..."
+                                        style="width: 200px;">
+                                    @if($search)
+                                        <div class="input-group-append">
+                                            <button wire:click="$set('search', '')" class="btn btn-sm btn-default">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    @endif
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
                 <table class="table table-bordered table-striped ajax_view" id="purchase-table">
                     <thead>
                         <tr>
@@ -116,14 +152,15 @@
                     <tbody>
                         @foreach($purchases as $purchase)
                             <tr>
+                                <td>@format_date($purchase->transaction_date)</td>
                                 <td>
                                     {!! $purchase->return_exists ? 
                                         $purchase->ref_no . ' <small class="label bg-red label-round no-print"><i class="fa fa-undo"></i></small>' : 
                                         $purchase->ref_no !!}
                                 </td>
-                                <td>{{ @format_date($purchase->transaction_date) }}</td>
-                                <td>{{ $purchase->name }}</td>
-                                <td>{{ $purchase->location_name }}</td>
+                               
+                                <td>{{ $purchase->location->name }}</td>
+                                <td>{{ $purchase->contact->name }}</td>
                                 <td>
                                     <span class="label @transaction_status($purchase->status) status-label">
                                         {{ __('lang_v1.' . $purchase->status) }}
@@ -348,9 +385,45 @@
                         </tr>
                     </tfoot>
                 </table>
-                <div class="row">
-                    <div class="col-sm-12">
-                        {{ $purchases->links() }}
+                
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 col-md-5">
+                    <div class="dataTables_info" role="status" aria-live="polite">
+                        Showing {{ $purchases->firstItem() ?? 0 }} to {{ $purchases->lastItem() ?? 0 }} of {{ $purchases->total() }} entries
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-7">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination" style="margin: 2px 0; white-space: nowrap;">
+                            {{-- Previous Page Link --}}
+                            <li class="paginate_button page-item {{ $purchases->onFirstPage() ? 'disabled' : '' }}">
+                                <a class="page-link" wire:click.prevent="previousPage" href="#" tabindex="-1">Previous</a>
+                            </li>
+
+                            {{-- Pagination Elements --}}
+                            @for ($i = 1; $i <= $purchases->lastPage(); $i++)
+                                @if ($i == $purchases->currentPage())
+                                    <li class="paginate_button page-item active">
+                                        <a class="page-link" href="#">{{ $i }}</a>
+                                    </li>
+                                @elseif ($i == 1 || $i == $purchases->lastPage() || abs($purchases->currentPage() - $i) <= 2)
+                                    <li class="paginate_button page-item">
+                                        <a class="page-link" wire:click.prevent="gotoPage({{ $i }})" href="#">{{ $i }}</a>
+                                    </li>
+                                @elseif (abs($purchases->currentPage() - $i) == 3)
+                                    <li class="paginate_button page-item disabled">
+                                        <a class="page-link" href="#">...</a>
+                                    </li>
+                                @endif
+                            @endfor
+
+                            {{-- Next Page Link --}}
+                            <li class="paginate_button page-item {{ !$purchases->hasMorePages() ? 'disabled' : '' }}">
+                                <a class="page-link" wire:click.prevent="nextPage" href="#">Next</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

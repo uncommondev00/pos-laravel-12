@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "23f4cf2199510c386f35415aa706eacb",
+    "content-hash": "7a448769e0a2ed2f07ce434d69aeb97c",
     "packages": [
         {
             "name": "arielmejiadev/larapex-charts",
@@ -1821,6 +1821,55 @@
                 "source": "https://github.com/laravel/tinker/tree/v2.10.1"
             },
             "time": "2025-01-27T14:24:01+00:00"
+        },
+        {
+            "name": "laspi94/livewire-select2",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laspi94/livewire-select2.git",
+                "reference": "73a6e35362f269c890a7a3f0502e1c5cc712f4dd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laspi94/livewire-select2/zipball/73a6e35362f269c890a7a3f0502e1c5cc712f4dd",
+                "reference": "73a6e35362f269c890a7a3f0502e1c5cc712f4dd",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Livewire\\Select2\\LivewireSelect2ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Livewire\\Select2\\": "src/",
+                    "Livewire\\Select2\\Traits\\": "src/traits/",
+                    "Livewire\\Select2\\Helpers\\": "src/helpers/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "laspi94",
+                    "email": "alanjoselaspina@gmail.com"
+                }
+            ],
+            "description": "Package for manipulate select2 input field dinamically with livewire.",
+            "support": {
+                "issues": "https://github.com/laspi94/livewire-select2/issues",
+                "source": "https://github.com/laspi94/livewire-select2/tree/1.0.2"
+            },
+            "time": "2025-03-21T18:13:04+00:00"
         },
         {
             "name": "league/commonmark",

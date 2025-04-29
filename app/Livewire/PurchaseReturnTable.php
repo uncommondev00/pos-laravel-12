@@ -13,50 +13,34 @@ class PurchaseReturnTable extends Component
 {
     use WithPagination;
 
-    protected $paginationTheme = 'bootstrap';  // Add this line for Bootstrap pagination styling
-
-    // Public Properties
-    public $perPage = 10;
     public $search = '';
-    public $supplierFilter = '';
-    public $dateRange = '';
-    public $startDate = '';
-    public $endDate = '';
-    public $sortField = 'transaction_date';
-    public $sortDirection = 'desc';
+    public $perPage = 10;
+    public $perPageOptions = [10, 25, 50, 100, -1];
+    public $sortField = 'ref_no';
+    public $sortDirection = 'asc';
+    
+    protected $paginationTheme = 'bootstrap';
 
-    // Protected Properties
     protected $queryString = [
         'search' => ['except' => ''],
-        'supplierFilter' => ['except' => ''],
-        'dateRange' => ['except' => ''],
+        'sortField' => ['except' => 'ref_no'],
+        'sortDirection' => ['except' => 'asc'],
         'perPage' => ['except' => 10],
-        'sortField' => ['except' => 'transaction_date'],
-        'sortDirection' => ['except' => 'desc']
     ];
 
-    // Lifecycle Hooks
     public function mount()
     {
-        if (!auth()->user()->can('purchase.view') && !auth()->user()->can('purchase.create')) {
+        if (!auth()->user()->can('product.view') && !auth()->user()->can('product.create')) {
             abort(403, 'Unauthorized action.');
         }
-        $this->resetPage();
 
+        $this->search = request()->query('search', $this->search);
+        $this->sortField = request()->query('sortField', $this->sortField);
+        $this->sortDirection = request()->query('sortDirection', $this->sortDirection);
+        $this->perPage = request()->query('perPage', $this->perPage);
     }
 
-    // Reset pagination when filters change
     public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingSupplierFilter()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingDateRange()
     {
         $this->resetPage();
     }
@@ -66,7 +50,11 @@ class PurchaseReturnTable extends Component
         $this->resetPage();
     }
 
-    // Sorting
+    public function updatePerPage()
+    {
+        $this->resetPage();
+    }
+
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
@@ -75,19 +63,14 @@ class PurchaseReturnTable extends Component
             $this->sortField = $field;
             $this->sortDirection = 'asc';
         }
-        
-        $this->resetPage();
     }
 
     // Query
     private function getPurchaseReturns()
     {
         $cacheKey = sprintf(
-            'purchase_returns_%s_%s_%s_%s_%d_%s_%s',
+            'purchase_returns_%s_%s_%s_%s',
             $this->search,
-            $this->supplierFilter,
-            $this->startDate,
-            $this->endDate,
             $this->perPage,
             $this->sortField,
             $this->sortDirection
@@ -124,17 +107,6 @@ class PurchaseReturnTable extends Component
                 });
             }
 
-            // Apply supplier filter
-            if ($this->supplierFilter) {
-                $query->where('contacts.id', $this->supplierFilter);
-            }
-
-            // Apply date range filter
-            if ($this->startDate && $this->endDate) {
-                $query->whereDate('transactions.transaction_date', '>=', $this->startDate)
-                      ->whereDate('transactions.transaction_date', '<=', $this->endDate);
-            }
-
             // Apply location permissions
             $permitted_locations = auth()->user()->permitted_locations();
             if ($permitted_locations !== 'all') {
@@ -156,7 +128,7 @@ class PurchaseReturnTable extends Component
             ]);
 
             return $query->orderBy($this->sortField, $this->sortDirection)
-                        ->paginate($this->perPage);
+            ->paginate($this->perPage == -1 ? 9999 : $this->perPage);
         });
     }
 
@@ -166,11 +138,4 @@ class PurchaseReturnTable extends Component
             'purchaseReturns' => $this->getPurchaseReturns()
         ]);
     }
-
-     // Clear filters
-     public function resetFilters()
-     {
-         $this->reset(['search', 'supplierFilter', 'dateRange', 'startDate', 'endDate']);
-         $this->resetPage();
-     }
 }

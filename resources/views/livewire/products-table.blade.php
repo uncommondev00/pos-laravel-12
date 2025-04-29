@@ -17,7 +17,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="type">{{ __('product.product_type') }}:</label>
-                            <select wire:model="type" name="type" class="form-control select2" style="width:100%">
+                            <select wire:model.live="type" class="form-control " style="width:100%">
                                 <option value="">{{ __('lang_v1.all') }}</option>
                                 <option value="single">Single</option>
                                 <option value="variable">Variable</option>
@@ -27,7 +27,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="category_id">{{ __('product.category') }}:</label>
-                            <select wire:model.live="category_id" name="category_id" id="product_list_filter_category_id" class="form-control select2" style="width:100%">
+                            <select wire:model.live="category_id" name="category_id" class="form-control " style="width:100%">
                                 <option value="">{{ __('lang_v1.all') }}</option>
                                 @foreach($categories as $id => $name)
                                     <option value="{{ $id }}">{{ $name }}</option>
@@ -38,7 +38,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="unit_id">{{ __('product.unit') }}:</label>
-                            <select wire:model.live="unit_id" name="unit_id" id="product_list_filter_unit_id" class="form-control select2" style="width:100%">
+                            <select wire:model.live="unit_id" name="unit_id" class="form-control " style="width:100%">
                                 <option value="">{{ __('lang_v1.all') }}</option>
                                 @foreach($units as $id => $name)
                                     <option value="{{ $id }}">{{ $name }}</option>
@@ -49,7 +49,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="tax_id">{{ __('product.tax') }}:</label>
-                            <select wire:model.live="tax_id" name="tax_id" id="product_list_filter_tax_id" class="form-control select2" style="width:100%">
+                            <select wire:model.live="tax_id" name="tax_id"  class="form-control " style="width:100%">
                                 <option value="">{{ __('lang_v1.all') }}</option>
                                 @foreach($taxes as $id => $name)
                                     <option value="{{ $id }}">{{ $name }}</option>
@@ -60,7 +60,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="brand_id">{{ __('product.brand') }}:</label>
-                            <select wire:model.live="brand_id" name="brand_id" id="product_list_filter_brand_id" class="form-control select2" style="width:100%">
+                            <select wire:model.live="brand_id" name="brand_id"  class="form-control " style="width:100%">
                                 <option value="">{{ __('lang_v1.all') }}</option>
                                 @foreach($brands as $id => $name)
                                     <option value="{{ $id }}">{{ $name }}</option>
@@ -153,7 +153,7 @@
                                                 <img src="{{ asset('/storage/img/' . $product->image) }}" alt="Product Image" class="product-thumbnail">
                                             @endif
                                         </td>
-                                        <td>{{ $product->product }}</td>
+                                        <td>{{ $product->name }}</td>
                                         <td>{{ $product->type }}</td>
                                         <td>{{ optional($product->category)->name }}</td>
                                         <td>{{ optional($product->sub_category)->name }}</td>

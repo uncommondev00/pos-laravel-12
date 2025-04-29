@@ -18,8 +18,9 @@
     Livewire.hook('message.processed', (message, component) => {
         __currency_convert_recursively($('#purchase-table'));
     });
+
 });
-        //Date range as a button
+        Date range as a button
     $('#purchase_list_filter_date_range').daterangepicker(
         dateRangeSettings,
         function (start, end) {
@@ -31,6 +32,7 @@
         purchase_table.ajax.reload();
         $('#purchase_list_filter_date_range').val('');
     });
+
 </script>
 	
 @endsection

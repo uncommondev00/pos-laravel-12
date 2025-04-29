@@ -10,34 +10,39 @@ use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Utils\ModuleUtil;
+
 class SellTable extends Component
 {
     use WithPagination;
-    protected $paginationTheme = 'bootstrap';
-    protected $moduleUtil;
+
 
     public $search = '';
-    public $paymentStatus = '';
-    public $locationId = '';
-    public $customerId = '';
-    public $startDate;
-    public $endDate;
+    public $location_id = '';
+    public $customer_id = '';
+    public $payment_status = '';
     public $perPage = 10;
+    public $perPageOptions = [10, 25, 50, 100, -1];
+    public $sortField = 'ref_no';
+    public $sortDirection = 'asc';
+
     public $businessLocations = [];
     public $customers = [];
+    
+    protected $paginationTheme = 'bootstrap';
+
+    protected $moduleUtil;
 
     protected $queryString = [
+        'location_id' => ['except' => ''],
+        'customer_id' => ['except' => ''],
+        'payment_status' => ['except' => ''],
         'search' => ['except' => ''],
-        'paymentStatus' => ['except' => ''],
-        'locationId' => ['except' => ''],
-        'customerId' => ['except' => ''],
-        'startDate' => ['except' => ''],
-        'endDate' => ['except' => ''],
+        'sortField' => ['except' => 'ref_no'],
+        'sortDirection' => ['except' => 'asc'],
         'perPage' => ['except' => 10],
     ];
 
-
-    public function mount(ModuleUtil $moduleUtil)
+    public function boot(ModuleUtil $moduleUtil)
     {
         $this->moduleUtil = $moduleUtil;
 
@@ -55,12 +60,49 @@ class SellTable extends Component
         );
     }
 
+    public function mount()
+    {
+        $this->search = request()->query('search', $this->search);
+        $this->location_id = request()->query('location_id', $this->location_id);
+        $this->customer_id = request()->query('supplier_id', $this->customer_id);
+        $this->payment_status = request()->query('payment_status', $this->payment_status);
+        $this->sortField = request()->query('sortField', $this->sortField);
+        $this->sortDirection = request()->query('sortDirection', $this->sortDirection);
+        $this->perPage = request()->query('perPage', $this->perPage);
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function updatePerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
     private function baseQuery()
     {
         $businessId = session('user.business_id');
         $permittedLocations = auth()->user()->permitted_locations();
 
         $query = Transaction::query()
+            ->with(['contact:id,name', 'location:id,name'])
             ->select([
                 'transactions.id',
                 'transactions.transaction_date',
@@ -108,47 +150,36 @@ class SellTable extends Component
                 });
             }
 
-            if ($this->paymentStatus) {
-                $query->where('transactions.payment_status', $this->paymentStatus);
+            if ($this->payment_status) {
+                $query->where('transactions.payment_status', $this->payment_status);
             }
 
-            if ($this->locationId) {
-                $query->where('transactions.location_id', $this->locationId);
+            if ($this->location_id) {
+                $query->where('transactions.location_id', $this->location_id);
             }
 
-            if ($this->customerId) {
-                $query->where('transactions.contact_id', $this->customerId);
+            if ($this->customer_id) {
+                $query->where('transactions.contact_id', $this->customer_id);
             }
 
-            if ($this->startDate && $this->endDate) {
-                $query->whereDate('transactions.transaction_date', '>=', $this->startDate)
-                      ->whereDate('transactions.transaction_date', '<=', $this->endDate);
-            }
 
             return $query->latest('transactions.transaction_date')
-                        ->paginate($this->perPage);
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate($this->perPage == -1 ? 9999 : $this->perPage);
         });
     }
 
     private function getCacheKey(): string
     {
         return sprintf(
-            'sales_table_%s_%s_%s_%s_%s_%s_%d',
+            'sales_table_%s_%s_%s_%s_%d',
             $this->search,
-            $this->paymentStatus,
-            $this->locationId,
-            $this->customerId,
-            $this->startDate,
-            $this->endDate,
+            $this->payment_status,
+            $this->location_id,
+            $this->customer_id,
             $this->perPage
         );
     }
-
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
     public function render()
     {
         return view('livewire.sell-table', [
@@ -159,9 +190,4 @@ class SellTable extends Component
         ]);
     }
 
-    public function clearFilters()
-    {
-        $this->reset(['search', 'paymentStatus', 'locationId', 'customerId', 'startDate', 'endDate']);
-        $this->resetPage();
-    }
 }

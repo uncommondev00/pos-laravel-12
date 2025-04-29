@@ -10,14 +10,14 @@
       <div class="row">
         <div class="col-sm-6 col-xs-6">
           <h4>@lang('lang_v1.purchase_return_details'):</h4>
-          <strong>@lang('lang_v1.return_date'):</strong> {{@format_date($purchase->return_parent->transaction_date)}}<br>
+          <strong>@lang('lang_v1.return_date'):</strong> @format_date($purchase->return_parent->transaction_date)<br>
           <strong>@lang('purchase.supplier'):</strong> {{ $purchase->contact->name }} <br>
           <strong>@lang('purchase.business_location'):</strong> {{ $purchase->location->name }}
         </div>
         <div class="col-sm-6 col-xs-6">
           <h4>@lang('purchase.purchase_details'):</h4>
           <strong>@lang('purchase.ref_no'):</strong> {{ $purchase->ref_no }} <br>
-          <strong>@lang('messages.date'):</strong> {{@format_date($purchase->transaction_date)}}
+          <strong>@lang('messages.date'):</strong> @format_date($purchase->transaction_date)
         </div>
       </div>
       <br>
