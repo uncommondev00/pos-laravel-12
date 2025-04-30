@@ -103,45 +103,7 @@
                 </table>
                 
             </div>
-            <div class="row">
-                <div class="col-sm-12 col-md-5">
-                    <div class="dataTables_info" role="status" aria-live="polite">
-                        Showing {{ $categories->firstItem() ?? 0 }} to {{ $categories->lastItem() ?? 0 }} of {{ $categories->total() }} entries
-                    </div>
-                </div>
-                <div class="col-sm-12 col-md-7">
-                    <div class="dataTables_paginate paging_simple_numbers">
-                        <ul class="pagination" style="margin: 2px 0; white-space: nowrap;">
-                            {{-- Previous Page Link --}}
-                            <li class="paginate_button page-item {{ $categories->onFirstPage() ? 'disabled' : '' }}">
-                                <a class="page-link" wire:click.prevent="previousPage" href="#" tabindex="-1">Previous</a>
-                            </li>
-    
-                            {{-- Pagination Elements --}}
-                            @for ($i = 1; $i <= $categories->lastPage(); $i++)
-                                @if ($i == $categories->currentPage())
-                                    <li class="paginate_button page-item active">
-                                        <a class="page-link" href="#">{{ $i }}</a>
-                                    </li>
-                                @elseif ($i == 1 || $i == $categories->lastPage() || abs($categories->currentPage() - $i) <= 2)
-                                    <li class="paginate_button page-item">
-                                        <a class="page-link" wire:click.prevent="gotoPage({{ $i }})" href="#">{{ $i }}</a>
-                                    </li>
-                                @elseif (abs($categories->currentPage() - $i) == 3)
-                                    <li class="paginate_button page-item disabled">
-                                        <a class="page-link" href="#">...</a>
-                                    </li>
-                                @endif
-                            @endfor
-    
-                            {{-- Next Page Link --}}
-                            <li class="paginate_button page-item {{ !$categories->hasMorePages() ? 'disabled' : '' }}">
-                                <a class="page-link" wire:click.prevent="nextPage" href="#">Next</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            @include('includes.pagination', ['paginator' => $categories])
         @endcan
     @endcomponent
 

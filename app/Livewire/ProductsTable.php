@@ -11,76 +11,41 @@ use App\Models\Unit;
 use App\Models\TaxRate;
 use App\Models\SellingPriceGroup;
 use Illuminate\Support\Facades\DB;
+use App\Traits\WithSortingSearchPagination;
 
 class ProductsTable extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSortingSearchPagination;
 
-    public $search = '';
+    // Define your filters
     public $type = '';
     public $category_id = '';
     public $unit_id = '';
     public $tax_id = '';
     public $brand_id = '';
-    public $perPage = 10;
-    public $perPageOptions = [10, 25, 50, 100, -1];
-    public $sortField = 'name';
-    public $sortDirection = 'asc';
-    
-    protected $paginationTheme = 'bootstrap';
-
-    protected $queryString = [
-        'type' => ['except' => ''],
-        'category_id' => ['except' => ''],
-        'unit_id' => ['except' => ''],
-        'tax_id' => ['except' => ''],
-        'brand_id' => ['except' => ''],
-        'search' => ['except' => ''],
-        'sortField' => ['except' => 'name'],
-        'sortDirection' => ['except' => 'asc'],
-        'perPage' => ['except' => 10],
-    ];
 
     public function mount()
     {
+        
+        
+        // $this->sortField = 'created_at'; // Different default sort field
+        // $this->sortDirection = 'desc';   // Different default sort direction
+        // $this->perPageOptions = [5, 10, 25]; // Different page size options
+        $this->mountWithSortingSearchPagination();
+
+        $this->filterConfig = [
+            'type' => '',
+            'category_id' => '',
+            'unit_id' => '',
+            'tax_id' => '',
+            'brand_id' => ''
+        ];
+        
+
         if (!auth()->user()->can('product.view') && !auth()->user()->can('product.create')) {
             abort(403, 'Unauthorized action.');
         }
 
-        $this->search = request()->query('search', $this->search);
-        $this->type = request()->query('type', $this->type);
-        $this->category_id = request()->query('category_id', $this->category_id);
-        $this->unit_id = request()->query('unit_id', $this->unit_id);
-        $this->tax_id = request()->query('tax_id', $this->tax_id);
-        $this->brand_id = request()->query('brand_id', $this->brand_id);
-        $this->sortField = request()->query('sortField', $this->sortField);
-        $this->sortDirection = request()->query('sortDirection', $this->sortDirection);
-        $this->perPage = request()->query('perPage', $this->perPage);
-    }
-
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingPerPage()
-    {
-        $this->resetPage();
-    }
-
-    public function updatePerPage()
-    {
-        $this->resetPage();
-    }
-
-    public function sortBy($field)
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
     }
 
     public function render()
