@@ -1,7 +1,7 @@
 <div class="modal-dialog" role="document">
   <div class="modal-content">
 
-    <form action="{{ action('TaxRateController@update', [$tax_rate->id]) }}" method="POST" id="tax_rate_edit_form">
+    <form action="{{ route('tax-rates.update', [$tax_rate->id]) }}" method="POST" id="tax_rate_edit_form">
       @csrf
       @method('PUT')
 

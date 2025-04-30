@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\Paginator;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -27,11 +29,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //Model::automaticallyEagerLoadRelationships();
-        
+
         if (request()->has('lang')) {
             App::setLocale(request()->get('lang'));
         }
-        
+
         $asset_v = config('constants.asset_version', 1);
         View::share('asset_v', $asset_v);
 
@@ -47,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
 
         //This will fix "Specified key was too long; max key length is 767 bytes issue during migration"
         Schema::defaultStringLength(191);
-        
+
         //Blade directive to format number into required format.
         Blade::directive('num_format', function ($expression) {
             return "number_format($expression, config('constants.currency_precision', 2), session('currency')['decimal_separator'], session('currency')['thousand_separator'])";
@@ -84,8 +86,8 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('show_tooltip', function ($message) {
             return "<?php
                 if(session('business.enable_tooltip')){
-                    echo '<i class=\"fa fa-info-circle text-info hover-q no-print \" aria-hidden=\"true\" 
-                    data-container=\"body\" data-toggle=\"popover\" data-placement=\"auto bottom\" 
+                    echo '<i class=\"fa fa-info-circle text-info hover-q no-print \" aria-hidden=\"true\"
+                    data-container=\"body\" data-toggle=\"popover\" data-placement=\"auto bottom\"
                     data-content=\"' . $message . '\" data-html=\"true\" data-trigger=\"hover\"></i>';
                 }
                 ?>";
@@ -114,7 +116,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         if (config('app.debug')) {
-            DB::listen(function($query) {
+            DB::listen(function ($query) {
                 if ($query->time > 100) {
                     Log::channel('queries')->info(
                         'Slow query: ' . $query->sql,

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\TaxRate;
-use App\GroupSubTax;
+use App\Models\TaxRate;
+use App\Models\GroupSubTax;
 
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
@@ -45,8 +45,8 @@ class TaxRateController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $tax_rates = TaxRate::where('business_id', $business_id)
-                        ->where('is_tax_group', '0')
-                        ->select(['name', 'amount', 'id']);
+                ->where('is_tax_group', '0')
+                ->select(['name', 'amount', 'id']);
 
             return Datatables::of($tax_rates)
                 ->addColumn(
@@ -100,16 +100,18 @@ class TaxRateController extends Controller
             $input['amount'] = $this->taxUtil->num_uf($input['amount']);
 
             $tax_rate = TaxRate::create($input);
-            $output = ['success' => true,
-                            'data' => $tax_rate,
-                            'msg' => __("tax_rate.added_success")
-                        ];
+            $output = [
+                'success' => true,
+                'data' => $tax_rate,
+                'msg' => __("tax_rate.added_success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -172,21 +174,23 @@ class TaxRateController extends Controller
 
                 //update group tax amount
                 $group_taxes = GroupSubTax::where('tax_id', $id)
-                                            ->get();
-                              
+                    ->get();
+
                 foreach ($group_taxes as $group_tax) {
                     $this->taxUtil->updateGroupTaxAmount($group_tax->group_tax_id);
                 }
 
-                $output = ['success' => true,
-                            'msg' => __("tax_rate.updated_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("tax_rate.updated_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -209,27 +213,30 @@ class TaxRateController extends Controller
             try {
                 //update group tax amount
                 $group_taxes = GroupSubTax::where('tax_id', $id)
-                                            ->get();
+                    ->get();
                 if ($group_taxes->isEmpty()) {
                     $business_id = request()->user()->business_id;
 
                     $tax_rate = TaxRate::where('business_id', $business_id)->findOrFail($id);
                     $tax_rate->delete();
 
-                    $output = ['success' => true,
-                                'msg' => __("tax_rate.deleted_success")
-                                ];
+                    $output = [
+                        'success' => true,
+                        'msg' => __("tax_rate.deleted_success")
+                    ];
                 } else {
-                    $output = ['success' => false,
-                                'msg' => __("tax_rate.can_not_be_deleted")
-                                ];
+                    $output = [
+                        'success' => false,
+                        'msg' => __("tax_rate.can_not_be_deleted")
+                    ];
                 }
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
