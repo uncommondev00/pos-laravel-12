@@ -1,48 +1,4 @@
 <div>
-    {{-- To attain knowledge, add things every day; To attain wisdom, subtract things every day. --}}
-    <style>
-        .pagination {
-            display: flex;
-            padding-left: 0;
-            list-style: none;
-            border-radius: 0.25rem;
-        }
-
-        .page-link {
-            position: relative;
-            display: block;
-            padding: 0.5rem 0.75rem;
-            margin-left: -1px;
-            line-height: 1.25;
-            color: #007bff;
-            background-color: #fff;
-            border: 1px solid #dee2e6;
-        }
-
-        .page-item.active .page-link {
-            z-index: 3;
-            color: #fff;
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-
-        .page-item.disabled .page-link {
-            color: #6c757d;
-            pointer-events: none;
-            cursor: auto;
-            background-color: #fff;
-            border-color: #dee2e6;
-        }
-
-        .paginate_button {
-            cursor: pointer;
-        }
-
-        .paginate_button.disabled {
-            cursor: not-allowed;
-        }
-    </style>
-
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1> @lang('lang_v1.'.$type.'s')
@@ -53,7 +9,6 @@
             <li class="active">Here</li>
         </ol> -->
     </section>
-
     <!-- Main content -->
     <section class="content">
         <input type="hidden" value="{{$type}}" id="contact_type">
@@ -71,46 +26,12 @@
 
         @if(auth()->user()->can('supplier.view') || auth()->user()->can('customer.view'))
         <div class="table-responsive">
-            <div class="row mb-3">
-                <div class="col-sm-12 col-md-6">
-                    <div class="dataTables_length">
-                        <label>
-                            Show
-                            <select wire:model.live="perPage" class="form-control form-control-sm" style="width: auto; display: inline-block;">
-                                @foreach($perPageOptions as $option)
-                                @if($option === -1)
-                                <option value="{{ $option }}">All</option>
-                                @else
-                                <option value="{{ $option }}">{{ $option }}</option>
-                                @endif
-                                @endforeach
-                            </select>
-                            entries
-                        </label>
-                    </div>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <div class="dataTables_filter">
-                        <label>
-                            Search:
-                            <div class="input-group" style="display: inline-flex; width: auto;">
-                                <input type="search"
-                                    wire:model.live.debounce.500ms="search"
-                                    class="form-control form-control-sm"
-                                    placeholder="Type to search..."
-                                    style="width: 200px;">
-                                @if($search)
-                                <div class="input-group-append">
-                                    <button wire:click="$set('search', '')" class="btn btn-sm btn-default">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </div>
-                                @endif
-                            </div>
-                        </label>
-                    </div>
-                </div>
-            </div>
+
+            <!-- handle search and filter    -->
+            @include('includes.table-controls', [
+            'perPageOptions' => $perPageOptions,
+            'search' => $search
+            ])
 
             <div class="table-responsive">
                 <table class="table table-bordered table-striped dataTable">
