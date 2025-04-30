@@ -14,27 +14,45 @@ class QuotationTable extends Component
     use WithPagination;
 
     public $search = '';
-    public $start_date = '';
-    public $end_date = '';
-    public $is_quotation = 1;
     public $perPage = 10;
-    public $sortField = 'transaction_date';
-    public $sortDirection = 'desc';
+    public $perPageOptions = [10, 25, 50, 100, -1];
+    public $sortField = 'invoice_no';
+    public $sortDirection = 'asc';
+    public $is_quotation = 1;
+    
+    protected $paginationTheme = 'bootstrap';
 
     protected $queryString = [
+        'is_quotation' => ['except' => 0],
         'search' => ['except' => ''],
-        'start_date' => ['except' => ''],
-        'end_date' => ['except' => ''],
-        'is_quotation' => ['except' => 1],
-        'sortField' => ['except' => 'transaction_date'],
-        'sortDirection' => ['except' => 'desc'],
+        'sortField' => ['except' => 'invoice_no'],
+        'sortDirection' => ['except' => 'asc'],
+        'perPage' => ['except' => 10],
     ];
 
     public function mount()
     {
-        $this->start_date = request()->start_date ?? '';
-        $this->end_date = request()->end_date ?? '';
-        $this->is_quotation = 1;
+
+        $this->search = request()->query('search', $this->search);
+        $this->sortField = request()->query('sortField', $this->sortField);
+        $this->sortDirection = request()->query('sortDirection', $this->sortDirection);
+        $this->perPage = request()->query('perPage', $this->perPage);
+        $this->is_quotation = request()->is_quotation ?? 1;
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function updatePerPage()
+    {
+        $this->resetPage();
     }
 
     public function sortBy($field)
@@ -45,11 +63,6 @@ class QuotationTable extends Component
             $this->sortField = $field;
             $this->sortDirection = 'asc';
         }
-    }
-
-    public function updatingSearch()
-    {
-        $this->resetPage();
     }
 
     public function render()
@@ -95,7 +108,8 @@ class QuotationTable extends Component
             });
         }
 
-        $sells->orderBy($this->sortField, $this->sortDirection);
+        $sells->orderBy($this->sortField, $this->sortDirection)
+        ->paginate($this->perPage == -1 ? 9999 : $this->perPage);
 
         return view('livewire.quotation-table', [
             'sells' => $sells->paginate($this->perPage),

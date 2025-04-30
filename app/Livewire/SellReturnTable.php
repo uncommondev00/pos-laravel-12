@@ -6,17 +6,66 @@ use Livewire\Component;
 use App\Models\Transaction;
 use App\Models\BusinessLocation;
 use App\Models\Contact;
+use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class SellReturnTable extends Component
 {
+    use WithPagination;
+
     public $search = '';
-    public $location = '';
-    public $customer = '';
-    public $fromDate = '';
-    public $toDate = '';
     public $perPage = 10;
+    public $perPageOptions = [10, 25, 50, 100, -1];
+    public $sortField = 'invoice_no';
+    public $sortDirection = 'asc';
+    
+    protected $paginationTheme = 'bootstrap';
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'sortField' => ['except' => 'invoice_no'],
+        'sortDirection' => ['except' => 'asc'],
+        'perPage' => ['except' => 10],
+    ];
+
+    public function mount()
+    {
+        if (!auth()->user()->can('product.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $this->search = request()->query('search', $this->search);
+        $this->sortField = request()->query('sortField', $this->sortField);
+        $this->sortDirection = request()->query('sortDirection', $this->sortDirection);
+        $this->perPage = request()->query('perPage', $this->perPage);
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function updatePerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
 
     public function render()
     {
@@ -54,31 +103,14 @@ class SellReturnTable extends Component
             });
         }
 
-        // Apply location filter
-        if ($this->location) {
-            $query->where('transactions.location_id', $this->location);
-        }
-
-        // Apply customer filter
-        if ($this->customer) {
-            $query->where('transactions.contact_id', $this->customer);
-        }
-
-        // Apply date filters
-        if ($this->fromDate) {
-            $query->whereDate('transactions.transaction_date', '>=', $this->fromDate);
-        }
-        if ($this->toDate) {
-            $query->whereDate('transactions.transaction_date', '<=', $this->toDate);
-        }
-
         // Handle permitted locations
         $permitted_locations = Auth::user()->permitted_locations();
         if ($permitted_locations != 'all') {
             $query->whereIn('transactions.location_id', $permitted_locations);
         }
 
-        $sells = $query->paginate($this->perPage);
+        $sells = $query->orderBy($this->sortField, $this->sortDirection)
+        ->paginate($this->perPage == -1 ? 9999 : $this->perPage);
         $locations = BusinessLocation::forDropdown($business_id);
         $customers = Contact::customersDropdown($business_id);
 
@@ -87,30 +119,5 @@ class SellReturnTable extends Component
             'locations' => $locations,
             'customers' => $customers
         ]);
-    }
-
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingLocation()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingCustomer()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingFromDate()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingToDate()
-    {
-        $this->resetPage();
     }
 }

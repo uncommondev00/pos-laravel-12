@@ -75,6 +75,8 @@ class UnitSellTable extends Component
         $this->resetPage();
     }
 
+    
+
     public function render()
     {
         $business_id = request()->session()->get('user.business_id');
