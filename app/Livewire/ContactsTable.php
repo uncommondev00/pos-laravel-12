@@ -7,57 +7,23 @@ use App\Models\Contact;
 use Illuminate\Support\Facades\DB;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\WithSortingSearchPagination;
 
 class ContactsTable extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSortingSearchPagination;
 
-    public $search = '';
     public $type = '';
-    public $perPage = 10;
-    public $perPageOptions = [10, 25, 50, 100, -1];
-    public $sortField = 'name';
-    public $sortDirection = 'asc';
     public $totalDue = 0;
     public $totalReturnDue = 0;
 
-    protected $paginationTheme = 'bootstrap';
-
-    protected $queryString = [
-        'type',
-        'search' => ['except' => ''],
-        'sortField' => ['except' => 'name'],
-        'sortDirection' => ['except' => 'asc'],
-        'perPage' => ['except' => 10],
-    ];
 
     public function mount()
     {
-        $this->type = request()->get('type', '');
-        $this->search = request()->query('search', $this->search);
-        $this->sortField = request()->query('sortField', $this->sortField);
-        $this->sortDirection = request()->query('sortDirection', $this->sortDirection);
-        $this->perPage = request()->query('perPage', $this->perPage);
-    }
-
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingPerPage()
-    {
-        $this->resetPage();
-    }
-
-    public function sortBy($field)
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
+        $this->mountWithSortingSearchPagination();
+        $this->filterConfig = [
+            'type' => '',
+        ];
     }
 
     public function calculateTotals($contacts)

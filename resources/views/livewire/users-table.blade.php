@@ -22,18 +22,10 @@
 
             @can('user.view')
                 <div class="table-responsive">
-                    <input type="text" wire:model.live="search" class="form-control mb-3" placeholder="Search users...">
-
-                     <!-- Per Page Dropdown -->
-                    <div class="mb-3">
-                        <label for="perPage">Show</label>
-                        <select wire:model="perPage" wire:change="updatePerPage" class="form-control d-inline w-auto">
-                            @foreach ($perPageOptions as $option)
-                                <option value="{{ $option }}">{{ $option }}</option>
-                            @endforeach
-                        </select>
-                        <span>entries</span>
-                    </div>
+                   @include('includes.table-controls', [
+                       'perPageOptions' => $perPageOptions,
+                       'search' => $search
+                   ])
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -80,10 +72,9 @@
                         </tbody>
                     </table>
 
-                    <div class="mt-3">
-                        {{ $users->links('pagination::bootstrap-5') }}
-                    </div>
+                    
                 </div>
+                @include('includes.pagination', ['paginator' => $users])
             @endcan
         @endcomponent
     </section>

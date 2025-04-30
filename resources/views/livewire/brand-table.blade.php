@@ -26,46 +26,10 @@
         @endcan
         @can('brand.view')
             <div class="table-responsive">
-                <div class="row mb-3">
-                    <div class="col-sm-12 col-md-6">
-                        <div class="dataTables_length">
-                            <label>
-                                Show 
-                                <select wire:model.live="perPage" class="form-control form-control-sm" style="width: auto; display: inline-block;">
-                                    @foreach($perPageOptions as $option)
-                                        @if($option === -1)
-                                            <option value="{{ $option }}">All</option>
-                                        @else
-                                            <option value="{{ $option }}">{{ $option }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                                entries
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 text-right">
-                        <div class="dataTables_filter">
-                            <label>
-                                Search:
-                                <div class="input-group" style="display: inline-flex; width: auto;">
-                                    <input type="search" 
-                                        wire:model.live.debounce.500ms="search" 
-                                        class="form-control form-control-sm" 
-                                        placeholder="Type to search..."
-                                        style="width: 200px;">
-                                    @if($search)
-                                        <div class="input-group-append">
-                                            <button wire:click="$set('search', '')" class="btn btn-sm btn-default">
-                                                <i class="fa fa-times"></i>
-                                            </button>
-                                        </div>
-                                    @endif
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
+                @include('includes.table-controls', [
+                    'perPageOptions' => $perPageOptions,
+                    'search' => $search,
+                ])
                 <table class="table table-bordered table-striped" id="">
                     <thead>
                         <tr>
@@ -103,45 +67,7 @@
                 </table>
                 
             </div>
-            <div class="row">
-                <div class="col-sm-12 col-md-5">
-                    <div class="dataTables_info" role="status" aria-live="polite">
-                        Showing {{ $brands->firstItem() ?? 0 }} to {{ $brands->lastItem() ?? 0 }} of {{ $brands->total() }} entries
-                    </div>
-                </div>
-                <div class="col-sm-12 col-md-7">
-                    <div class="dataTables_paginate paging_simple_numbers">
-                        <ul class="pagination" style="margin: 2px 0; white-space: nowrap;">
-                            {{-- Previous Page Link --}}
-                            <li class="paginate_button page-item {{ $brands->onFirstPage() ? 'disabled' : '' }}">
-                                <a class="page-link" wire:click.prevent="previousPage" href="#" tabindex="-1">Previous</a>
-                            </li>
-    
-                            {{-- Pagination Elements --}}
-                            @for ($i = 1; $i <= $brands->lastPage(); $i++)
-                                @if ($i == $brands->currentPage())
-                                    <li class="paginate_button page-item active">
-                                        <a class="page-link" href="#">{{ $i }}</a>
-                                    </li>
-                                @elseif ($i == 1 || $i == $brands->lastPage() || abs($brands->currentPage() - $i) <= 2)
-                                    <li class="paginate_button page-item">
-                                        <a class="page-link" wire:click.prevent="gotoPage({{ $i }})" href="#">{{ $i }}</a>
-                                    </li>
-                                @elseif (abs($brands->currentPage() - $i) == 3)
-                                    <li class="paginate_button page-item disabled">
-                                        <a class="page-link" href="#">...</a>
-                                    </li>
-                                @endif
-                            @endfor
-    
-                            {{-- Next Page Link --}}
-                            <li class="paginate_button page-item {{ !$brands->hasMorePages() ? 'disabled' : '' }}">
-                                <a class="page-link" wire:click.prevent="nextPage" href="#">Next</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            @include('includes.pagination', ['paginator' => $brands])
         @endcan
     @endcomponent
 

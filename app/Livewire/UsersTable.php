@@ -5,89 +5,16 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Livewire\WithoutUrlPagination;
+use App\Traits\WithSortingSearchPagination;
 
 class UsersTable extends Component
 {
-    use WithPagination, WithoutUrlPagination;
+    use WithPagination, WithSortingSearchPagination;
 
-    protected $listeners = ['refreshUsersTable' => '$refresh', 'deleteUser' => 'delete'];
-
-     // Make sure query parameters persist in the URL
-     protected $queryString = [
-        'search' => ['except' => 1], // Default empty
-        'perPage' => ['except' => 5], // Default 5
-    ];
-
-    public $search = ''; // Search input
-    public $perPage = 5; // Items per page
-    public $perPageOptions = [5, 10, 25, 50, 100]; // Dropdown options
-    public $sortColumn = 'username'; // Default sorting column
-    public $sortDirection = 'asc'; // Sorting direction
-
-    public function updatedPerPage()
+    public function mount()
     {
-        $this->resetPage(); // Resets pagination when changing perPage
-    }
-
-    public function updatedSearch()
-    {
-        $this->resetPage(); // Resets pagination when searching
-    }
- 
-     // ✅ Livewire calls this when the perPage dropdown is updated
-     public function updatePerPage()
-     {
-         $this->resetPage();
-     }
-
-     public function updatingPage($page)
-    {
-        // Runs before the page is updated for this component...
-        
-    }
- 
-    public function updatedPage($page)
-    {
-        // Runs after the page is updated for this component...
-    }
-
-    public function sortBy($column)
-    {
-        if ($this->sortColumn === $column) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortColumn = $column;
-            $this->sortDirection = 'asc';
-        }
-    }
-
-    // // Emit an event to trigger Swal
-    // public function confirmDelete($userId)
-    // {
-    //     $this->dispatch('swalConfirm', userId: $userId);
-    // }
-
-    // Perform delete action
-    public function delete($userId)
-    {
-        if (!auth()->user()->can('user.delete')) {
-            session()->flash('error', 'Unauthorized action.');
-            return;
-        }
-
-        $user = User::find($userId);
-
-        if ($user) {
-            $user->delete();
-            session()->flash('status', ['success' => true, 'msg' => 'User deleted successfully!']);
-        } else {
-            session()->flash('status', ['success' => false, 'msg' => 'User not found!']);
-        }
-
-        //$this->dispatch('userDeleted'); // Refresh frontend table
+        $this->sortField = 'username'; // Different default sort field
+        $this->mountWithSortingSearchPagination();
     }
 
     public function render()
@@ -113,8 +40,8 @@ class UsersTable extends Component
             });
         }
 
-        $users = $users->orderBy($this->sortColumn, $this->sortDirection)
-            ->paginate($this->perPage);
+        $users = $users->orderBy($this->sortField, $this->sortDirection)
+        ->paginate($this->perPage == -1 ? 9999 : $this->perPage);
 
         return view('livewire.users-table', ['users' => $users]);
     }

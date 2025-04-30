@@ -9,13 +9,10 @@ use App\Traits\WithSortingSearchPagination;
 
 class CategoryTable extends Component
 {
-    use WithPagination;
-    use WithSortingSearchPagination;
+    use WithPagination,WithSortingSearchPagination;
 
     public function mount()
     {
-        
-
         $this->mountWithSortingSearchPagination();
 
         if (!auth()->user()->can('category.view') && !auth()->user()->can('category.create')) {
