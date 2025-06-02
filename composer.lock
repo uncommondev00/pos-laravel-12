@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7a448769e0a2ed2f07ce434d69aeb97c",
+    "content-hash": "80c5a503ccb4fe29c4b9b54802793f55",
     "packages": [
         {
             "name": "arielmejiadev/larapex-charts",
@@ -7121,16 +7121,16 @@
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v12.0.1",
+            "version": "v12.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "9e6b686f04e4fab051c064992e1cb6275a0e97e9"
+                "reference": "bd64f4d801cb73c06c3d44b05330508a904b3de1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/9e6b686f04e4fab051c064992e1cb6275a0e97e9",
-                "reference": "9e6b686f04e4fab051c064992e1cb6275a0e97e9",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/bd64f4d801cb73c06c3d44b05330508a904b3de1",
+                "reference": "bd64f4d801cb73c06c3d44b05330508a904b3de1",
                 "shasum": ""
             },
             "require": {
@@ -7198,7 +7198,7 @@
             ],
             "support": {
                 "issues": "https://github.com/yajra/laravel-datatables/issues",
-                "source": "https://github.com/yajra/laravel-datatables/tree/v12.0.1"
+                "source": "https://github.com/yajra/laravel-datatables/tree/v12.0.0"
             },
             "funding": [
                 {
@@ -7206,7 +7206,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-04-07T14:57:21+00:00"
+            "time": "2025-02-26T13:54:38+00:00"
         }
     ],
     "packages-dev": [

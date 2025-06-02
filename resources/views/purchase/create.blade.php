@@ -62,7 +62,7 @@
                                     <i class="fa fa-calendar"></i>
                                 </span>
                                 <input type="text" name="transaction_date" id="transaction_date"
-                                    value="{{ @format_date('now') }}" class="form-control" readonly required>
+                                    value="@format_date('now')" class="form-control" readonly required>
                             </div>
                         </div>
                     </div>

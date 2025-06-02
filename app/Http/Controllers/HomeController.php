@@ -15,11 +15,11 @@ use App\Utils\TransactionUtil;
 
 use App\Utils\ModuleUtil;
 
-use Datatables;
 use Charts;
 use DB;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 use Carbon\Carbon;
+use Yajra\DataTables\Facades\DataTables;
 
 class HomeController extends Controller
 {
@@ -153,20 +153,29 @@ class HomeController extends Controller
         //                     ->labels($labels)
         //                     ->elementLabel(__('home.total_sells', ['currency' => $currency->code]));
 
+        // $sells_chart_1 = (new LarapexChart)
+        //     ->lineChart()
+        //     ->setTitle(' ')
+        //     ->setLabels($labels) // Use the same labels
+        //     ->setDataLabels(__('home.total_sells', ['currency' => $currency->code]))
+        //     ->setDataset([]);
+
         $sells_chart_1 = (new LarapexChart)
-            ->lineChart()
-            ->setTitle(' ')
-            ->setLabels($labels) // Use the same labels
-            ->setDataLabels(__('home.total_sells', ['currency' => $currency->code]))
-            ->setDataset([]);
+        ->lineChart()
+        ->setTitle(__('home.total_sells', ['currency' => $currency->code]))
+        ->setXAxis($labels)
+        ->setHeight(400)
+        ->setGrid(true)
+        ->setMarkers();
+        
 
         if (!empty($location_sells)) {
             foreach ($location_sells as $location_sell) {
-                $sells_chart_1->dataset($location_sell['loc_label'], $location_sell['values']);
+                $sells_chart_1->addLine($location_sell['loc_label'], $location_sell['values']);
             }
         }
 
-        $sells_chart_1->dataset(__('report.all_locations'), $all_sell_values);
+        $sells_chart_1->addLine(__('report.all_locations'), $all_sell_values);
 
         //Chart for sells this financial year
         $sells_this_fy = $this->transactionUtil->getSellsCurrentFy($business_id, $fy['start'], $fy['end']);
@@ -226,21 +235,23 @@ class HomeController extends Controller
         //                         ['currency' => $currency->code]
         //                     ));
 
-        $sells_chart_2 = (new LarapexChart)
-            ->lineChart()
-            ->setTitle(' ')
-            ->setLabels($labels) // Use the same labels
-            ->setDataLabels(__('home.total_sells', ['currency' => $currency->code]))
-            ->setDataset([]);
+
+            $sells_chart_2 = (new LarapexChart)
+        ->lineChart()
+        ->setTitle(__('home.total_sells', ['currency' => $currency->code]))
+        ->setXAxis($labels)
+        ->setHeight(400)
+        ->setGrid(true)
+        ->setMarkers();
 
 
         if (!empty($fy_sells_by_location_data)) {
             foreach ($fy_sells_by_location_data as $location_sell) {
-                $sells_chart_2->dataset($location_sell['loc_label'], $location_sell['values']);
+                $sells_chart_2->addLine($location_sell['loc_label'], $location_sell['values']);
             }
         }
 
-        $sells_chart_2->dataset(__('report.all_locations'), $values);
+        $sells_chart_2->addLine(__('report.all_locations'), $values);
 
         //Get Dashboard widgets from module
         $module_widgets = $this->moduleUtil->getModuleData('dashboard_widget');

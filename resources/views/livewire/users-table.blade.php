@@ -29,11 +29,8 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th sortable wire:click="sortBy('username')" class="cursor-pointer">
+                                <th class="cursor-pointer">
                                     @lang( 'business.username' )
-                                    @if ($sortColumn === 'username') 
-                                        {{ $sortDirection === 'asc' ? '▲' : '▼' }}
-                                    @endif
                                 </th>
                                 <th>@lang( 'user.name' )</th>
                                 <th>@lang( 'user.role' )</th>

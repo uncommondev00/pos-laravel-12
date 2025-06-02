@@ -73,7 +73,7 @@
                                     <i class="fa fa-calendar"></i>
                                 </span>
                                 <input type="text" name="transaction_date" id="transaction_date"
-                                    value="{{ @format_date($purchase->transaction_date) }}" class="form-control" readonly
+                                    value="@format_date($purchase->transaction_date)" class="form-control" readonly
                                     required>
                             </div>
                         </div>

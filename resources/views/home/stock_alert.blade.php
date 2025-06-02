@@ -12,7 +12,6 @@
 <!-- Main content -->
 <section class="content no-print">
    @can('stock_report.view')
-         <div class="col-sm-12">
           @component('components.widget', ['class' => 'box-warning'])
             @slot('icon')
               <i class="fa fa-exclamation-triangle text-yellow" aria-hidden="true"></i>
@@ -20,6 +19,7 @@
             @slot('title')
               {{ __('home.product_stock_alert') }} @show_tooltip(__('tooltip.product_stock_alert'))
             @endslot
+            <div class="table-responsive">
             <table class="table table-bordered table-striped" id="stock_alert_table">
               <thead>
                 <tr>
@@ -29,8 +29,9 @@
                 </tr>
               </thead>
             </table>
+            </div>
           @endcomponent
-      </div>
+    
       @endcan
 </section>
 

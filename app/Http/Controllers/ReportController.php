@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Charts;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 

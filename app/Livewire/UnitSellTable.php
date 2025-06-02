@@ -7,6 +7,7 @@ use Livewire\WithPagination;
 use App\Models\Transaction;
 use App\Models\BusinessLocation;
 use App\Models\Contact;
+use App\Traits\WithSortingSearchPagination;
 use App\Utils\TransactionUtil;
 use App\Utils\BusinessUtil;
 use Illuminate\Support\Facades\DB;
@@ -14,9 +15,8 @@ use Illuminate\Support\Facades\Auth;
 
 class UnitSellTable extends Component
 {
-    use WithPagination;
-
-    public $search = '';
+    use WithPagination, WithSortingSearchPagination;
+    // Define your filters
     public $start_date = '';
     public $end_date = '';
     public $payment_status = '';
@@ -26,56 +26,33 @@ class UnitSellTable extends Component
     public $commission_agent = '';
     public $res_waiter_id = '';
     public $sub_type = '';
-    public $sortField = 'transaction_date';
-    public $sortDirection = 'desc';
-    public $perPage = 10;
-
-    protected $queryString = [
-        'search' => ['except' => ''],
-        'start_date' => ['except' => ''],
-        'end_date' => ['except' => ''],
-        'payment_status' => ['except' => ''],
-        'location_id' => ['except' => ''],
-        'customer_id' => ['except' => ''],
-        'is_direct_sale' => ['except' => ''],
-        'commission_agent' => ['except' => ''],
-        'res_waiter_id' => ['except' => ''],
-        'sub_type' => ['except' => ''],
-        'sortField' => ['except' => 'transaction_date'],
-        'sortDirection' => ['except' => 'desc'],
-        'page' => ['except' => 1],
-    ];
 
     public function mount()
     {
-        $this->search = request()->get('search', '');
-        $this->start_date = request()->get('start_date', '');
-        $this->end_date = request()->get('end_date', '');
-        $this->payment_status = request()->get('payment_status', '');
-        $this->location_id = request()->get('location_id', '');
-        $this->customer_id = request()->get('customer_id', '');
-        $this->is_direct_sale = request()->get('is_direct_sale', '');
-        $this->commission_agent = request()->get('commission_agent', '');
-        $this->res_waiter_id = request()->get('res_waiter_id', '');
-        $this->sub_type = request()->get('sub_type', '');
-    }
+        
+        
+        // $this->sortField = 'created_at'; // Different default sort field
+        // $this->sortDirection = 'desc';   // Different default sort direction
+        // $this->perPageOptions = [5, 10, 25]; // Different page size options
+        $this->mountWithSortingSearchPagination();
 
-    public function sortBy($field)
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
-    }
+        $this->filterConfig = [
+            'start_date' => '',
+        'end_date' => '',
+        'payment_status' => '',
+        'location_id' => '',
+        'customer_id' => '',
+        'is_direct_sale' => '',
+        'commission_agent' => '',
+        'res_waiter_id' => '',
+        'sub_type' => '',
+        ];
+        
 
-    public function updatingSearch()
-    {
-        $this->resetPage();
     }
-
     
+
+   
 
     public function render()
     {
@@ -161,7 +138,7 @@ class UnitSellTable extends Component
         $query->orderBy($this->sortField, $this->sortDirection);
 
         $sells = $query->groupBy('transactions.id')
-                      ->paginate($this->perPage);
+                     ->paginate($this->perPage == -1 ? 9999 : $this->perPage);
         
         $business_locations = BusinessLocation::forDropdown($business_id, false);
         $customers = Contact::customersDropdown($business_id, false);
