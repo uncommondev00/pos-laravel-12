@@ -24,12 +24,12 @@ class CustomerGroupController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $customer_group = CustomerGroup::where('business_id', $business_id)
-                                ->select(['name', 'amount', 'id']);
+                ->select(['name', 'amount', 'id']);
 
             return Datatables::of($customer_group)
-                    ->addColumn(
-                        'action',
-                        '@can("customer.update")
+                ->addColumn(
+                    'action',
+                    '@can("customer.update")
                             <button data-href="{{action(\'CustomerGroupController@edit\', [$id])}}" class="btn btn-xs btn-primary edit_customer_group_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
                         &nbsp;
                         @endcan
@@ -37,10 +37,10 @@ class CustomerGroupController extends Controller
                         @can("customer.delete")
                             <button data-href="{{action(\'CustomerGroupController@destroy\', [$id])}}" class="btn btn-xs btn-danger delete_customer_group_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
                         @endcan'
-                    )
-                    ->removeColumn('id')
-                    ->rawColumns([2])
-                    ->make(false);
+                )
+                ->removeColumn('id')
+                ->rawColumns([2])
+                ->make(false);
         }
 
         return view('customer_group.index');
@@ -78,16 +78,18 @@ class CustomerGroupController extends Controller
             $input['created_by'] = $request->session()->get('user.id');
 
             $customer_group = CustomerGroup::create($input);
-            $output = ['success' => true,
-                            'data' => $customer_group,
-                            'msg' => __("lang_v1.success")
-                        ];
+            $output = [
+                'success' => true,
+                'data' => $customer_group,
+                'msg' => __("lang_v1.success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -96,7 +98,7 @@ class CustomerGroupController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CustomerGroup  $customerGroup
+     * @param  \App\Models\CustomerGroup  $customerGroup
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -137,15 +139,17 @@ class CustomerGroupController extends Controller
                 $customer_group->amount = $input['amount'];
                 $customer_group->save();
 
-                $output = ['success' => true,
-                            'msg' => __("lang_v1.success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("lang_v1.success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -171,15 +175,17 @@ class CustomerGroupController extends Controller
                 $cg = CustomerGroup::where('business_id', $business_id)->findOrFail($id);
                 $cg->delete();
 
-                $output = ['success' => true,
-                            'msg' => __("lang_v1.success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("lang_v1.success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;

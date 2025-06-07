@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\ExpenseCategory;
+use App\Models\ExpenseCategory;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -23,7 +23,7 @@ class ExpenseCategoryController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $expense_category = ExpenseCategory::where('business_id', $business_id)
-                        ->select(['name', 'code', 'id']);
+                ->select(['name', 'code', 'id']);
 
             return Datatables::of($expense_category)
                 ->addColumn(
@@ -71,15 +71,17 @@ class ExpenseCategoryController extends Controller
             $input['business_id'] = $request->session()->get('user.business_id');
 
             ExpenseCategory::create($input);
-            $output = ['success' => true,
-                            'msg' => __("expense.added_success")
-                        ];
+            $output = [
+                'success' => true,
+                'msg' => __("expense.added_success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -88,7 +90,7 @@ class ExpenseCategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ExpenseCategory  $expenseCategory
+     * @param  \App\Models\ExpenseCategory  $expenseCategory
      * @return \Illuminate\Http\Response
      */
     public function show(ExpenseCategory $expenseCategory)
@@ -113,7 +115,7 @@ class ExpenseCategoryController extends Controller
             $expense_category = ExpenseCategory::where('business_id', $business_id)->find($id);
 
             return view('expense_category.edit')
-                    ->with(compact('expense_category'));
+                ->with(compact('expense_category'));
         }
     }
 
@@ -140,15 +142,17 @@ class ExpenseCategoryController extends Controller
                 $expense_category->code = $input['code'];
                 $expense_category->save();
 
-                $output = ['success' => true,
-                            'msg' => __("expense.updated_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("expense.updated_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -174,15 +178,17 @@ class ExpenseCategoryController extends Controller
                 $expense_category = ExpenseCategory::where('business_id', $business_id)->findOrFail($id);
                 $expense_category->delete();
 
-                $output = ['success' => true,
-                            'msg' => __("expense.deleted_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("expense.deleted_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;

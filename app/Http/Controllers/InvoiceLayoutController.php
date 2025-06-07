@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Validator;
 use App\Utils\Util;
 
+
+
 class InvoiceLayoutController extends Controller
 {
     protected $designs;
@@ -194,7 +196,7 @@ class InvoiceLayoutController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\InvoiceLayout  $invoiceLayout
+     * @param  \App\Models\InvoiceLayout  $invoiceLayout
      * @return \Illuminate\Http\Response
      */
     public function show(InvoiceLayout $invoiceLayout)
@@ -205,7 +207,7 @@ class InvoiceLayoutController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\InvoiceLayout  $invoiceLayout
+     * @param  \App\Models\InvoiceLayout  $invoiceLayout
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -230,7 +232,7 @@ class InvoiceLayoutController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\InvoiceLayout  $invoiceLayout
+     * @param  \App\Models\InvoiceLayout  $invoiceLayout
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -365,7 +367,7 @@ class InvoiceLayoutController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\InvoiceLayout  $invoiceLayout
+     * @param  \App\Models\InvoiceLayout  $invoiceLayout
      * @return \Illuminate\Http\Response
      */
     public function destroy(InvoiceLayout $invoiceLayout)

@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Transaction;
-use App\ExpenseCategory;
-use App\BusinessLocation;
-use App\User;
-use App\AccountTransaction;
-    
+use App\Models\Transaction;
+use App\Models\ExpenseCategory;
+use App\Models\BusinessLocation;
+use App\Models\User;
+use App\Models\AccountTransaction;
+
 use Validator;
 
 use Yajra\DataTables\Facades\DataTables;
@@ -22,11 +22,11 @@ use DB;
 class ExpenseController extends Controller
 {
     /**
-    * Constructor
-    *
-    * @param TransactionUtil $transactionUtil
-    * @return void
-    */
+     * Constructor
+     *
+     * @param TransactionUtil $transactionUtil
+     * @return void
+     */
     public function __construct(TransactionUtil $transactionUtil, ModuleUtil $moduleUtil)
     {
         $this->transactionUtil = $transactionUtil;
@@ -48,35 +48,35 @@ class ExpenseController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $expenses = Transaction::leftJoin('expense_categories AS ec', 'transactions.expense_category_id', '=', 'ec.id')
-                        ->join(
-                            'business_locations AS bl',
-                            'transactions.location_id',
-                            '=',
-                            'bl.id'
-                        )
-                        ->leftJoin('users AS U', 'transactions.expense_for', '=', 'U.id')
-                        ->leftJoin(
-                            'transaction_payments AS TP',
-                            'transactions.id',
-                            '=',
-                            'TP.transaction_id'
-                        )
-                        ->where('transactions.business_id', $business_id)
-                        ->where('transactions.type', 'expense')
-                        ->select(
-                            'transactions.id',
-                            'transactions.document',
-                            'transaction_date',
-                            'ref_no',
-                            'ec.name as category',
-                            'payment_status',
-                            'additional_notes',
-                            'final_total',
-                            'bl.name as location_name',
-                            DB::raw("CONCAT(COALESCE(U.surname, ''),' ',COALESCE(U.first_name, ''),' ',COALESCE(U.last_name,'')) as expense_for"),
-                            DB::raw('SUM(TP.amount) as amount_paid')
-                        )
-                        ->groupBy('transactions.id');
+                ->join(
+                    'business_locations AS bl',
+                    'transactions.location_id',
+                    '=',
+                    'bl.id'
+                )
+                ->leftJoin('users AS U', 'transactions.expense_for', '=', 'U.id')
+                ->leftJoin(
+                    'transaction_payments AS TP',
+                    'transactions.id',
+                    '=',
+                    'TP.transaction_id'
+                )
+                ->where('transactions.business_id', $business_id)
+                ->where('transactions.type', 'expense')
+                ->select(
+                    'transactions.id',
+                    'transactions.document',
+                    'transaction_date',
+                    'ref_no',
+                    'ec.name as category',
+                    'payment_status',
+                    'additional_notes',
+                    'final_total',
+                    'bl.name as location_name',
+                    DB::raw("CONCAT(COALESCE(U.surname, ''),' ',COALESCE(U.first_name, ''),' ',COALESCE(U.last_name,'')) as expense_for"),
+                    DB::raw('SUM(TP.amount) as amount_paid')
+                )
+                ->groupBy('transactions.id');
 
             //Add condition for expense for,used in sales representative expense report & list of expense
             if (request()->has('expense_for')) {
@@ -107,7 +107,7 @@ class ExpenseController extends Controller
                 $start = request()->start_date;
                 $end =  request()->end_date;
                 $expenses->whereDate('transaction_date', '>=', $start)
-                        ->whereDate('transaction_date', '<=', $end);
+                    ->whereDate('transaction_date', '<=', $end);
             }
 
             //Add condition for expense category, used in list of expense,
@@ -122,19 +122,19 @@ class ExpenseController extends Controller
             if ($permitted_locations != 'all') {
                 $expenses->whereIn('transactions.location_id', $permitted_locations);
             }
-            
+
             return Datatables::of($expenses)
                 ->addColumn(
                     'action',
                     '<div class="btn-group">
-                        <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
+                        <button type="button" class="btn btn-info dropdown-toggle btn-xs"
                             data-toggle="dropdown" aria-expanded="false"> @lang("messages.actions")<span class="caret"></span><span class="sr-only">Toggle Dropdown
                                 </span>
                         </button>
                     <ul class="dropdown-menu dropdown-menu-right" role="menu">
                     <li><a href="{{action(\'ExpenseController@edit\', [$id])}}"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
                     @if($document)
-                        <li><a href="{{ url(\'uploads/documents/\' . $document)}}" 
+                        <li><a href="{{ url(\'uploads/documents/\' . $document)}}"
                         download=""><i class="fa fa-download" aria-hidden="true"></i> @lang("purchase.download_document")</a></li>
                         @if(isFileImage($document))
                             <li><a href="#" data-href="{{ url(\'uploads/documents/\' . $document)}}" class="view_uploaded_document"><i class="fa fa-picture-o" aria-hidden="true"></i>@lang("lang_v1.view_document")</a></li>
@@ -142,7 +142,7 @@ class ExpenseController extends Controller
                     @endif
                     <li>
                         <a data-href="{{action(\'ExpenseController@destroy\', [$id])}}" class="delete_expense"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a></li>
-                    <li class="divider"></li> 
+                    <li class="divider"></li>
                     @if($payment_status != "paid")
                         <li><a href="{{action("TransactionPaymentController@addPayment", [$id])}}" class="add_payment_modal"><i class="fa fa-money" aria-hidden="true"></i> @lang("purchase.add_payment")</a></li>
                     @endif
@@ -171,7 +171,7 @@ class ExpenseController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         $categories = ExpenseCategory::where('business_id', $business_id)
-                            ->pluck('name', 'id');
+            ->pluck('name', 'id');
 
         $users = User::forDropdown($business_id, false, true, true);
 
@@ -193,7 +193,7 @@ class ExpenseController extends Controller
         }
 
         $business_id = request()->session()->get('user.business_id');
-        
+
         //Check if subscribed or not
         if (!$this->moduleUtil->isSubscribed($business_id)) {
             return $this->moduleUtil->expiredResponse(action('ExpenseController@index'));
@@ -202,9 +202,9 @@ class ExpenseController extends Controller
         $business_locations = BusinessLocation::forDropdown($business_id);
 
         $expense_categories = ExpenseCategory::where('business_id', $business_id)
-                                ->pluck('name', 'id');
+            ->pluck('name', 'id');
         $users = User::forDropdown($business_id, true, true);
-        
+
         return view('expense.create')
             ->with(compact('expense_categories', 'business_locations', 'users'));
     }
@@ -231,10 +231,10 @@ class ExpenseController extends Controller
 
             //Validate document size
             $request->validate([
-                'document' => 'file|max:'. (config('constants.document_size_limit') / 1000)
+                'document' => 'file|max:' . (config('constants.document_size_limit') / 1000)
             ]);
 
-            $transaction_data = $request->only([ 'ref_no', 'transaction_date', 'location_id', 'final_total', 'expense_for', 'additional_notes', 'expense_category_id']);
+            $transaction_data = $request->only(['ref_no', 'transaction_date', 'location_id', 'final_total', 'expense_for', 'additional_notes', 'expense_category_id']);
 
             $user_id = $request->session()->get('user.id');
             $transaction_data['business_id'] = $business_id;
@@ -265,15 +265,17 @@ class ExpenseController extends Controller
 
 
 
-            $output = ['success' => 1,
-                            'msg' => __('expense.expense_add_success')
-                        ];
+            $output = [
+                'success' => 1,
+                'msg' => __('expense.expense_add_success')
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => 0,
-                            'msg' => __('messages.something_went_wrong')
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => 0,
+                'msg' => __('messages.something_went_wrong')
+            ];
         }
 
         return redirect('expenses')->with('status', $output);
@@ -312,10 +314,10 @@ class ExpenseController extends Controller
         $business_locations = BusinessLocation::forDropdown($business_id);
 
         $expense_categories = ExpenseCategory::where('business_id', $business_id)
-                                ->pluck('name', 'id');
+            ->pluck('name', 'id');
         $expense = Transaction::where('business_id', $business_id)
-                                ->where('id', $id)
-                                ->first();
+            ->where('id', $id)
+            ->first();
         $users = User::forDropdown($business_id, true, true);
 
         return view('expense.edit')
@@ -338,18 +340,18 @@ class ExpenseController extends Controller
         try {
             //Validate document size
             $request->validate([
-                'document' => 'file|max:'. (config('constants.document_size_limit') / 1000)
+                'document' => 'file|max:' . (config('constants.document_size_limit') / 1000)
             ]);
 
-            $transaction_data = $request->only([ 'ref_no', 'transaction_date', 'location_id', 'final_total', 'expense_for', 'additional_notes', 'expense_category_id']);
+            $transaction_data = $request->only(['ref_no', 'transaction_date', 'location_id', 'final_total', 'expense_for', 'additional_notes', 'expense_category_id']);
 
             $business_id = $request->session()->get('user.business_id');
-            
+
             //Check if subscribed or not
             if (!$this->moduleUtil->isSubscribed($business_id)) {
                 return $this->moduleUtil->expiredResponse(action('ExpenseController@index'));
             }
-        
+
             $transaction_data['transaction_date'] = \Carbon::createFromFormat(
                 'm/d/Y',
                 $transaction_data['transaction_date']
@@ -366,18 +368,20 @@ class ExpenseController extends Controller
             }
 
             $transaction = Transaction::where('business_id', $business_id)
-                                ->where('id', $id)
-                                ->update($transaction_data);
+                ->where('id', $id)
+                ->update($transaction_data);
 
-            $output = ['success' => 1,
-                            'msg' => __('expense.expense_update_success')
-                        ];
+            $output = [
+                'success' => 1,
+                'msg' => __('expense.expense_update_success')
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => 0,
-                            'msg' => __('messages.something_went_wrong')
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => 0,
+                'msg' => __('messages.something_went_wrong')
+            ];
         }
 
         return redirect('expenses')->with('status', $output);
@@ -400,23 +404,25 @@ class ExpenseController extends Controller
                 $business_id = request()->session()->get('user.business_id');
 
                 $expense = Transaction::where('business_id', $business_id)
-                                        ->where('type', 'expense')
-                                        ->where('id', $id)
-                                        ->first();
+                    ->where('type', 'expense')
+                    ->where('id', $id)
+                    ->first();
                 $expense->delete();
 
                 //Delete account transactions
                 AccountTransaction::where('transaction_id', $expense->id)->delete();
 
-                $output = ['success' => true,
-                            'msg' => __("expense.expense_delete_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("expense.expense_delete_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Denomination;
+use App\Models\Denomination;
 
 use App\Utils\CashRegisterUtil;
 
@@ -36,7 +36,7 @@ class DenominationController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-	 public function getDenonimation()
+    public function getDenonimation()
     {
         $register_details =  $this->cashRegisterUtil->getRegisterDetails();
 
@@ -49,7 +49,7 @@ class DenominationController extends Controller
     }
 
 
-     public function openDrawer()
+    public function openDrawer()
     {
 
         return view('open');

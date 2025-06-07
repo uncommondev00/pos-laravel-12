@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\CashRegister;
+use App\Models\CashRegister;
 use Illuminate\Http\Request;
 
 use App\Utils\CashRegisterUtil;
@@ -71,18 +71,18 @@ class CashRegisterController extends Controller
             $business_id = $request->session()->get('user.business_id');
 
             $register = CashRegister::create([
-                        'business_id' => $business_id,
-                        'user_id' => $user_id,
-                        'status' => 'open'
-                    ]);
+                'business_id' => $business_id,
+                'user_id' => $user_id,
+                'status' => 'open'
+            ]);
             $register->cash_register_transactions()->create([
-                            'amount' => $initial_amount,
-                            'pay_method' => 'cash',
-                            'type' => 'credit',
-                            'transaction_type' => 'initial'
-                        ]);
+                'amount' => $initial_amount,
+                'pay_method' => 'cash',
+                'type' => 'credit',
+                'transaction_type' => 'initial'
+            ]);
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
         }
 
         return redirect()->action('SellPosController@create');
@@ -103,7 +103,7 @@ class CashRegisterController extends Controller
         $details = $this->cashRegisterUtil->getRegisterTransactionDetails($user_id, $open_time, $close_time);
 
         return view('cash_register.register_details')
-                    ->with(compact('register_details', 'details'));
+            ->with(compact('register_details', 'details'));
     }
 
     /**
@@ -122,7 +122,7 @@ class CashRegisterController extends Controller
         $details = $this->cashRegisterUtil->getRegisterTransactionDetails($user_id, $open_time, $close_time);
 
         return view('cash_register.register_details')
-                ->with(compact('register_details', 'details'));
+            ->with(compact('register_details', 'details'));
     }
 
     /**
@@ -141,7 +141,7 @@ class CashRegisterController extends Controller
         $details = $this->cashRegisterUtil->getRegisterTransactionDetails($user_id, $open_time, $close_time);
 
         return view('cash_register.close_register_modal')
-                    ->with(compact('register_details', 'details'));
+            ->with(compact('register_details', 'details'));
     }
 
     /**
@@ -155,14 +155,19 @@ class CashRegisterController extends Controller
         try {
             //Disable in demo
             if (config('app.env') == 'demo') {
-                $output = ['success' => 0,
-                                'msg' => 'Feature disabled in demo!!'
-                            ];
+                $output = [
+                    'success' => 0,
+                    'msg' => 'Feature disabled in demo!!'
+                ];
                 return redirect()->action('HomeController@index')->with('status', $output);
             }
-            
-            $input = $request->only(['closing_amount', 'total_card_slips', 'total_cheques',
-                                    'closing_note']);
+
+            $input = $request->only([
+                'closing_amount',
+                'total_card_slips',
+                'total_cheques',
+                'closing_note'
+            ]);
             $input['closing_amount'] = $this->cashRegisterUtil->num_uf($input['closing_amount']);
             $user_id = $request->session()->get('user.id');
             $input['closed_at'] = \Carbon::now()->format('Y-m-d H:i:s');
@@ -179,16 +184,18 @@ class CashRegisterController extends Controller
             $input['status'] = 'close';
 
             CashRegister::where('user_id', $user_id)
-                                ->where('status', 'open')
-                                ->update($input);
-            $output = ['success' => 1,
-                            'msg' => __('cash_register.close_success')
-                        ];
+                ->where('status', 'open')
+                ->update($input);
+            $output = [
+                'success' => 1,
+                'msg' => __('cash_register.close_success')
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            $output = ['success' => 0,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+            $output = [
+                'success' => 0,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return redirect()->action('HomeController@index')->with('status', $output);

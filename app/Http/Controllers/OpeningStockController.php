@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Product;
-use App\Transaction;
-use App\BusinessLocation;
-use App\PurchaseLine;
-use App\ProductStockLog;
-use App\ProductPriceLog;
+use App\Models\Product;
+use App\Models\Transaction;
+use App\Models\BusinessLocation;
+use App\Models\PurchaseLine;
+use App\Models\ProductStockLog;
+use App\Models\ProductPriceLog;
 
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
@@ -54,34 +54,34 @@ class OpeningStockController extends Controller
 
         //Get the product
         $product = Product::where('business_id', $business_id)
-                            ->where('id', $product_id)
-                            ->with(['variations', 'variations.product_variation', 'unit'])
-                            ->first();
+            ->where('id', $product_id)
+            ->with(['variations', 'variations.product_variation', 'unit'])
+            ->first();
 
         //Get the product stock logs
         $stock_logs = ProductStockLog::where('product_stock_logs.product_id', $product_id)
-                            ->where('product_stock_logs.business_id', $business_id)
-                            ->leftjoin('users', 'product_stock_logs.created_by', '=', 'users.id')
-                            ->select('previous_stock','current_stock','product_stock_logs.created_at','first_name','last_name')
-                            ->orderBy('product_stock_logs.id', 'DESC')
-                            ->paginate(6);
+            ->where('product_stock_logs.business_id', $business_id)
+            ->leftjoin('users', 'product_stock_logs.created_by', '=', 'users.id')
+            ->select('previous_stock', 'current_stock', 'product_stock_logs.created_at', 'first_name', 'last_name')
+            ->orderBy('product_stock_logs.id', 'DESC')
+            ->paginate(6);
 
         //Get the product price logs
         $price_logs = ProductPriceLog::where('product_price_logs.product_id', $product_id)
-                            ->where('product_price_logs.business_id', $business_id)
-                            ->leftjoin('users', 'product_price_logs.created_by', '=', 'users.id')
-                            ->select('previous_price','current_price','product_price_logs.created_at','first_name','last_name')
-                            ->orderBy('product_price_logs.id', 'DESC')
-                            ->paginate(2);
+            ->where('product_price_logs.business_id', $business_id)
+            ->leftjoin('users', 'product_price_logs.created_by', '=', 'users.id')
+            ->select('previous_price', 'current_price', 'product_price_logs.created_at', 'first_name', 'last_name')
+            ->orderBy('product_price_logs.id', 'DESC')
+            ->paginate(2);
 
         if (!empty($product) && $product->enable_stock == 1) {
             //Get Opening Stock Transactions for the product if exists
             $transactions = Transaction::where('business_id', $business_id)
-                                ->where('opening_stock_product_id', $product_id)
-                                ->where('type', 'opening_stock')
-                                ->with(['purchase_lines'])
-                                ->get();
-                                
+                ->where('opening_stock_product_id', $product_id)
+                ->where('type', 'opening_stock')
+                ->with(['purchase_lines'])
+                ->get();
+
             $purchases = [];
             foreach ($transactions as $transaction) {
                 $purchase_lines = [];
@@ -123,15 +123,15 @@ class OpeningStockController extends Controller
             }
 
             return view('opening_stock.add')
-                    ->with(compact(
-                        'product',
-                        'stock_logs',
-                        'price_logs',
-                        'locations',
-                        'purchases',
-                        'enable_expiry',
-                        'enable_lot'
-                    ));
+                ->with(compact(
+                    'product',
+                    'stock_logs',
+                    'price_logs',
+                    'locations',
+                    'purchases',
+                    'enable_expiry',
+                    'enable_lot'
+                ));
         }
     }
 
@@ -156,9 +156,9 @@ class OpeningStockController extends Controller
             $user_id = $request->session()->get('user.id');
 
             $product = Product::where('business_id', $business_id)
-                                ->where('id', $product_id)
-                                ->with(['variations', 'product_tax'])
-                                ->first();
+                ->where('id', $product_id)
+                ->with(['variations', 'product_tax'])
+                ->first();
 
             $locations = BusinessLocation::forDropdown($business_id)->toArray();
 
@@ -264,10 +264,10 @@ class OpeningStockController extends Controller
                             $is_new_transaction = false;
 
                             $transaction = Transaction::where('type', 'opening_stock')
-                                    ->where('business_id', $business_id)
-                                    ->where('opening_stock_product_id', $product->id)
-                                    ->where('location_id', $location_id)
-                                    ->first();
+                                ->where('business_id', $business_id)
+                                ->where('opening_stock_product_id', $product->id)
+                                ->where('location_id', $location_id)
+                                ->first();
                             if (!empty($transaction)) {
                                 $transaction->total_before_tax = $purchase_total;
                                 $transaction->final_total = $purchase_total;
@@ -295,8 +295,8 @@ class OpeningStockController extends Controller
                             $delete_purchase_line_ids = [];
                             $delete_purchase_lines = null;
                             $delete_purchase_lines = PurchaseLine::where('transaction_id', $transaction->id)
-                                        ->whereNotIn('id', $updated_purchase_line_ids)
-                                        ->get();
+                                ->whereNotIn('id', $updated_purchase_line_ids)
+                                ->get();
 
                             if ($delete_purchase_lines->count()) {
                                 foreach ($delete_purchase_lines as $delete_purchase_line) {
@@ -312,8 +312,8 @@ class OpeningStockController extends Controller
                                 }
                                 //Delete deleted purchase lines
                                 PurchaseLine::where('transaction_id', $transaction->id)
-                                            ->whereIn('id', $delete_purchase_line_ids)
-                                            ->delete();
+                                    ->whereIn('id', $delete_purchase_line_ids)
+                                    ->delete();
                             }
                             $transaction->purchase_lines()->saveMany($purchase_lines);
 
@@ -332,7 +332,7 @@ class OpeningStockController extends Controller
                                 ->where('location_id', $location_id)
                                 ->with(['purchase_lines'])
                                 ->first();
-                            
+
                             if (!empty($delete_transaction)) {
                                 $delete_purchase_lines = $delete_transaction->purchase_lines;
 
@@ -353,16 +353,18 @@ class OpeningStockController extends Controller
                 DB::commit();
             }
 
-            $output = ['success' => 1,
-                             'msg' => __('lang_v1.opening_stock_added_successfully')
-                        ];
+            $output = [
+                'success' => 1,
+                'msg' => __('lang_v1.opening_stock_added_successfully')
+            ];
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => 0,
-                            'msg' => $e->getMessage()
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => 0,
+                'msg' => $e->getMessage()
+            ];
             return back()->with('status', $output);
         }
 

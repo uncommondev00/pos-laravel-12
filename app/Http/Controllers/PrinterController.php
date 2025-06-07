@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Datatables;
+use Yajra\DataTables\DataTables;
 use App\Models\Printer;
 
 class PrinterController extends Controller

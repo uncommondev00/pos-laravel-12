@@ -59,12 +59,13 @@ use Illuminate\Support\Facades\Artisan;
 
 include_once('install_r.php');
 
+Route::get('/', function () {
+    return view('front_end.index');
+});
+
+
 Route::middleware(['IsInstalled'])->group(function () {
 
-    Route::get('/', function () {
-
-        return view('welcome');
-    });
 
     //clear cache if uploaded to NAS
     Route::get('/clear', function () {

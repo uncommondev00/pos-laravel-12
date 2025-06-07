@@ -755,7 +755,7 @@ $(document).ready(function() {
         get_sub_categories();
     });
     if ($('.product_form').length) {
-        
+
         show_product_type_form();
     }
     $('#type').change(function() {
@@ -1490,7 +1490,7 @@ $(document).ready(function() {
         });
     });
     //z reading modal
-    
+
     $('#view_z_reading').click(function() {
         $('#z_reading_modal').modal('show');
     });
@@ -1543,11 +1543,11 @@ $(document).ready(function() {
             },
         });
 
-        
+
 
     });
 
-    
+
 
     //Used for Purchase & Sell invoice.
     $(document).on('click', 'a.print-invoice', function(e) {
@@ -1981,7 +1981,7 @@ function get_sub_categories() {
     });
 }
 function show_product_type_form() {
-    
+
     var product_type = 'single';
     if ($('#type').val() === 'variable') {
         product_type = 'variable';

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\NotificationTemplate;
+use App\Models\NotificationTemplate;
 use Illuminate\Http\Request;
 use App\Utils\ModuleUtil;
 
@@ -79,7 +79,7 @@ class NotificationTemplateController extends Controller
         $tags = NotificationTemplate::notificationTags();
 
         return view('notification_template.index')
-                ->with(compact('customer_notifications', 'supplier_notifications', 'tags'));
+            ->with(compact('customer_notifications', 'supplier_notifications', 'tags'));
     }
 
     /**

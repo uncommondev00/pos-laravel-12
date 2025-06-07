@@ -23,7 +23,7 @@ class CategoryController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $category = Category::where('business_id', $business_id)
-                        ->select(['name', 'short_code', 'id', 'parent_id']);
+                ->select(['name', 'short_code', 'id', 'parent_id']);
 
             return Datatables::of($category)
                 ->addColumn(
@@ -65,9 +65,9 @@ class CategoryController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $categories = Category::where('business_id', $business_id)
-                        ->where('parent_id', 0)
-                        ->select(['name', 'short_code', 'id'])
-                        ->get();
+            ->where('parent_id', 0)
+            ->select(['name', 'short_code', 'id'])
+            ->get();
         $parent_categories = [];
         if (!empty($categories)) {
             foreach ($categories as $category) {
@@ -75,7 +75,7 @@ class CategoryController extends Controller
             }
         }
         return view('category.create')
-                    ->with(compact('parent_categories'));
+            ->with(compact('parent_categories'));
     }
 
     /**
@@ -101,16 +101,18 @@ class CategoryController extends Controller
             $input['created_by'] = $request->session()->get('user.id');
 
             $category = Category::create($input);
-            $output = ['success' => true,
-                            'data' => $category,
-                            'msg' => __("category.added_success")
-                        ];
+            $output = [
+                'success' => true,
+                'data' => $category,
+                'msg' => __("category.added_success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -119,7 +121,7 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Category  $category
+     * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
     public function show(Category $category)
@@ -142,19 +144,19 @@ class CategoryController extends Controller
         if (request()->ajax()) {
             $business_id = request()->session()->get('user.business_id');
             $category = Category::where('business_id', $business_id)->find($id);
-            
+
             $parent_categories = Category::where('business_id', $business_id)
-                                        ->where('parent_id', 0)
-                                        ->where('id', '!=', $id)
-                                        ->pluck('name', 'id');
-            
+                ->where('parent_id', 0)
+                ->where('id', '!=', $id)
+                ->pluck('name', 'id');
+
             $is_parent = false;
-            
+
             if ($category->parent_id == 0) {
                 $is_parent = true;
                 $selected_parent = null;
             } else {
-                $selected_parent = $category->parent_id ;
+                $selected_parent = $category->parent_id;
             }
 
             return view('category.edit')
@@ -190,15 +192,17 @@ class CategoryController extends Controller
                 }
                 $category->save();
 
-                $output = ['success' => true,
-                            'msg' => __("category.updated_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("category.updated_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -224,15 +228,17 @@ class CategoryController extends Controller
                 $category = Category::where('business_id', $business_id)->findOrFail($id);
                 $category->delete();
 
-                $output = ['success' => true,
-                            'msg' => __("category.deleted_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("category.deleted_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;

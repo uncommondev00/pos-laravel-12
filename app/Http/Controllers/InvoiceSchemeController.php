@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\InvoiceScheme;
 use App\Models\InvoiceLayout;
 use Illuminate\Http\Request;
-use Datatables;
+use Yajra\DataTables\DataTables;
+
+
+
+
 
 class InvoiceSchemeController extends Controller
 {

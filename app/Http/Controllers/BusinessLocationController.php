@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\BusinessLocation;
-use App\InvoiceLayout;
-use App\InvoiceScheme;
-    
-use Yajra\DataTables\Facades\DataTables;
+use App\Models\BusinessLocation;
+use App\Models\InvoiceLayout;
+use App\Models\InvoiceScheme;
+
+// use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
+
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 
@@ -56,22 +58,50 @@ class BusinessLocationController extends Controller
                     '=',
                     'il.id'
                 )
-                ->select(['business_locations.name', 'location_id', 'landmark', 'city', 'zip_code', 'state',
-                    'country', 'business_locations.id', 'ic.name as invoice_scheme', 'il.name as invoice_layout']);
+                ->select([
+                    'business_locations.name',
+                    'location_id',
+                    'landmark',
+                    'city',
+                    'zip_code',
+                    'state',
+                    'country',
+                    'business_locations.id',
+                    'ic.name as invoice_scheme',
+                    'il.name as invoice_layout'
+                ]);
 
             $permitted_locations = auth()->user()->permitted_locations();
             if ($permitted_locations != 'all') {
                 $locations->whereIn('business_locations.id', $permitted_locations);
             }
 
-            return Datatables::of($locations)
-                ->addColumn(
-                    'action',
-                    '<button type="button" data-href="{{action(\'BusinessLocationController@edit\', [$id])}}" class="btn btn-xs btn-primary btn-modal" data-container=".location_edit_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
 
-                    <a href="{{route(\'location.settings\', [$id])}}" class="btn btn-success btn-xs"><i class="fa fa-wrench"></i> @lang("messages.settings")</a>
-                    '
-                )
+            // ->addColumn('action', function ($row) {
+            //     $editUrl = route('business-location.edit', [$row->id]);
+            //     // $settingsUrl = route('location.settings', [$row->id]);
+
+            //     return '<button type="button" data-href="' . $editUrl . '" class="btn btn-xs btn-primary btn-modal" data-container=".location_edit_modal">
+            //             <i class="glyphicon glyphicon-edit"></i> ' . __('messages.edit') . '
+            //         </button>
+            //         <a href="#" class="btn btn-success btn-xs">
+            //             <i class="fa fa-wrench"></i> ' . __('messages.settings') . '
+            //         </a>';
+            // })
+            // ->rawColumns(['action'])
+            // ->make(false);
+            return Datatables::of($locations)
+                ->addColumn('action', function ($row) {
+                    $editUrl = route('business-location.edit', [$row->id]);
+                    // $settingsUrl = route('location.settings', [$row->id]);
+
+                    return '<button type="button" data-href="' . $editUrl . '" class="btn btn-xs btn-primary btn-modal" data-container=".location_edit_modal">
+                        <i class="glyphicon glyphicon-edit"></i> ' . __('messages.edit') . '
+                    </button>
+                    <a href="#" class="btn btn-success btn-xs">
+                        <i class="fa fa-wrench"></i> ' . __('messages.settings') . '
+                    </a>';
+                })
                 ->removeColumn('id')
                 ->rawColumns([9])
                 ->make(false);
@@ -100,14 +130,14 @@ class BusinessLocationController extends Controller
         }
 
         $invoice_layouts = InvoiceLayout::where('business_id', $business_id)
-                            ->get()
-                            ->pluck('name', 'id');
+            ->get()
+            ->pluck('name', 'id');
 
         $invoice_schemes = InvoiceScheme::where('business_id', $business_id)
-                            ->get()
-                            ->pluck('name', 'id');
+            ->get()
+            ->pluck('name', 'id');
         return view('business_location.create')
-                    ->with(compact('invoice_layouts', 'invoice_schemes'));
+            ->with(compact('invoice_layouts', 'invoice_schemes'));
     }
 
     /**
@@ -132,8 +162,25 @@ class BusinessLocationController extends Controller
                 return $this->moduleUtil->quotaExpiredResponse('locations', $business_id);
             }
 
-            $input = $request->only(['name', 'landmark', 'city', 'state', 'country', 'zip_code', 'invoice_scheme_id',
-                'invoice_layout_id', 'mobile', 'alternate_number', 'email', 'website', 'custom_field1', 'custom_field2', 'custom_field3', 'custom_field4', 'location_id']);
+            $input = $request->only([
+                'name',
+                'landmark',
+                'city',
+                'state',
+                'country',
+                'zip_code',
+                'invoice_scheme_id',
+                'invoice_layout_id',
+                'mobile',
+                'alternate_number',
+                'email',
+                'website',
+                'custom_field1',
+                'custom_field2',
+                'custom_field3',
+                'custom_field4',
+                'location_id'
+            ]);
 
             $input['business_id'] = $business_id;
 
@@ -147,17 +194,19 @@ class BusinessLocationController extends Controller
             $location = BusinessLocation::create($input);
 
             //Create a new permission related to the created location
-            Permission::create(['name' => 'location.' . $location->id ]);
+            Permission::create(['name' => 'location.' . $location->id]);
 
-            $output = ['success' => true,
-                            'msg' => __("business.business_location_added_success")
-                        ];
+            $output = [
+                'success' => true,
+                'msg' => __("business.business_location_added_success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -166,7 +215,7 @@ class BusinessLocationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\StoreFront  $storeFront
+     * @param  \App\Models\StoreFront  $storeFront
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -177,7 +226,7 @@ class BusinessLocationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\StoreFront  $storeFront
+     * @param  \App\Models\StoreFront  $storeFront
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -188,23 +237,23 @@ class BusinessLocationController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $location = BusinessLocation::where('business_id', $business_id)
-                                    ->find($id);
+            ->find($id);
         $invoice_layouts = InvoiceLayout::where('business_id', $business_id)
-                            ->get()
-                            ->pluck('name', 'id');
+            ->get()
+            ->pluck('name', 'id');
         $invoice_schemes = InvoiceScheme::where('business_id', $business_id)
-                            ->get()
-                            ->pluck('name', 'id');
+            ->get()
+            ->pluck('name', 'id');
 
         return view('business_location.edit')
-                ->with(compact('location', 'invoice_layouts', 'invoice_schemes'));
+            ->with(compact('location', 'invoice_layouts', 'invoice_schemes'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\StoreFront  $storeFront
+     * @param  \App\Models\StoreFront  $storeFront
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -214,24 +263,43 @@ class BusinessLocationController extends Controller
         }
 
         try {
-            $input = $request->only(['name', 'landmark', 'city', 'state', 'country', 'zip_code', 'invoice_scheme_id',
-                'invoice_layout_id', 'mobile', 'alternate_number', 'email', 'website', 'custom_field1', 'custom_field2', 'custom_field3', 'custom_field4', 'location_id']);
-            
+            $input = $request->only([
+                'name',
+                'landmark',
+                'city',
+                'state',
+                'country',
+                'zip_code',
+                'invoice_scheme_id',
+                'invoice_layout_id',
+                'mobile',
+                'alternate_number',
+                'email',
+                'website',
+                'custom_field1',
+                'custom_field2',
+                'custom_field3',
+                'custom_field4',
+                'location_id'
+            ]);
+
             $business_id = $request->session()->get('user.business_id');
 
             BusinessLocation::where('business_id', $business_id)
-                            ->where('id', $id)
-                            ->update($input);
+                ->where('id', $id)
+                ->update($input);
 
-            $output = ['success' => true,
-                            'msg' => __('business.business_location_updated_success')
-                        ];
+            $output = [
+                'success' => true,
+                'msg' => __('business.business_location_updated_success')
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -240,7 +308,7 @@ class BusinessLocationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\StoreFront  $storeFront
+     * @param  \App\Models\StoreFront  $storeFront
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -249,11 +317,11 @@ class BusinessLocationController extends Controller
     }
 
     /**
-    * Checks if the given location id already exist for the current business.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
+     * Checks if the given location id already exist for the current business.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function checkLocationId(Request $request)
     {
         $location_id = $request->input('location_id');
@@ -264,7 +332,7 @@ class BusinessLocationController extends Controller
             $hidden_id = $request->input('hidden_id');
 
             $query = BusinessLocation::where('business_id', $business_id)
-                            ->where('location_id', $location_id);
+                ->where('location_id', $location_id);
             if (!empty($hidden_id)) {
                 $query->where('id', '!=', $hidden_id);
             }

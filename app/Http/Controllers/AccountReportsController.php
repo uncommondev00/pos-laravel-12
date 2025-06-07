@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Account;
-use App\TransactionPayment;
-use App\AccountTransaction;
+use App\Models\Account;
+use App\Models\TransactionPayment;
+use App\Models\AccountTransaction;
 use App\Utils\TransactionUtil;
 
 use Yajra\DataTables\Facades\DataTables;
@@ -143,10 +143,10 @@ class AccountReportsController extends Controller
             '=',
             'accounts.id'
         )
-                                // ->NotClosed()
-                                ->whereNull('AT.deleted_at')
-                                ->where('business_id', $business_id)
-                                ->whereDate('AT.operation_date', '<=', $end_date);
+            // ->NotClosed()
+            ->whereNull('AT.deleted_at')
+            ->where('business_id', $business_id)
+            ->whereDate('AT.operation_date', '<=', $end_date);
 
         // if ($account_type == 'others') {
         //    $query->NotCapital();
@@ -154,11 +154,13 @@ class AccountReportsController extends Controller
         //     $query->where('account_type', 'capital');
         // }
 
-        $account_details = $query->select(['name',
-                                        DB::raw("SUM( IF(AT.type='credit', amount, -1*amount) ) as balance")])
-                                ->groupBy('accounts.id')
-                                ->get()
-                                ->pluck('balance', 'name');
+        $account_details = $query->select([
+            'name',
+            DB::raw("SUM( IF(AT.type='credit', amount, -1*amount) ) as balance")
+        ])
+            ->groupBy('accounts.id')
+            ->get()
+            ->pluck('balance', 'name');
 
         return $account_details;
     }
@@ -182,21 +184,21 @@ class AccountReportsController extends Controller
                 '=',
                 'T.id'
             )
-                                    ->leftjoin('accounts as A', 'transaction_payments.account_id', '=', 'A.id')
-                                    ->where('transaction_payments.business_id', $business_id)
-                                    ->whereNull('transaction_payments.parent_id')
-                                    ->select([
-                                        'paid_on',
-                                        'payment_ref_no',
-                                        'T.ref_no',
-                                        'T.invoice_no',
-                                        'T.type',
-                                        'T.id as transaction_id',
-                                        'A.name as account_name',
-                                        'A.account_number',
-                                        'transaction_payments.id as payment_id',
-                                        'transaction_payments.account_id'
-                                    ]);
+                ->leftjoin('accounts as A', 'transaction_payments.account_id', '=', 'A.id')
+                ->where('transaction_payments.business_id', $business_id)
+                ->whereNull('transaction_payments.parent_id')
+                ->select([
+                    'paid_on',
+                    'payment_ref_no',
+                    'T.ref_no',
+                    'T.invoice_no',
+                    'T.type',
+                    'T.id as transaction_id',
+                    'A.name as account_name',
+                    'A.account_number',
+                    'transaction_payments.id as payment_id',
+                    'transaction_payments.account_id'
+                ]);
 
             $start_date = !empty(request()->input('start_date')) ? request()->input('start_date') : '';
             $end_date = !empty(request()->input('end_date')) ? request()->input('end_date') : '';
@@ -211,63 +213,63 @@ class AccountReportsController extends Controller
             }
 
             return DataTables::of($query)
-                    ->editColumn('paid_on', function ($row) {
-                        return $this->transactionUtil->format_date($row->paid_on, true);
-                    })
-                    ->addColumn('action', function ($row) {
-                        $action = '<button type="button" class="btn btn-info 
+                ->editColumn('paid_on', function ($row) {
+                    return $this->transactionUtil->format_date($row->paid_on, true);
+                })
+                ->addColumn('action', function ($row) {
+                    $action = '<button type="button" class="btn btn-info
                         btn-xs btn-modal"
-                        data-container=".view_modal" 
-                        data-href="' . action('AccountReportsController@getLinkAccount', [$row->payment_id]). '">' . __('account.link_account') .'</button>';
-                        
-                        return $action;
-                    })
-                    ->addColumn('account', function ($row) {
-                        $account = '';
-                        if (!empty($row->account_id)) {
-                            $account = $row->account_name . ' - ' . $row->account_number;
-                        }
-                        return $account;
-                    })
-                    ->addColumn('transaction_number', function ($row) {
-                        $html = $row->ref_no;
-                        if ($row->type == 'sell') {
-                            $html = '<button type="button" class="btn btn-link btn-modal"
-                                    data-href="' . action('SellController@show', [$row->transaction_id]) .'" data-container=".view_modal">' . $row->invoice_no . '</button>';
-                        } elseif ($row->type == 'purchase') {
-                            $html = '<button type="button" class="btn btn-link btn-modal"
-                                    data-href="' . action('PurchaseController@show', [$row->transaction_id]) .'" data-container=".view_modal">' . $row->ref_no . '</button>';
-                        }
-                        return $html;
-                    })
-                    ->editColumn('type', function ($row) {
-                        $type = $row->type;
-                        if ($row->type == 'sell') {
-                            $type = __('sale.sale');
-                        } elseif ($row->type == 'purchase') {
-                            $type = __('lang_v1.purchase');
-                        } elseif ($row->type == 'expense') {
-                            $type = __('lang_v1.expense');
-                        }
-                        return $type;
-                    })
-                    ->filterColumn('account', function ($query, $keyword) {
-                        $query->where('A.name', 'like', ["%{$keyword}%"])
-                            ->orWhere('account_number', 'like', ["%{$keyword}%"]);
-                    })
-                    ->filterColumn('transaction_number', function ($query, $keyword) {
-                        $query->where('T.invoice_no', 'like', ["%{$keyword}%"])
-                            ->orWhere('T.ref_no', 'like', ["%{$keyword}%"]);
-                    })
-                    ->rawColumns(['action', 'transaction_number'])
-                    ->make(true);
+                        data-container=".view_modal"
+                        data-href="' . action('AccountReportsController@getLinkAccount', [$row->payment_id]) . '">' . __('account.link_account') . '</button>';
+
+                    return $action;
+                })
+                ->addColumn('account', function ($row) {
+                    $account = '';
+                    if (!empty($row->account_id)) {
+                        $account = $row->account_name . ' - ' . $row->account_number;
+                    }
+                    return $account;
+                })
+                ->addColumn('transaction_number', function ($row) {
+                    $html = $row->ref_no;
+                    if ($row->type == 'sell') {
+                        $html = '<button type="button" class="btn btn-link btn-modal"
+                                    data-href="' . action('SellController@show', [$row->transaction_id]) . '" data-container=".view_modal">' . $row->invoice_no . '</button>';
+                    } elseif ($row->type == 'purchase') {
+                        $html = '<button type="button" class="btn btn-link btn-modal"
+                                    data-href="' . action('PurchaseController@show', [$row->transaction_id]) . '" data-container=".view_modal">' . $row->ref_no . '</button>';
+                    }
+                    return $html;
+                })
+                ->editColumn('type', function ($row) {
+                    $type = $row->type;
+                    if ($row->type == 'sell') {
+                        $type = __('sale.sale');
+                    } elseif ($row->type == 'purchase') {
+                        $type = __('lang_v1.purchase');
+                    } elseif ($row->type == 'expense') {
+                        $type = __('lang_v1.expense');
+                    }
+                    return $type;
+                })
+                ->filterColumn('account', function ($query, $keyword) {
+                    $query->where('A.name', 'like', ["%{$keyword}%"])
+                        ->orWhere('account_number', 'like', ["%{$keyword}%"]);
+                })
+                ->filterColumn('transaction_number', function ($query, $keyword) {
+                    $query->where('T.invoice_no', 'like', ["%{$keyword}%"])
+                        ->orWhere('T.ref_no', 'like', ["%{$keyword}%"]);
+                })
+                ->rawColumns(['action', 'transaction_number'])
+                ->make(true);
         }
 
         $accounts = Account::forDropdown($business_id, false);
         $accounts->prepend(__('messages.all'), '');
 
         return view('account_reports.payment_account_report')
-                ->with(compact('accounts'));
+            ->with(compact('accounts'));
     }
 
     /**
@@ -319,15 +321,17 @@ class AccountReportsController extends Controller
 
                 AccountTransaction::updateAccountTransaction($payment, $payment_type);
             }
-            $output = ['success' => true,
-                            'msg' => __("account.account_linked_success")
-                        ];
+            $output = [
+                'success' => true,
+                'msg' => __("account.account_linked_success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-                
-            $output = ['success' => false,
-                        'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;

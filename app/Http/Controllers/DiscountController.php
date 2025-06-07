@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Discount;
-use App\Brands;
-use App\Category;
-use App\BusinessLocation;
+use App\Models\Discount;
+use App\Models\Brands;
+use App\Models\Category;
+use App\Models\BusinessLocation;
 
 use Illuminate\Http\Request;
 
@@ -48,11 +48,20 @@ class DiscountController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $discounts = Discount::where('discounts.business_id', $business_id)
-                        ->leftjoin('brands as b', 'discounts.brand_id', '=', 'b.id')
-                        ->leftjoin('categories as c', 'discounts.category_id', '=', 'c.id')
-                        ->leftjoin('business_locations as l', 'discounts.location_id', '=', 'l.id')
-                        ->select(['discounts.id', 'discounts.name', 'starts_at', 'ends_at',
-                            'priority', 'b.name as brand', 'c.name as category', 'l.name as location', 'discounts.is_active']);
+                ->leftjoin('brands as b', 'discounts.brand_id', '=', 'b.id')
+                ->leftjoin('categories as c', 'discounts.category_id', '=', 'c.id')
+                ->leftjoin('business_locations as l', 'discounts.location_id', '=', 'l.id')
+                ->select([
+                    'discounts.id',
+                    'discounts.name',
+                    'starts_at',
+                    'ends_at',
+                    'priority',
+                    'b.name as brand',
+                    'c.name as category',
+                    'l.name as location',
+                    'discounts.is_active'
+                ]);
 
             return Datatables::of($discounts)
                 ->addColumn(
@@ -67,7 +76,7 @@ class DiscountController extends Controller
                         '
                 )
                 ->addColumn('row_select', function ($row) {
-                    return  '<input type="checkbox" class="row-select" value="' . $row->id .'">' ;
+                    return  '<input type="checkbox" class="row-select" value="' . $row->id . '">';
                 })
                 ->editColumn('name', function ($row) {
                     $name = $row->is_active != 1 ? $row->name . ' <span class="label bg-yellow">' . __('lang_v1.inactive') . '</sapn>' : $row->name;
@@ -102,15 +111,15 @@ class DiscountController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         $categories = Category::where('business_id', $business_id)
-                            ->where('parent_id', 0)
-                            ->pluck('name', 'id');
+            ->where('parent_id', 0)
+            ->pluck('name', 'id');
 
         $brands = Brands::forDropdown($business_id);
 
         $locations = BusinessLocation::forDropdown($business_id);
 
         return view('discount.create')
-                ->with(compact('categories', 'brands', 'locations'));
+            ->with(compact('categories', 'brands', 'locations'));
     }
 
     /**
@@ -126,8 +135,15 @@ class DiscountController extends Controller
         }
 
         try {
-            $input = $request->only(['name', 'brand_id', 'category_id',
-                'location_id', 'priority', 'discount_type', 'discount_amount']);
+            $input = $request->only([
+                'name',
+                'brand_id',
+                'category_id',
+                'location_id',
+                'priority',
+                'discount_type',
+                'discount_amount'
+            ]);
 
             $business_id = $request->session()->get('user.business_id');
             $input['business_id'] = $business_id;
@@ -141,15 +157,17 @@ class DiscountController extends Controller
             }
 
             $discount = Discount::create($input);
-            $output = ['success' => true,
-                            'msg' => __("lang_v1.added_success")
-                        ];
+            $output = [
+                'success' => true,
+                'msg' => __("lang_v1.added_success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -158,7 +176,7 @@ class DiscountController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Discount  $discount
+     * @param  \App\Models\Discount  $discount
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -174,8 +192,8 @@ class DiscountController extends Controller
             $ends_at = $this->commonUtil->format_date($discount->ends_at->toDateTimeString(), true);
 
             $categories = Category::where('business_id', $business_id)
-                            ->where('parent_id', 0)
-                            ->pluck('name', 'id');
+                ->where('parent_id', 0)
+                ->pluck('name', 'id');
 
             $brands = Brands::forDropdown($business_id);
 
@@ -190,7 +208,7 @@ class DiscountController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Discount  $discount
+     * @param  \App\Models\Discount  $discount
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -201,8 +219,15 @@ class DiscountController extends Controller
 
         if (request()->ajax()) {
             try {
-                $input = $request->only(['name', 'brand_id', 'category_id',
-                'location_id', 'priority', 'discount_type', 'discount_amount']);
+                $input = $request->only([
+                    'name',
+                    'brand_id',
+                    'category_id',
+                    'location_id',
+                    'priority',
+                    'discount_type',
+                    'discount_amount'
+                ]);
 
                 $business_id = $request->session()->get('user.business_id');
 
@@ -215,18 +240,20 @@ class DiscountController extends Controller
                 }
 
                 $discount = Discount::where('business_id', $business_id)
-                            ->where('id', $id)
-                            ->update($input);
+                    ->where('id', $id)
+                    ->update($input);
 
-                $output = ['success' => true,
-                            'msg' => __("lang_v1.updated_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("lang_v1.updated_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -236,7 +263,7 @@ class DiscountController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Discount  $discount
+     * @param  \App\Models\Discount  $discount
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -244,7 +271,7 @@ class DiscountController extends Controller
         if (!auth()->user()->can('discount.access')) {
             abort(403, 'Unauthorized action.');
         }
-        
+
         if (request()->ajax()) {
             try {
                 $business_id = request()->user()->business_id;
@@ -252,15 +279,17 @@ class DiscountController extends Controller
                 $discount = Discount::where('business_id', $business_id)->findOrFail($id);
                 $discount->delete();
 
-                $output = ['success' => true,
-                            'msg' => __("lang_v1.deleted_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("lang_v1.deleted_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -287,22 +316,24 @@ class DiscountController extends Controller
                 DB::beginTransaction();
 
                 Discount::where('business_id', $business_id)
-                            ->whereIn('id', $selected_discounts)
-                            ->update(['is_active' => 0]);
+                    ->whereIn('id', $selected_discounts)
+                    ->update(['is_active' => 0]);
 
                 DB::commit();
             }
 
-            $output = ['success' => 1,
-                            'msg' => __('lang_v1.deactivated_success')
-                        ];
+            $output = [
+                'success' => 1,
+                'msg' => __('lang_v1.deactivated_success')
+            ];
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => 0,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => 0,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return redirect()->back()->with(['status' => $output]);
@@ -327,15 +358,17 @@ class DiscountController extends Controller
                     ->where('business_id', $business_id)
                     ->update(['is_active' => 1]);
 
-                $output = ['success' => true,
-                                'msg' => __("lang_v1.updated_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("lang_v1.updated_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-                
-                $output = ['success' => false,
-                                'msg' => __("messages.something_went_wrong")
-                            ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;

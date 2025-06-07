@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\TaxRate;
 use App\Models\GroupSubTax;
 
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
+
 use Illuminate\Http\Request;
 
 use App\Utils\TaxUtil;
