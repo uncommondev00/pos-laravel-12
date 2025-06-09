@@ -13,7 +13,7 @@ use App\Models\CustomerGroup;
 use App\Models\SellingPriceGroup;
 use App\Models\Contact;
 use App\Models\VoidTransaction;
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 
 use App\Utils\ContactUtil;
@@ -49,8 +49,22 @@ class VoidTransactionController extends Controller
         $this->moduleUtil = $moduleUtil;
         $this->productUtil = $productUtil;
 
-        $this->dummyPaymentLine = ['method' => 'cash', 'amount' => 0, 'note' => '', 'card_transaction_number' => '', 'card_number' => '', 'card_type' => '', 'card_holder_name' => '', 'card_month' => '', 'card_year' => '', 'card_security' => '', 'cheque_number' => '', 'bank_account_number' => '',
-        'is_return' => 0, 'transaction_no' => ''];
+        $this->dummyPaymentLine = [
+            'method' => 'cash',
+            'amount' => 0,
+            'note' => '',
+            'card_transaction_number' => '',
+            'card_number' => '',
+            'card_type' => '',
+            'card_holder_name' => '',
+            'card_month' => '',
+            'card_year' => '',
+            'card_security' => '',
+            'cheque_number' => '',
+            'bank_account_number' => '',
+            'is_return' => 0,
+            'transaction_no' => ''
+        ];
     }
 
     /**
@@ -68,28 +82,25 @@ class VoidTransactionController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $is_woocommerce = $this->moduleUtil->isModuleInstalled('Woocommerce');
 
-        
-        $ipAddress=$_SERVER['REMOTE_ADDR'];
 
-                //echo "$ipAddress - ";
-        $macAddr="";
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
 
-                #run the external command, break output into lines
-        $arp=`arp -a $ipAddress`;
-        $lines=explode("\n", $arp);
+        //echo "$ipAddress - ";
+        $macAddr = "";
 
-                #look for the output line describing our IP address
-                foreach($lines as $line)
-                {
-                   $cols=preg_split('/\s+/', trim($line));
-                   if ($cols[0]==$ipAddress)
-                   {
-                      
-                   	$macAddr = $cols[1];
-                   }
+        #run the external command, break output into lines
+        $arp = `arp -a $ipAddress`;
+        $lines = explode("\n", $arp);
 
-                }
-            
+        #look for the output line describing our IP address
+        foreach ($lines as $line) {
+            $cols = preg_split('/\s+/', trim($line));
+            if ($cols[0] == $ipAddress) {
+
+                $macAddr = $cols[1];
+            }
+        }
+
         //$mac = substr(exec('getmac'), 0, 17);
         //$mac = echo substr(exec('getmac'),0,17);
         if (request()->ajax()) {
@@ -171,7 +182,7 @@ class VoidTransactionController extends Controller
                 $start = request()->start_date;
                 $end =  request()->end_date;
                 $sells->whereDate('void_transactions.transaction_date', '>=', $start)
-                            ->whereDate('void_transactions.transaction_date', '<=', $end);
+                    ->whereDate('void_transactions.transaction_date', '<=', $end);
             }
 
             //Check is_direct sell
@@ -230,9 +241,9 @@ class VoidTransactionController extends Controller
                 }
 
                 $sales = $sells->where('void_transactions.is_suspend', 1)
-                            ->with($with)
-                            ->addSelect('void_transactions.is_suspend', 'void_transactions.res_table_id', 'void_transactions.res_waiter_id', 'void_transactions.additional_notes')
-                            ->get();
+                    ->with($with)
+                    ->addSelect('void_transactions.is_suspend', 'void_transactions.res_table_id', 'void_transactions.res_waiter_id', 'void_transactions.additional_notes')
+                    ->get();
 
                 return view('sale_pos.partials.suspended_sales_modal')->with(compact('sales', 'is_tables_enabled', 'is_service_staff_enabled'));
             }
@@ -246,7 +257,7 @@ class VoidTransactionController extends Controller
             }
 
             $datatable = Datatables::of($sells)
-                
+
                 ->removeColumn('id')
                 ->editColumn(
                     'final_total',
@@ -260,7 +271,7 @@ class VoidTransactionController extends Controller
                         return '<span>' . $ip . '</span>';
                     }
                 )
-                 ->editColumn(
+                ->editColumn(
                     'mac',
                     function ($row) {
                         $mac = !empty($row->mac_address) ? $row->mac_address : "server";
@@ -268,7 +279,7 @@ class VoidTransactionController extends Controller
                         return '<span>' . $mac . '</span>';
                     }
                 )
-             
+
                 ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
 
                 ->editColumn(
@@ -278,25 +289,25 @@ class VoidTransactionController extends Controller
                         <span class="print_section">{{__(\'lang_v1.\' . $payment_status)}}</span>
                         '
                 )
-                 ->editColumn('invoice_no', function ($row) {
-                     $invoice_no = $row->invoice_no;
-                     if (!empty($row->woocommerce_order_id)) {
-                         $invoice_no .= ' <i class="fa fa-wordpress text-primary no-print" title="' . __('lang_v1.synced_from_woocommerce') . '"></i>';
-                     }
-                     if (!empty($row->return_exists)) {
-                         $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.some_qty_returned_from_sell') .'"><i class="fa fa-undo"></i></small>';
-                     }
+                ->editColumn('invoice_no', function ($row) {
+                    $invoice_no = $row->invoice_no;
+                    if (!empty($row->woocommerce_order_id)) {
+                        $invoice_no .= ' <i class="fa fa-wordpress text-primary no-print" title="' . __('lang_v1.synced_from_woocommerce') . '"></i>';
+                    }
+                    if (!empty($row->return_exists)) {
+                        $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.some_qty_returned_from_sell') . '"><i class="fa fa-undo"></i></small>';
+                    }
 
-                     if (!empty($row->is_recurring)) {
-                         $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.subscribed_invoice') .'"><i class="fa fa-recycle"></i></small>';
-                     }
+                    if (!empty($row->is_recurring)) {
+                        $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.subscribed_invoice') . '"><i class="fa fa-recycle"></i></small>';
+                    }
 
-                     if (!empty($row->recur_parent_id)) {
-                         $invoice_no .= ' &nbsp;<small class="label bg-info label-round no-print" title="' . __('lang_v1.subscription_invoice') .'"><i class="fa fa-recycle"></i></small>';
-                     }
+                    if (!empty($row->recur_parent_id)) {
+                        $invoice_no .= ' &nbsp;<small class="label bg-info label-round no-print" title="' . __('lang_v1.subscription_invoice') . '"><i class="fa fa-recycle"></i></small>';
+                    }
 
-                     return $invoice_no;
-                 })
+                    return $invoice_no;
+                })
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can("sell.view")) {
@@ -304,12 +315,13 @@ class VoidTransactionController extends Controller
                         } else {
                             return '';
                         }
-                    }]);
+                    }
+                ]);
 
             $rawColumns = ['final_total', 'payment_status', 'invoice_no', 'mac', 'ip'];
-                
+
             return $datatable->rawColumns($rawColumns)
-                      ->make(true);
+                ->make(true);
         }
 
         $business_locations = BusinessLocation::forDropdown($business_id, false);
@@ -317,6 +329,4 @@ class VoidTransactionController extends Controller
 
         return view('void.index')->with(compact('business_locations', 'customers', 'is_woocommerce'));
     }
-
-  
 }

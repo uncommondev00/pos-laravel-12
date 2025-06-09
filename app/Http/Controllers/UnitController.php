@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Unit;
 use App\Models\Product;
 
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
 
 use App\Utils\Util;
@@ -44,19 +44,25 @@ class UnitController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $unit = Unit::where('business_id', $business_id)
-                        ->with(['base_unit'])
-                        ->select(['actual_name', 'short_name', 'allow_decimal', 'id',
-                            'base_unit_id', 'base_unit_multiplier']);
+                ->with(['base_unit'])
+                ->select([
+                    'actual_name',
+                    'short_name',
+                    'allow_decimal',
+                    'id',
+                    'base_unit_id',
+                    'base_unit_multiplier'
+                ]);
 
             return Datatables::of($unit)
                 ->addColumn(
                     'action',
                     '@can("unit.update")
-                    <button data-href="{{action(\'UnitController@edit\', [$id])}}" class="btn btn-xs btn-primary edit_unit_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
+                    <button data-href="{{route(\'units.edit\', [$id])}}" class="btn btn-xs btn-primary edit_unit_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
                         &nbsp;
                     @endcan
                     @can("unit.delete")
-                        <button data-href="{{action(\'UnitController@destroy\', [$id])}}" class="btn btn-xs btn-danger delete_unit_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
+                        <button data-href="{{route(\'units.destroy\', [$id])}}" class="btn btn-xs btn-danger delete_unit_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
                     @endcan'
                 )
                 ->editColumn('allow_decimal', function ($row) {
@@ -101,7 +107,7 @@ class UnitController extends Controller
         $units = Unit::forDropdown($business_id);
 
         return view('unit.create')
-                ->with(compact('quick_add', 'units'));
+            ->with(compact('quick_add', 'units'));
     }
 
     /**
@@ -132,16 +138,18 @@ class UnitController extends Controller
             }
 
             $unit = Unit::create($input);
-            $output = ['success' => true,
-                        'data' => $unit,
-                        'msg' => __("unit.added_success")
-                    ];
+            $output = [
+                'success' => true,
+                'data' => $unit,
+                'msg' => __("unit.added_success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                        'msg' => __("messages.something_went_wrong")
-                    ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -218,15 +226,17 @@ class UnitController extends Controller
 
                 $unit->save();
 
-                $output = ['success' => true,
-                            'msg' => __("unit.updated_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("unit.updated_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -253,23 +263,26 @@ class UnitController extends Controller
 
                 //check if any product associated with the unit
                 $exists = Product::where('unit_id', $unit->id)
-                                ->exists();
+                    ->exists();
                 if (!$exists) {
                     $unit->delete();
-                    $output = ['success' => true,
-                            'msg' => __("unit.deleted_success")
-                            ];
+                    $output = [
+                        'success' => true,
+                        'msg' => __("unit.deleted_success")
+                    ];
                 } else {
-                    $output = ['success' => false,
-                            'msg' => __("lang_v1.unit_cannot_be_deleted")
-                            ];
+                    $output = [
+                        'success' => false,
+                        'msg' => __("lang_v1.unit_cannot_be_deleted")
+                    ];
                 }
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => '__("messages.something_went_wrong")'
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => '__("messages.something_went_wrong")'
+                ];
             }
 
             return $output;

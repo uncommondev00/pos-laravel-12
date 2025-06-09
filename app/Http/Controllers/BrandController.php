@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Brands;
 
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -26,17 +27,17 @@ class BrandController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $brands = Brands::where('business_id', $business_id)
-                        ->select(['name', 'description', 'id']);
+                ->select(['name', 'description', 'id']);
 
             return Datatables::of($brands)
                 ->addColumn(
                     'action',
                     '@can("brand.update")
-                    <button data-href="{{action(\'BrandController@edit\', [$id])}}" class="btn btn-xs btn-primary edit_brand_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
+                    <button data-href="{{route(\'brands.edit\', [$id])}}" class="btn btn-xs btn-primary edit_brand_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
                         &nbsp;
                     @endcan
                     @can("brand.delete")
-                        <button data-href="{{action(\'BrandController@destroy\', [$id])}}" class="btn btn-xs btn-danger delete_brand_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
+                        <button data-href="{{route(\'brands.destroy\', [$id])}}" class="btn btn-xs btn-danger delete_brand_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
                     @endcan'
                 )
                 ->removeColumn('id')
@@ -64,7 +65,7 @@ class BrandController extends Controller
         }
 
         return view('brand.create')
-                ->with(compact('quick_add'));
+            ->with(compact('quick_add'));
     }
 
     /**
@@ -86,16 +87,18 @@ class BrandController extends Controller
             $input['created_by'] = $request->session()->get('user.id');
 
             $brand = Brands::create($input);
-            $output = ['success' => true,
-                            'data' => $brand,
-                            'msg' => __("brand.added_success")
-                        ];
+            $output = [
+                'success' => true,
+                'data' => $brand,
+                'msg' => __("brand.added_success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -156,15 +159,17 @@ class BrandController extends Controller
                 $brand->description = $input['description'];
                 $brand->save();
 
-                $output = ['success' => true,
-                            'msg' => __("brand.updated_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("brand.updated_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -190,15 +195,17 @@ class BrandController extends Controller
                 $brand = Brands::where('business_id', $business_id)->findOrFail($id);
                 $brand->delete();
 
-                $output = ['success' => true,
-                            'msg' => __("brand.deleted_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("brand.deleted_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;

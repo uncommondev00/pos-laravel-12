@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 use App\Utils\Util;
 
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 
 class DiscountController extends Controller
@@ -66,12 +66,12 @@ class DiscountController extends Controller
             return Datatables::of($discounts)
                 ->addColumn(
                     'action',
-                    '<button data-href="{{action(\'DiscountController@edit\', [$id])}}" class="btn btn-xs btn-primary btn-modal" data-container=".discount_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
+                    '<button data-href="{{route(\'discount.edit\', [$id])}}" class="btn btn-xs btn-primary btn-modal" data-container=".discount_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
                         &nbsp;
-                        <button data-href="{{action(\'DiscountController@destroy\', [$id])}}" class="btn btn-xs btn-danger delete_discount_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
+                        <button data-href="{{route(\'discount.destroy\', [$id])}}" class="btn btn-xs btn-danger delete_discount_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
                         @if($is_active != 1)
                             &nbsp;
-                            <button data-href="{{action(\'DiscountController@activate\', [$id])}}" class="btn btn-xs btn-success activate-discount"><i class="fa fa-circle-o"></i> @lang("lang_v1.reactivate")</button>
+                            <button data-href="{{route(\'discount.activate\', [$id])}}" class="btn btn-xs btn-success activate-discount"><i class="fa fa-circle-o"></i> @lang("lang_v1.reactivate")</button>
                         @endif
                         '
                 )

@@ -29,13 +29,13 @@ class BarcodeController extends Controller
             return Datatables::of($barcodes)
                 ->addColumn(
                     'action',
-                    '<a href="{{action(\'BarcodeController@edit\', [$id])}}" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a>
+                    '<a href="{{route(\'barcodes.edit\', [$id])}}" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a>
                         &nbsp;
-                        <button type="button" data-href="{{action(\'BarcodeController@destroy\', [$id])}}" class="btn btn-xs btn-danger delete_barcode_button" @if($is_default) disabled @endif><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>&nbsp;
+                        <button type="button" data-href="{{route(\'barcodes.destroy\', [$id])}}" class="btn btn-xs btn-danger delete_barcode_button" @if($is_default) disabled @endif><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>&nbsp;
                         @if($is_default)
                             <button type="button" class="btn btn-xs btn-success" disabled><i class="fa fa-check-square-o" aria-hidden="true"></i> @lang("barcode.default")</button>
                         @else
-                            <button class="btn btn-xs btn-info set_default" data-href="{{action(\'BarcodeController@setDefault\', [$id])}}">@lang("barcode.set_as_default")</button>
+                            <button class="btn btn-xs btn-info set_default" data-href="{{route(\'barcodes.setDefault\', [$id])}}">@lang("barcode.set_as_default")</button>
                         @endif
                         '
                 )

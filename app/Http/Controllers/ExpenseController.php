@@ -12,7 +12,7 @@ use App\Models\AccountTransaction;
 
 use Validator;
 
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 
 use App\Utils\TransactionUtil;
 use App\Utils\ModuleUtil;
@@ -132,7 +132,7 @@ class ExpenseController extends Controller
                                 </span>
                         </button>
                     <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                    <li><a href="{{action(\'ExpenseController@edit\', [$id])}}"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
+                    <li><a href="{{route(\'expenses.edit\', [$id])}}"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
                     @if($document)
                         <li><a href="{{ url(\'uploads/documents/\' . $document)}}"
                         download=""><i class="fa fa-download" aria-hidden="true"></i> @lang("purchase.download_document")</a></li>
@@ -141,12 +141,12 @@ class ExpenseController extends Controller
                         @endif
                     @endif
                     <li>
-                        <a data-href="{{action(\'ExpenseController@destroy\', [$id])}}" class="delete_expense"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a></li>
+                        <a data-href="{{route(\'expenses.destroy\', [$id])}}" class="delete_expense"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a></li>
                     <li class="divider"></li>
                     @if($payment_status != "paid")
-                        <li><a href="{{action("TransactionPaymentController@addPayment", [$id])}}" class="add_payment_modal"><i class="fa fa-money" aria-hidden="true"></i> @lang("purchase.add_payment")</a></li>
+                        <li><a href="{{route("payments.addPayment", [$id])}}" class="add_payment_modal"><i class="fa fa-money" aria-hidden="true"></i> @lang("purchase.add_payment")</a></li>
                     @endif
-                    <li><a href="{{action("TransactionPaymentController@show", [$id])}}" class="view_payment_modal"><i class="fa fa-money" aria-hidden="true" ></i> @lang("purchase.view_payments")</a></li>
+                    <li><a href="{{route("payments.show", [$id])}}" class="view_payment_modal"><i class="fa fa-money" aria-hidden="true" ></i> @lang("purchase.view_payments")</a></li>
                     </ul></div>'
                 )
                 ->removeColumn('id')

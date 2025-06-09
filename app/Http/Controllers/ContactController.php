@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Models\CustomerGroup;
 use App\Models\Transaction;
 
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
 
 use Excel;
@@ -86,23 +86,28 @@ class ContactController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        
+
 
         $business_id = request()->session()->get('user.business_id');
 
         $contact = Contact::leftjoin('transactions AS t', 'contacts.id', '=', 't.contact_id')
-                    ->where('contacts.business_id', $business_id)
-                    ->onlySuppliers()
-                    ->select(['contacts.contact_id', 'supplier_business_name', 'name', 'mobile',
-                        'contacts.type', 'contacts.id',
-                        DB::raw("SUM(IF(t.type = 'purchase', final_total, 0)) as total_purchase"),
-                        DB::raw("SUM(IF(t.type = 'purchase', (SELECT SUM(amount) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as purchase_paid"),
-                        DB::raw("SUM(IF(t.type = 'purchase_return', final_total, 0)) as total_purchase_return"),
-                        DB::raw("SUM(IF(t.type = 'purchase_return', (SELECT SUM(amount) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as purchase_return_paid"),
-                        DB::raw("SUM(IF(t.type = 'opening_balance', final_total, 0)) as opening_balance"),
-                        DB::raw("SUM(IF(t.type = 'opening_balance', (SELECT SUM(IF(is_return = 1,-1*amount,amount)) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as opening_balance_paid")
-                        ])
-                    ->groupBy('contacts.id');
+            ->where('contacts.business_id', $business_id)
+            ->onlySuppliers()
+            ->select([
+                'contacts.contact_id',
+                'supplier_business_name',
+                'name',
+                'mobile',
+                'contacts.type',
+                'contacts.id',
+                DB::raw("SUM(IF(t.type = 'purchase', final_total, 0)) as total_purchase"),
+                DB::raw("SUM(IF(t.type = 'purchase', (SELECT SUM(amount) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as purchase_paid"),
+                DB::raw("SUM(IF(t.type = 'purchase_return', final_total, 0)) as total_purchase_return"),
+                DB::raw("SUM(IF(t.type = 'purchase_return', (SELECT SUM(amount) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as purchase_return_paid"),
+                DB::raw("SUM(IF(t.type = 'opening_balance', final_total, 0)) as opening_balance"),
+                DB::raw("SUM(IF(t.type = 'opening_balance', (SELECT SUM(IF(is_return = 1,-1*amount,amount)) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as opening_balance_paid")
+            ])
+            ->groupBy('contacts.id');
 
         return Datatables::of($contact)
             ->addColumn(
@@ -116,27 +121,27 @@ class ContactController extends Controller
             ->addColumn(
                 'action',
                 '<div class="btn-group">
-                    <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
+                    <button type="button" class="btn btn-info dropdown-toggle btn-xs"
                         data-toggle="dropdown" aria-expanded="false">' .
-                        __("messages.actions") .
-                        '<span class="caret"></span><span class="sr-only">Toggle Dropdown
+                    __("messages.actions") .
+                    '<span class="caret"></span><span class="sr-only">Toggle Dropdown
                         </span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 @if(($total_purchase + $opening_balance - $purchase_paid - $opening_balance_paid)  > 0)
-                    <li><a href="{{action(\'TransactionPaymentController@getPayContactDue\', [$id])}}?type=purchase" class="pay_purchase_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("contact.pay_due_amount")</a></li>
+                    <li><a href="{{route(\'payments.getPayContactDue\', [$id])}}?type=purchase" class="pay_purchase_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("contact.pay_due_amount")</a></li>
                 @endif
                 @if(($total_purchase_return - $purchase_return_paid)  > 0)
-                    <li><a href="{{action(\'TransactionPaymentController@getPayContactDue\', [$id])}}?type=purchase_return" class="pay_purchase_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("lang_v1.receive_purchase_return_due")</a></li>
+                    <li><a href="{{route(\'payments.getPayContactDue\', [$id])}}?type=purchase_return" class="pay_purchase_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("lang_v1.receive_purchase_return_due")</a></li>
                 @endif
                 @can("supplier.view")
-                    <li><a href="{{action(\'ContactController@show\', [$id])}}"><i class="fa fa-external-link" aria-hidden="true"></i> @lang("messages.view")</a></li>
+                    <li><a href="{{route(\'contacts.show\', [$id])}}"><i class="fa fa-external-link" aria-hidden="true"></i> @lang("messages.view")</a></li>
                 @endcan
                 @can("supplier.update")
-                    <li><a href="{{action(\'ContactController@edit\', [$id])}}" class="edit_contact_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
+                    <li><a href="{{route(\'contacts.edit\', [$id])}}" class="edit_contact_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
                 @endcan
                 @can("supplier.delete")
-                    <li><a href="{{action(\'ContactController@destroy\', [$id])}}" class="delete_contact_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a></li>
+                    <li><a href="{{route(\'contacts.destroy\', [$id])}}" class="delete_contact_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a></li>
                 @endcan </ul></div>'
             )
             ->removeColumn('opening_balance')
@@ -165,18 +170,30 @@ class ContactController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         $contact = Contact::leftjoin('transactions AS t', 'contacts.id', '=', 't.contact_id')
-                    ->leftjoin('customer_groups AS cg', 'contacts.customer_group_id', '=', 'cg.id')
-                    ->where('contacts.business_id', $business_id)
-                    ->onlyCustomers()
-                    ->addSelect(['contacts.contact_id', 'contacts.name', 'cg.name as customer_group', 'city', 'state', 'country', 'landmark', 'mobile', 'contacts.id', 'is_default','points_value','points_status',
-                        DB::raw("SUM(IF(t.type = 'sell' AND t.status = 'final', final_total, 0)) as total_invoice"),
-                        DB::raw("SUM(IF(t.type = 'sell' AND t.status = 'final', (SELECT SUM(IF(is_return = 1,-1*amount,amount)) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as invoice_received"),
-                        DB::raw("SUM(IF(t.type = 'sell_return', final_total, 0)) as total_sell_return"),
-                        DB::raw("SUM(IF(t.type = 'sell_return', (SELECT SUM(amount) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as sell_return_paid"),
-                        DB::raw("SUM(IF(t.type = 'opening_balance', final_total, 0)) as opening_balance"),
-                        DB::raw("SUM(IF(t.type = 'opening_balance', (SELECT SUM(IF(is_return = 1,-1*amount,amount)) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as opening_balance_paid")
-                        ])
-                    ->groupBy('contacts.id');
+            ->leftjoin('customer_groups AS cg', 'contacts.customer_group_id', '=', 'cg.id')
+            ->where('contacts.business_id', $business_id)
+            ->onlyCustomers()
+            ->addSelect([
+                'contacts.contact_id',
+                'contacts.name',
+                'cg.name as customer_group',
+                'city',
+                'state',
+                'country',
+                'landmark',
+                'mobile',
+                'contacts.id',
+                'is_default',
+                'points_value',
+                'points_status',
+                DB::raw("SUM(IF(t.type = 'sell' AND t.status = 'final', final_total, 0)) as total_invoice"),
+                DB::raw("SUM(IF(t.type = 'sell' AND t.status = 'final', (SELECT SUM(IF(is_return = 1,-1*amount,amount)) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as invoice_received"),
+                DB::raw("SUM(IF(t.type = 'sell_return', final_total, 0)) as total_sell_return"),
+                DB::raw("SUM(IF(t.type = 'sell_return', (SELECT SUM(amount) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as sell_return_paid"),
+                DB::raw("SUM(IF(t.type = 'opening_balance', final_total, 0)) as opening_balance"),
+                DB::raw("SUM(IF(t.type = 'opening_balance', (SELECT SUM(IF(is_return = 1,-1*amount,amount)) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as opening_balance_paid")
+            ])
+            ->groupBy('contacts.id');
 
         return Datatables::of($contact)
             ->editColumn(
@@ -206,33 +223,33 @@ class ContactController extends Controller
             ->addColumn(
                 'action',
                 '<div class="btn-group">
-                    <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
+                    <button type="button" class="btn btn-info dropdown-toggle btn-xs"
                         data-toggle="dropdown" aria-expanded="false">' .
-                        __("messages.actions") .
-                        '<span class="caret"></span><span class="sr-only">Toggle Dropdown
+                    __("messages.actions") .
+                    '<span class="caret"></span><span class="sr-only">Toggle Dropdown
                         </span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 @if(($total_invoice + $opening_balance - $invoice_received - $opening_balance_paid)  > 0)
-                    <li><a href="{{action(\'TransactionPaymentController@getPayContactDue\', [$id])}}?type=sell" class="pay_sale_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("contact.pay_due_amount")</a></li>
+                    <li><a href="{{route(\'payments.getPayContactDue\', [$id])}}?type=sell" class="pay_sale_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("contact.pay_due_amount")</a></li>
                 @endif
                 @if(($total_sell_return - $sell_return_paid)  > 0)
-                    <li><a href="{{action(\'TransactionPaymentController@getPayContactDue\', [$id])}}?type=sell_return" class="pay_purchase_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("lang_v1.pay_sell_return_due")</a></li>
+                    <li><a href="{{route(\'payments.getPayContactDue\', [$id])}}?type=sell_return" class="pay_purchase_due"><i class="fa fa-money" aria-hidden="true"></i>@lang("lang_v1.pay_sell_return_due")</a></li>
                 @endif
                 @can("customer.view")
-                    <li><a href="{{action(\'ContactController@show\', [$id])}}"><i class="fa fa-external-link" aria-hidden="true"></i> @lang("messages.view")</a></li>
+                    <li><a href="{{route(\'contacts.show\', [$id])}}"><i class="fa fa-external-link" aria-hidden="true"></i> @lang("messages.view")</a></li>
                 @endcan
                 @if($id != 1 && $id !=2)
                 @can("customer.update")
-                    <li><a href="{{action(\'ContactController@edit\', [$id])}}" class="edit_contact_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
+                    <li><a href="{{route(\'contacts.edit\', [$id])}}" class="edit_contact_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
                 @endcan
                 @endif
                 @if($id != 1 && $id !=2)
                 @if(!$is_default)
                 @can("customer.delete")
-                    <li><a href="{{action(\'ContactController@destroy\', [$id])}}" class="delete_contact_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a></li>
+                    <li><a href="{{resourcebundle_get_error_message(\'contacts.destroy\', [$id])}}" class="delete_contact_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a></li>
                 @endcan
-                @endif 
+                @endif
                 @endif</ul></div>'
             )
             ->removeColumn('total_invoice')
@@ -305,8 +322,29 @@ class ContactController extends Controller
                 return $this->moduleUtil->expiredResponse();
             }
 
-            $input = $request->only(['type', 'supplier_business_name', 'points_status',
-                'name', 'tax_number', 'pay_term_number', 'pay_term_type', 'mobile', 'landline', 'alternate_number', 'city', 'state', 'country', 'landmark', 'customer_group_id', 'contact_id', 'custom_field1', 'custom_field2', 'custom_field3', 'custom_field4', 'email']);
+            $input = $request->only([
+                'type',
+                'supplier_business_name',
+                'points_status',
+                'name',
+                'tax_number',
+                'pay_term_number',
+                'pay_term_type',
+                'mobile',
+                'landline',
+                'alternate_number',
+                'city',
+                'state',
+                'country',
+                'landmark',
+                'customer_group_id',
+                'contact_id',
+                'custom_field1',
+                'custom_field2',
+                'custom_field3',
+                'custom_field4',
+                'email'
+            ]);
             $input['business_id'] = $business_id;
             $input['created_by'] = $request->session()->get('user.id');
 
@@ -316,8 +354,8 @@ class ContactController extends Controller
             $count = 0;
             if (!empty($input['contact_id'])) {
                 $count = Contact::where('business_id', $input['business_id'])
-                                ->where('contact_id', $input['contact_id'])
-                                ->count();
+                    ->where('contact_id', $input['contact_id'])
+                    ->count();
             }
 
             if ($count == 0) {
@@ -337,19 +375,21 @@ class ContactController extends Controller
                     $this->transactionUtil->createOpeningBalanceTransaction($business_id, $contact->id, $request->input('opening_balance'));
                 }
 
-                $output = ['success' => true,
-                            'data' => $contact,
-                            'msg' => __("contact.added_success")
-                        ];
+                $output = [
+                    'success' => true,
+                    'data' => $contact,
+                    'msg' => __("contact.added_success")
+                ];
             } else {
                 throw new \Exception("Error Processing Request", 1);
             }
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' =>__("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -368,18 +408,18 @@ class ContactController extends Controller
         }
 
         $contact = Contact::where('contacts.id', $id)
-                            ->join('transactions AS t', 'contacts.id', '=', 't.contact_id')
-                            ->select(
-                                DB::raw("SUM(IF(t.type = 'purchase', final_total, 0)) as total_purchase"),
-                                DB::raw("SUM(IF(t.type = 'sell' AND t.status = 'final', final_total, 0)) as total_invoice"),
-                                DB::raw("SUM(IF(t.type = 'purchase', (SELECT SUM(amount) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as purchase_paid"),
-                                DB::raw("SUM(IF(t.type = 'sell' AND t.status = 'final', (SELECT SUM(IF(is_return = 1,-1*amount,amount)) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as invoice_received"),
-                                DB::raw("SUM(IF(t.type = 'opening_balance', final_total, 0)) as opening_balance"),
-                                DB::raw("SUM(IF(t.type = 'opening_balance', (SELECT SUM(amount) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as opening_balance_paid"),
-                                'contacts.*'
-                            )->first();
+            ->join('transactions AS t', 'contacts.id', '=', 't.contact_id')
+            ->select(
+                DB::raw("SUM(IF(t.type = 'purchase', final_total, 0)) as total_purchase"),
+                DB::raw("SUM(IF(t.type = 'sell' AND t.status = 'final', final_total, 0)) as total_invoice"),
+                DB::raw("SUM(IF(t.type = 'purchase', (SELECT SUM(amount) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as purchase_paid"),
+                DB::raw("SUM(IF(t.type = 'sell' AND t.status = 'final', (SELECT SUM(IF(is_return = 1,-1*amount,amount)) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as invoice_received"),
+                DB::raw("SUM(IF(t.type = 'opening_balance', final_total, 0)) as opening_balance"),
+                DB::raw("SUM(IF(t.type = 'opening_balance', (SELECT SUM(amount) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as opening_balance_paid"),
+                'contacts.*'
+            )->first();
         return view('contact.show')
-             ->with(compact('contact'));
+            ->with(compact('contact'));
     }
 
     /**
@@ -416,8 +456,8 @@ class ContactController extends Controller
             $customer_groups = CustomerGroup::forDropdown($business_id);
 
             $ob_transaction =  Transaction::where('contact_id', $id)
-                                            ->where('type', 'opening_balance')
-                                            ->first();
+                ->where('type', 'opening_balance')
+                ->first();
             $opening_balance = !empty($ob_transaction->final_total) ? $ob_transaction->final_total : 0;
 
             //Deduct paid amount from opening balance.
@@ -460,7 +500,7 @@ class ContactController extends Controller
 
                 $input['credit_limit'] = $request->input('credit_limit') != '' ? $this->commonUtil->num_uf($request->input('credit_limit')) : null;
                 $input['points_status'] = !empty($request->input('points_status')) ? 1 : 0;
-                
+
                 $business_id = $request->session()->get('user.business_id');
 
                 if (!$this->moduleUtil->isSubscribed($business_id)) {
@@ -472,11 +512,11 @@ class ContactController extends Controller
                 //Check Contact id
                 if (!empty($input['contact_id'])) {
                     $count = Contact::where('business_id', $business_id)
-                            ->where('contact_id', $input['contact_id'])
-                            ->where('id', '!=', $id)
-                            ->count();
+                        ->where('contact_id', $input['contact_id'])
+                        ->where('id', '!=', $id)
+                        ->count();
                 }
-                
+
                 if ($count == 0) {
                     $contact = Contact::where('business_id', $business_id)->findOrFail($id);
                     foreach ($input as $key => $value) {
@@ -486,8 +526,8 @@ class ContactController extends Controller
 
                     //Get opening balance if exists
                     $ob_transaction =  Transaction::where('contact_id', $id)
-                                            ->where('type', 'opening_balance')
-                                            ->first();
+                        ->where('type', 'opening_balance')
+                        ->first();
 
                     if (!empty($ob_transaction)) {
                         $amount = $this->commonUtil->num_uf($request->input('opening_balance'));
@@ -495,7 +535,7 @@ class ContactController extends Controller
                         if (!empty($opening_balance_paid)) {
                             $amount += $opening_balance_paid;
                         }
-                        
+
                         $ob_transaction->final_total = $amount;
                         $ob_transaction->save();
                         //Update opening balance payment status
@@ -507,18 +547,20 @@ class ContactController extends Controller
                         }
                     }
 
-                    $output = ['success' => true,
-                                'msg' => __("contact.updated_success")
-                                ];
+                    $output = [
+                        'success' => true,
+                        'msg' => __("contact.updated_success")
+                    ];
                 } else {
                     throw new \Exception("Error Processing Request", 1);
                 }
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -543,27 +585,30 @@ class ContactController extends Controller
 
                 //Check if any transaction related to this contact exists
                 $count = Transaction::where('business_id', $business_id)
-                                    ->where('contact_id', $id)
-                                    ->count();
+                    ->where('contact_id', $id)
+                    ->count();
                 if ($count == 0) {
                     $contact = Contact::where('business_id', $business_id)->findOrFail($id);
                     if (!$contact->is_default) {
                         $contact->delete();
                     }
-                    $output = ['success' => true,
-                                'msg' => __("contact.deleted_success")
-                                ];
+                    $output = [
+                        'success' => true,
+                        'msg' => __("contact.deleted_success")
+                    ];
                 } else {
-                    $output = ['success' => false,
-                                'msg' => __("lang_v1.you_cannot_delete_this_contact")
-                                ];
+                    $output = [
+                        'success' => false,
+                        'msg' => __("lang_v1.you_cannot_delete_this_contact")
+                    ];
                 }
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -589,15 +634,15 @@ class ContactController extends Controller
             $selected_contacts = User::isSelectedContacts($user_id);
             if ($selected_contacts) {
                 $contacts->join('user_contact_access AS uca', 'contacts.id', 'uca.contact_id')
-                ->where('uca.user_id', $user_id);
+                    ->where('uca.user_id', $user_id);
             }
 
             if (!empty($term)) {
                 $contacts->where(function ($query) use ($term) {
-                    $query->where('name', 'like', '%' . $term .'%')
-                            ->orWhere('supplier_business_name', 'like', '%' . $term .'%')
-                            ->orWhere('mobile', 'like', '%' . $term .'%')
-                            ->orWhere('contacts.contact_id', 'like', '%' . $term .'%');
+                    $query->where('name', 'like', '%' . $term . '%')
+                        ->orWhere('supplier_business_name', 'like', '%' . $term . '%')
+                        ->orWhere('mobile', 'like', '%' . $term . '%')
+                        ->orWhere('contacts.contact_id', 'like', '%' . $term . '%');
                 });
             }
 
@@ -613,8 +658,8 @@ class ContactController extends Controller
                 'pay_term_number',
                 'pay_term_type'
             )
-                    ->onlyCustomers()
-                    ->get();
+                ->onlyCustomers()
+                ->get();
             return json_encode($contacts);
         }
     }
@@ -635,7 +680,7 @@ class ContactController extends Controller
             $hidden_id = $request->input('hidden_id');
 
             $query = Contact::where('business_id', $business_id)
-                            ->where('contact_id', $contact_id);
+                ->where('contact_id', $contact_id);
             if (!empty($hidden_id)) {
                 $query->where('id', '!=', $hidden_id);
             }
@@ -664,9 +709,10 @@ class ContactController extends Controller
 
         //Check if zip extension it loaded or not.
         if ($zip_loaded === false) {
-            $output = ['success' => 0,
-                            'msg' => 'Please install/enable PHP Zip archive for import'
-                        ];
+            $output = [
+                'success' => 0,
+                'msg' => 'Please install/enable PHP Zip archive for import'
+            ];
 
             return view('contact.import')
                 ->with('notification', $output);
@@ -694,10 +740,10 @@ class ContactController extends Controller
             if ($request->hasFile('contacts_csv')) {
                 $file = $request->file('contacts_csv');
                 $imported_data = Excel::load($file->getRealPath())
-                                ->noHeading()
-                                ->skipRows(1)
-                                ->get()
-                                ->toArray();
+                    ->noHeading()
+                    ->skipRows(1)
+                    ->get()
+                    ->toArray();
                 $business_id = $request->session()->get('user.business_id');
                 $user_id = $request->session()->get('user.id');
 
@@ -705,7 +751,7 @@ class ContactController extends Controller
 
                 $is_valid = true;
                 $error_msg = '';
-                
+
                 DB::beginTransaction();
                 foreach ($imported_data as $key => $value) {
                     //Check if 21 no. of columns exists
@@ -778,9 +824,9 @@ class ContactController extends Controller
                     //Check contact ID
                     if (!empty(trim($value[3]))) {
                         $count = Contact::where('business_id', $business_id)
-                                    ->where('contact_id', $value[3])
-                                    ->count();
-                
+                            ->where('contact_id', $value[3])
+                            ->count();
+
 
                         if ($count == 0) {
                             $contact_array['contact_id'] = $value[3];
@@ -881,19 +927,21 @@ class ContactController extends Controller
                     }
                 }
 
-                $output = ['success' => 1,
-                            'msg' => __('product.file_imported_successfully')
-                        ];
+                $output = [
+                    'success' => 1,
+                    'msg' => __('product.file_imported_successfully')
+                ];
 
                 DB::commit();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => 0,
-                            'msg' => $e->getMessage()
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => 0,
+                'msg' => $e->getMessage()
+            ];
             return redirect()->route('contacts.import')->with('notification', $output);
         }
 

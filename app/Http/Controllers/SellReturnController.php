@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;  
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\BusinessLocation;
 use App\Models\Transaction;
@@ -15,7 +15,7 @@ use App\Utils\ContactUtil;
 use App\Utils\BusinessUtil;
 use App\Utils\ModuleUtil;
 
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 
 class SellReturnController extends Controller
 {
@@ -59,40 +59,40 @@ class SellReturnController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $sells = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
-                    
-                    ->join(
-                        'business_locations AS bl',
-                        'transactions.location_id',
-                        '=',
-                        'bl.id'
-                    )
-                    ->join(
-                        'transactions as T1',
-                        'transactions.return_parent_id',
-                        '=',
-                        'T1.id'
-                    )
-                    ->leftJoin(
-                        'transaction_payments AS TP',
-                        'transactions.id',
-                        '=',
-                        'TP.transaction_id'
-                    )
-                    ->where('transactions.business_id', $business_id)
-                    ->where('transactions.type', 'sell_return')
-                    ->where('transactions.status', 'final')
-                    ->select(
-                        'transactions.id',
-                        'transactions.transaction_date',
-                        'transactions.invoice_no',
-                        'contacts.name',
-                        'transactions.final_total',
-                        'transactions.payment_status',
-                        'bl.name as business_location',
-                        'T1.invoice_no as parent_sale',
-                        'T1.id as parent_sale_id',
-                        DB::raw('SUM(TP.amount) as amount_paid')
-                    );
+
+                ->join(
+                    'business_locations AS bl',
+                    'transactions.location_id',
+                    '=',
+                    'bl.id'
+                )
+                ->join(
+                    'transactions as T1',
+                    'transactions.return_parent_id',
+                    '=',
+                    'T1.id'
+                )
+                ->leftJoin(
+                    'transaction_payments AS TP',
+                    'transactions.id',
+                    '=',
+                    'TP.transaction_id'
+                )
+                ->where('transactions.business_id', $business_id)
+                ->where('transactions.type', 'sell_return')
+                ->where('transactions.status', 'final')
+                ->select(
+                    'transactions.id',
+                    'transactions.transaction_date',
+                    'transactions.invoice_no',
+                    'contacts.name',
+                    'transactions.final_total',
+                    'transactions.payment_status',
+                    'bl.name as business_location',
+                    'T1.invoice_no as parent_sale',
+                    'T1.id as parent_sale_id',
+                    DB::raw('SUM(TP.amount) as amount_paid')
+                );
 
             $permitted_locations = auth()->user()->permitted_locations();
             if ($permitted_locations != 'all') {
@@ -123,7 +123,7 @@ class SellReturnController extends Controller
                 $start = request()->start_date;
                 $end =  request()->end_date;
                 $sells->whereDate('transactions.transaction_date', '>=', $start)
-                        ->whereDate('transactions.transaction_date', '<=', $end);
+                    ->whereDate('transactions.transaction_date', '<=', $end);
             }
 
             $sells->groupBy('transactions.id');
@@ -132,7 +132,7 @@ class SellReturnController extends Controller
                 ->addColumn(
                     'action',
                     '<div class="btn-group">
-                    <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
+                    <button type="button" class="btn btn-info dropdown-toggle btn-xs"
                         data-toggle="dropdown" aria-expanded="false">' .
                         __("messages.actions") .
                         '<span class="caret"></span><span class="sr-only">Toggle Dropdown
@@ -140,12 +140,12 @@ class SellReturnController extends Controller
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right" role="menu">
                     @if(auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access") )
-                        <li><a href="#" class="btn-modal" data-container=".view_modal" data-href="{{action(\'SellReturnController@show\', [$parent_sale_id])}}"><i class="fa fa-external-link" aria-hidden="true"></i> @lang("messages.view")</a></li>
-                        <li><a href="{{action(\'SellReturnController@add\', [$parent_sale_id])}}" ><i class="fa fa-edit" aria-hidden="true"></i> @lang("messages.edit")</a></li>
+                        <li><a href="#" class="btn-modal" data-container=".view_modal" data-href="{{route(\'sell-return.show\', [$parent_sale_id])}}"><i class="fa fa-external-link" aria-hidden="true"></i> @lang("messages.view")</a></li>
+                        <li><a href="{{route(\'sell-return.add\', [$parent_sale_id])}}" ><i class="fa fa-edit" aria-hidden="true"></i> @lang("messages.edit")</a></li>
                     @endif
 
                     @if(auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access") )
-                        <li><a href="#" class="print-invoice" data-href="{{action(\'SellReturnController@printInvoice\', [$id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a></li>
+                        <li><a href="#" class="print-invoice" data-href="{{route(\'sell-return.printInvoice\', [$id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")</a></li>
                     @endif
                     </ul>
                     </div>'
@@ -158,7 +158,7 @@ class SellReturnController extends Controller
                 ->editColumn('parent_sale', function ($row) {
                     return '<button type="button" class="btn btn-link btn-modal" data-container=".view_modal" data-href="' . action('SellController@show', [$row->parent_sale_id]) . '">' . $row->parent_sale . '</button>';
                 })
-                ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
+                ->editColumn('transaction_date', '@format_date($transaction_date)')
                 ->editColumn(
                     'payment_status',
                     '<a href="{{ action("TransactionPaymentController@show", [$id])}}" class="view_payment_modal payment-status payment-status-label" data-orig-value="{{$payment_status}}" data-status-name="{{__(\'lang_v1.\' . $payment_status)}}"><span class="label @payment_status($payment_status)">{{__(\'lang_v1.\' . $payment_status)}}</span></a>'
@@ -170,11 +170,12 @@ class SellReturnController extends Controller
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can("sell.view")) {
-                            return  action('SellReturnController@show', [$row->parent_sale_id]) ;
+                            return  action('SellReturnController@show', [$row->parent_sale_id]);
                         } else {
                             return '';
                         }
-                    }])
+                    }
+                ])
                 ->rawColumns(['final_total', 'action', 'parent_sale', 'payment_status', 'payment_due'])
                 ->make(true);
         }
@@ -225,8 +226,8 @@ class SellReturnController extends Controller
         }
 
         $sell = Transaction::where('business_id', $business_id)
-                            ->with(['sell_lines', 'location', 'return_parent', 'contact', 'tax', 'sell_lines.sub_unit', 'sell_lines.product', 'sell_lines.product.unit'])
-                            ->find($id);
+            ->with(['sell_lines', 'location', 'return_parent', 'contact', 'tax', 'sell_lines.sub_unit', 'sell_lines.product', 'sell_lines.product.unit'])
+            ->find($id);
 
         foreach ($sell->sell_lines as $key => $value) {
             if (!empty($value->sub_unit_id)) {
@@ -252,7 +253,7 @@ class SellReturnController extends Controller
         if (!auth()->user()->can('sell.create')) {
             abort(403, 'Unauthorized action.');
         }
-        
+
         try {
             $input = $request->except('_token');
 
@@ -263,24 +264,25 @@ class SellReturnController extends Controller
                 if (!$this->moduleUtil->isSubscribed($business_id)) {
                     return $this->moduleUtil->expiredResponse(action('SellReturnController@index'));
                 }
-        
+
                 $user_id = $request->session()->get('user.id');
 
-                $discount = ['discount_type' => $input['discount_type'],
-                                'discount_amount' => $input['discount_amount']
-                            ];
+                $discount = [
+                    'discount_type' => $input['discount_type'],
+                    'discount_amount' => $input['discount_amount']
+                ];
                 $invoice_total = $this->productUtil->calculateInvoiceTotal($input['products'], $input['tax_id'], $discount);
 
                 //Get parent sale
                 $sell = Transaction::where('business_id', $business_id)
-                                ->with(['sell_lines', 'sell_lines.sub_unit'])
-                                ->findOrFail($input['transaction_id']);
+                    ->with(['sell_lines', 'sell_lines.sub_unit'])
+                    ->findOrFail($input['transaction_id']);
 
                 //Check if any sell return exists for the sale
                 $sell_return = Transaction::where('business_id', $business_id)
-                        ->where('type', 'sell_return')
-                        ->where('return_parent_id', $sell->id)
-                        ->first();
+                    ->where('type', 'sell_return')
+                    ->where('return_parent_id', $sell->id)
+                    ->first();
 
                 $sell_return_data = [
                     'transaction_date' => $this->productUtil->uf_date($request->input('transaction_date')),
@@ -292,9 +294,9 @@ class SellReturnController extends Controller
                     'total_before_tax' => $invoice_total['total_before_tax'],
                     'final_total' => $invoice_total['final_total']
                 ];
- 
+
                 DB::beginTransaction();
-                
+
                 //Generate reference number
                 if (empty($sell_return_data['invoice_no'])) {
                     //Update reference count
@@ -350,25 +352,26 @@ class SellReturnController extends Controller
                 $receipt = $this->receiptContent($business_id, $sell_return->location_id, $sell_return->id);
                 DB::commit();
 
-                $output = ['success' => 1,
-                            'msg' => __('lang_v1.success'),
-                            'receipt' => $receipt
-                        ];
+                $output = [
+                    'success' => 1,
+                    'msg' => __('lang_v1.success'),
+                    'receipt' => $receipt
+                ];
             }
-
         } catch (\Exception $e) {
             DB::rollBack();
 
             if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
                 $msg = $e->getMessage();
             } else {
-                Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+                Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
                 $msg = __('messages.something_went_wrong');
             }
 
-            $output = ['success' => 0,
-                            'msg' => $msg
-                        ];
+            $output = [
+                'success' => 0,
+                'msg' => $msg
+            ];
         }
 
         return $output;
@@ -388,20 +391,20 @@ class SellReturnController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $sell = Transaction::where('business_id', $business_id)
-                                ->where('id', $id)
-                                ->with(
-                                    'contact',
-                                    'return_parent',
-                                    'tax',
-                                    'sell_lines',
-                                    'sell_lines.product',
-                                    'sell_lines.variations',
-                                    'sell_lines.sub_unit',
-                                    'sell_lines.product',
-                                    'sell_lines.product.unit',
-                                    'location'
-                                )
-                                ->first();
+            ->where('id', $id)
+            ->with(
+                'contact',
+                'return_parent',
+                'tax',
+                'sell_lines',
+                'sell_lines.product',
+                'sell_lines.variations',
+                'sell_lines.sub_unit',
+                'sell_lines.product',
+                'sell_lines.product.unit',
+                'location'
+            )
+            ->first();
 
         foreach ($sell->sell_lines as $key => $value) {
             if (!empty($value->sub_unit_id)) {
@@ -427,7 +430,7 @@ class SellReturnController extends Controller
             $total_before_discount = $total_after_discount * 100 / (100 - $sell->return_parent->discount_amount);
             $total_discount = $total_before_discount - $total_after_discount;
         }
-        
+
         return view('sell_return.show')
             ->with(compact('sell', 'sell_taxes', 'total_discount'));
     }
@@ -472,9 +475,7 @@ class SellReturnController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function getProductRow()
-    {
-    }
+    public function getProductRow() {}
 
     /**
      * Returns the content for the receipt
@@ -492,12 +493,13 @@ class SellReturnController extends Controller
         $transaction_id,
         $printer_type = null
     ) {
-        $output = ['is_enabled' => false,
-                    'print_type' => 'browser',
-                    'html_content' => null,
-                    'printer_config' => [],
-                    'data' => []
-                ];
+        $output = [
+            'is_enabled' => false,
+            'print_type' => 'browser',
+            'html_content' => null,
+            'printer_config' => [],
+            'data' => []
+        ];
 
         $business_details = $this->businessUtil->getDetails($business_id);
         $location_details = BusinessLocation::find($location_id);
@@ -513,7 +515,7 @@ class SellReturnController extends Controller
             $receipt_printer_type = is_null($printer_type) ? $location_details->receipt_printer_type : $printer_type;
 
             $receipt_details = $this->transactionUtil->getReceiptDetails($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type);
-            
+
             //If print type browser - return the content, printer - return printer config data, and invoice format config
             if ($receipt_printer_type == 'printer') {
                 $output['print_type'] = 'printer';
@@ -537,15 +539,16 @@ class SellReturnController extends Controller
     {
         if (request()->ajax()) {
             try {
-                $output = ['success' => 0,
-                        'msg' => trans("messages.something_went_wrong")
-                        ];
+                $output = [
+                    'success' => 0,
+                    'msg' => trans("messages.something_went_wrong")
+                ];
 
                 $business_id = $request->session()->get('user.business_id');
-            
+
                 $transaction = Transaction::where('business_id', $business_id)
-                                ->where('id', $transaction_id)
-                                ->first();
+                    ->where('id', $transaction_id)
+                    ->first();
 
                 if (empty($transaction)) {
                     return $output;
@@ -557,9 +560,10 @@ class SellReturnController extends Controller
                     $output = ['success' => 1, 'receipt' => $receipt];
                 }
             } catch (\Exception $e) {
-                $output = ['success' => 0,
-                        'msg' => trans("messages.something_went_wrong")
-                        ];
+                $output = [
+                    'success' => 0,
+                    'msg' => trans("messages.something_went_wrong")
+                ];
             }
 
             return $output;

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
+
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -29,11 +30,11 @@ class CategoryController extends Controller
                 ->addColumn(
                     'action',
                     '@can("category.update")
-                    <button data-href="{{action(\'CategoryController@edit\', [$id])}}" class="btn btn-xs btn-primary edit_category_button"><i class="glyphicon glyphicon-edit"></i>  @lang("messages.edit")</button>
+                    <button data-href="{{route(\'categories.edit\', [$id])}}" class="btn btn-xs btn-primary edit_category_button"><i class="glyphicon glyphicon-edit"></i>  @lang("messages.edit")</button>
                         &nbsp;
                     @endcan
                     @can("category.delete")
-                        <button data-href="{{action(\'CategoryController@destroy\', [$id])}}" class="btn btn-xs btn-danger delete_category_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
+                        <button data-href="{{route(\'categories.destroy\', [$id])}}" class="btn btn-xs btn-danger delete_category_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
                     @endcan'
                 )
                 ->editColumn('name', function ($row) {

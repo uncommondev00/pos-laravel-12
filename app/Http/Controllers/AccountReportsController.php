@@ -9,7 +9,7 @@ use App\Models\TransactionPayment;
 use App\Models\AccountTransaction;
 use App\Utils\TransactionUtil;
 
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 use DB;
 
 class AccountReportsController extends Controller
