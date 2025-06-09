@@ -168,9 +168,9 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/purchases/{id}/get_pp_logs', [PurchaseController::class, 'getPurchasePriceLogs'])->name('purchases.getPurchasePriceLogs');
     Route::resource('purchases', PurchaseController::class);
 
-    Route::get('/toggle-subscription/{id}', [SellPosController::class, 'toggleRecurringInvoices'])->name('sells.toggleRecurringInvoices');
-    Route::get('/sells/subscriptions', [SellPosController::class, 'listSubscriptions'])->name('sells.listSubscriptions');
-    Route::get('/sells/invoice-url/{id}', [SellPosController::class, 'showInvoiceUrl'])->name('sells.showInvoiceUrl');
+    Route::get('/toggle-subscription/{id}', [SellPosController::class, 'toggleRecurringInvoices'])->name('pos.toggleRecurringInvoices');
+    Route::get('/sells/subscriptions', [SellPosController::class, 'listSubscriptions'])->name('pos.listSubscriptions');
+    Route::get('/sells/invoice-url/{id}', [SellPosController::class, 'showInvoiceUrl'])->name('pos.showInvoiceUrl');
     Route::get('/sells/duplicate/{id}', [SellController::class, 'duplicateSell'])->name('sells.duplicateSell');
     Route::get('/sells/drafts', [SellController::class, 'getDrafts'])->name('sells.getDrafts');
     Route::get('/sells/quotations', [SellController::class, 'getQuotations'])->name('sells.getQuotations');
@@ -198,8 +198,8 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/sells/pos/get_product_row/{variation_id}/{location_id}', [SellPosController::class, 'getProductRow'])->name('pos.getProductRow');
     Route::post('/sells/pos/get_payment_row', [SellPosController::class, 'getPaymentRow'])->name('pos.getPaymentRow');
     Route::get('/sells/pos/get-recent-transactions', [SellPosController::class, 'getRecentTransactions'])->name('pos.getRecentTransactions');
-    Route::get('/sells/{transaction_id}/print', [SellPosController::class, 'printInvoice'])->name('sell.printInvoice');
-    Route::get('/sells/{transaction_id}/print2', [SellPosController::class, 'invoicePrint'])->name('sell.invoicePrint');
+    Route::get('/sells/{transaction_id}/print', [SellPosController::class, 'printInvoice'])->name('pos.printInvoice');
+    Route::get('/sells/{transaction_id}/print2', [SellPosController::class, 'invoicePrint'])->name('pos.invoicePrint');
     Route::get('/sells/pos/get-product-suggestion', [SellPosController::class, 'getProductSuggestion'])->name('pos.getProductSuggestion');
     Route::get('/pos/price-checking', [SellPosController::class, 'price_checking'])->name('pos.price-checking');
     Route::resource('pos', SellPosController::class);

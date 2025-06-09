@@ -276,8 +276,8 @@
 $(document).ready( function(){
     //Purchase table
     purchase_table = $('#purchase_table').DataTable({
-        processing: true,
-        serverSide: true,
+        // processing: true,
+        // serverSide: true,
         aaSorting: [[0, 'desc']],
         ajax: '/purchases?supplier_id={{ $contact->id }}',
         columnDefs: [ {
@@ -317,8 +317,8 @@ $(document).ready( function(){
     });
 
     sell_table = $('#sell_table').DataTable({
-        processing: true,
-        serverSide: true,
+        // processing: true,
+        // serverSide: true,
         aaSorting: [[0, 'desc']],
         ajax: '/sells?customer_id={{ $contact->id }}',
         columnDefs: [ {
@@ -358,8 +358,8 @@ $(document).ready( function(){
 
     //Opening balance payment
     ob_payment_table = $('#ob_payment_table').DataTable({
-        processing: true,
-        serverSide: true,
+        // processing: true,
+        // serverSide: true,
         aaSorting: [[0, 'desc']],
         ajax: '{{route("payments.getOpeningBalancePayments", $contact->id)}}',
         columns: [

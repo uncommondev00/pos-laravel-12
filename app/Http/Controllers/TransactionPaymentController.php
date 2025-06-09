@@ -13,7 +13,7 @@ use App\Models\Transaction;
 use App\Models\Account;
 
 use Illuminate\Support\Facades\DB;
-use Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
 
 use App\Events\TransactionPaymentAdded;
