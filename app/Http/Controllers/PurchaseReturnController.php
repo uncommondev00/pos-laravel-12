@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 
 use App\Utils\TransactionUtil;
 use App\Utils\ProductUtil;
@@ -49,46 +49,46 @@ class PurchaseReturnController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $purchases_returns = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
-                    ->join(
-                        'business_locations AS BS',
-                        'transactions.location_id',
-                        '=',
-                        'BS.id'
-                    )
-                    ->join(
-                        'transactions AS T',
-                        'transactions.return_parent_id',
-                        '=',
-                        'T.id'
-                    )
-                    ->leftJoin(
-                        'transaction_payments AS TP',
-                        'transactions.id',
-                        '=',
-                        'TP.transaction_id'
-                    )
-                    ->where('transactions.business_id', $business_id)
-                    ->where('transactions.type', 'purchase_return')
-                    ->select(
-                        'transactions.id',
-                        'transactions.transaction_date',
-                        'transactions.ref_no',
-                        'contacts.name',
-                        'transactions.status',
-                        'transactions.payment_status',
-                        'transactions.final_total',
-                        'transactions.return_parent_id',
-                        'BS.name as location_name',
-                        'T.ref_no as parent_purchase',
-                        DB::raw('SUM(TP.amount) as amount_paid')
-                    )
-                    ->groupBy('transactions.id');
+                ->join(
+                    'business_locations AS BS',
+                    'transactions.location_id',
+                    '=',
+                    'BS.id'
+                )
+                ->join(
+                    'transactions AS T',
+                    'transactions.return_parent_id',
+                    '=',
+                    'T.id'
+                )
+                ->leftJoin(
+                    'transaction_payments AS TP',
+                    'transactions.id',
+                    '=',
+                    'TP.transaction_id'
+                )
+                ->where('transactions.business_id', $business_id)
+                ->where('transactions.type', 'purchase_return')
+                ->select(
+                    'transactions.id',
+                    'transactions.transaction_date',
+                    'transactions.ref_no',
+                    'contacts.name',
+                    'transactions.status',
+                    'transactions.payment_status',
+                    'transactions.final_total',
+                    'transactions.return_parent_id',
+                    'BS.name as location_name',
+                    'T.ref_no as parent_purchase',
+                    DB::raw('SUM(TP.amount) as amount_paid')
+                )
+                ->groupBy('transactions.id');
 
             $permitted_locations = auth()->user()->permitted_locations();
             if ($permitted_locations != 'all') {
                 $purchases_returns->whereIn('transactions.location_id', $permitted_locations);
             }
-            
+
             if (!empty(request()->supplier_id)) {
                 $supplier_id = request()->supplier_id;
                 $purchases_returns->where('contacts.id', $supplier_id);
@@ -97,14 +97,14 @@ class PurchaseReturnController extends Controller
                 $start = request()->start_date;
                 $end =  request()->end_date;
                 $purchases_returns->whereDate('transactions.transaction_date', '>=', $start)
-                            ->whereDate('transactions.transaction_date', '<=', $end);
+                    ->whereDate('transactions.transaction_date', '<=', $end);
             }
             return Datatables::of($purchases_returns)
                 ->addColumn('action', function ($row) {
                     $html = '<a href="' . action('PurchaseReturnController@add', $row->return_parent_id) . '" class="btn btn-info btn-xs" ><i class="glyphicon glyphicon-edit"></i>' .
-                                __("messages.edit") .
-                                '</a>';
-                    
+                        __("messages.edit") .
+                        '</a>';
+
                     return $html;
                 })
                 ->removeColumn('id')
@@ -113,8 +113,8 @@ class PurchaseReturnController extends Controller
                     'final_total',
                     '<span class="display_currency final_total" data-currency_symbol="true" data-orig-value="{{$final_total}}">{{$final_total}}</span>'
                 )
-                ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
-               
+                ->editColumn('transaction_date', '@format_date($transaction_date)')
+
                 ->editColumn(
                     'payment_status',
                     '<a href="{{ action("TransactionPaymentController@show", [$id])}}" class="view_payment_modal payment-status payment-status-label" data-orig-value="{{$payment_status}}" data-status-name="@if($payment_status != "paid"){{__(\'lang_v1.\' . $payment_status)}}@else{{__("lang_v1.received")}}@endif"><span class="label @payment_status($payment_status)">@if($payment_status != "paid"){{__(\'lang_v1.\' . $payment_status)}} @else {{__("lang_v1.received")}} @endif
@@ -130,11 +130,12 @@ class PurchaseReturnController extends Controller
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can("purchase.view")) {
-                            return  action('PurchaseReturnController@show', [$row->return_parent_id]) ;
+                            return  action('PurchaseReturnController@show', [$row->return_parent_id]);
                         } else {
                             return '';
                         }
-                    }])
+                    }
+                ])
                 ->rawColumns(['final_total', 'action', 'payment_status', 'parent_purchase', 'payment_due'])
                 ->make(true);
         }
@@ -154,9 +155,9 @@ class PurchaseReturnController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         $purchase = Transaction::where('business_id', $business_id)
-                        ->where('type', 'purchase')
-                        ->with(['purchase_lines', 'contact', 'tax', 'return_parent', 'purchase_lines.sub_unit', 'purchase_lines.product', 'purchase_lines.product.unit'])
-                        ->find($id);
+            ->where('type', 'purchase')
+            ->with(['purchase_lines', 'contact', 'tax', 'return_parent', 'purchase_lines.sub_unit', 'purchase_lines.product', 'purchase_lines.product.unit'])
+            ->find($id);
 
         foreach ($purchase->purchase_lines as $key => $value) {
             if (!empty($value->sub_unit_id)) {
@@ -172,7 +173,7 @@ class PurchaseReturnController extends Controller
         }
 
         return view('purchase_return.add')
-                    ->with(compact('purchase'));
+            ->with(compact('purchase'));
     }
 
     /**
@@ -191,9 +192,9 @@ class PurchaseReturnController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $purchase = Transaction::where('business_id', $business_id)
-                        ->where('type', 'purchase')
-                        ->with(['purchase_lines', 'purchase_lines.sub_unit'])
-                        ->findOrFail($request->input('transaction_id'));
+                ->where('type', 'purchase')
+                ->with(['purchase_lines', 'purchase_lines.sub_unit'])
+                ->findOrFail($request->input('transaction_id'));
 
             $return_quantities = $request->input('returns');
             $return_total = 0;
@@ -240,11 +241,11 @@ class PurchaseReturnController extends Controller
                 $ref_count = $this->transactionUtil->setAndGetReferenceCount('purchase_return');
                 $return_transaction_data['ref_no'] = $this->transactionUtil->generateReferenceNumber('purchase_return', $ref_count);
             }
-            
+
             $return_transaction = Transaction::where('business_id', $business_id)
-                                            ->where('type', 'purchase_return')
-                                            ->where('return_parent_id', $purchase->id)
-                                            ->first();
+                ->where('type', 'purchase_return')
+                ->where('return_parent_id', $purchase->id)
+                ->first();
 
             if (!empty($return_transaction)) {
                 $return_transaction->update($return_transaction_data);
@@ -264,18 +265,20 @@ class PurchaseReturnController extends Controller
             //update payment status
             $this->transactionUtil->updatePaymentStatus($return_transaction->id, $return_transaction->final_total);
 
-            $output = ['success' => 1,
-                            'msg' => __('lang_v1.purchase_return_added_success')
-                        ];
+            $output = [
+                'success' => 1,
+                'msg' => __('lang_v1.purchase_return_added_success')
+            ];
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => 0,
-                            'msg' => __('messages.something_went_wrong')
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => 0,
+                'msg' => __('messages.something_went_wrong')
+            ];
         }
 
         return redirect('purchase-return')->with('status', $output);
@@ -296,9 +299,9 @@ class PurchaseReturnController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         $purchase = Transaction::where('business_id', $business_id)
-                        ->where('type', 'purchase')
-                        ->with(['return_parent', 'return_parent.tax', 'purchase_lines', 'contact', 'tax', 'purchase_lines.sub_unit', 'purchase_lines.product', 'purchase_lines.product.unit'])
-                        ->find($id);
+            ->where('type', 'purchase')
+            ->with(['return_parent', 'return_parent.tax', 'purchase_lines', 'contact', 'tax', 'purchase_lines.sub_unit', 'purchase_lines.product', 'purchase_lines.product.unit'])
+            ->find($id);
 
         foreach ($purchase->purchase_lines as $key => $value) {
             if (!empty($value->sub_unit_id)) {
@@ -306,7 +309,7 @@ class PurchaseReturnController extends Controller
                 $purchase->purchase_lines[$key] = $formated_purchase_line;
             }
         }
-        
+
         $purchase_taxes = [];
         if (!empty($purchase->return_parent->tax)) {
             if ($purchase->return_parent->tax->is_tax_group) {
@@ -317,6 +320,6 @@ class PurchaseReturnController extends Controller
         }
 
         return view('purchase_return.show')
-                ->with(compact('purchase', 'purchase_taxes'));
+            ->with(compact('purchase', 'purchase_taxes'));
     }
 }

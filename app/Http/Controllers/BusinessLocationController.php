@@ -6,7 +6,6 @@ use App\Models\BusinessLocation;
 use App\Models\InvoiceLayout;
 use App\Models\InvoiceScheme;
 
-// use Yajra\DataTables\Facades\DataTables;
 use Yajra\DataTables\DataTables;
 
 use Illuminate\Http\Request;

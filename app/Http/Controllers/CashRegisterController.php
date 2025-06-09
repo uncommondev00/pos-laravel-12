@@ -6,7 +6,7 @@ use App\Models\CashRegister;
 use Illuminate\Http\Request;
 
 use App\Utils\CashRegisterUtil;
-
+use Carbon\Carbon;
 use DB;
 
 class CashRegisterController extends Controller
@@ -99,7 +99,7 @@ class CashRegisterController extends Controller
         $register_details =  $this->cashRegisterUtil->getRegisterDetails($id);
         $user_id = $register_details->user_id;
         $open_time = $register_details['open_time'];
-        $close_time = \Carbon::now()->toDateTimeString();
+        $close_time = Carbon::now()->toDateTimeString();
         $details = $this->cashRegisterUtil->getRegisterTransactionDetails($user_id, $open_time, $close_time);
 
         return view('cash_register.register_details')

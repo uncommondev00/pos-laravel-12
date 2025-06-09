@@ -9,7 +9,7 @@ use App\Models\SellingPriceGroup;
 
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 
 use App\Utils\ModuleUtil;
 
@@ -46,7 +46,7 @@ class RoleController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $roles = Role::where('business_id', $business_id)
-                        ->select(['name', 'id', 'is_default', 'business_id']);
+                ->select(['name', 'id', 'is_default', 'business_id']);
 
             return DataTables::of($roles)
                 ->addColumn('action', function ($row) {
@@ -59,14 +59,14 @@ class RoleController extends Controller
                             $action .= '&nbsp
                                 <button data-href="' . action('RoleController@destroy', [$row->id]) . '" class="btn btn-xs btn-danger delete_role_button"><i class="glyphicon glyphicon-trash"></i> ' . __("messages.delete") . '</button>';
                         }
-                        
+
                         return $action;
                     } else {
                         return '';
                     }
                 })
                 ->editColumn('name', function ($row) use ($business_id) {
-                    $role_name = str_replace('#'. $business_id, '', $row->name);
+                    $role_name = str_replace('#' . $business_id, '', $row->name);
                     if (in_array($role_name, ['Admin', 'Cashier'])) {
                         $role_name = __('lang_v1.' . $role_name);
                     }
@@ -96,15 +96,15 @@ class RoleController extends Controller
         //Get all locations
         $business_id = request()->session()->get('user.business_id');
         $locations = BusinessLocation::where('business_id', $business_id)
-                                    ->get();
+            ->get();
 
         $selling_price_groups = SellingPriceGroup::where('business_id', $business_id)
-                                    ->get();
+            ->get();
 
         $module_permissions = $this->moduleUtil->getModuleData('user_permissions');
 
         return view('role.create')
-                ->with(compact('locations', 'selling_price_groups', 'module_permissions'));
+            ->with(compact('locations', 'selling_price_groups', 'module_permissions'));
     }
 
     /**
@@ -125,8 +125,8 @@ class RoleController extends Controller
             $business_id = $request->session()->get('user.business_id');
 
             $count = Role::where('name', $role_name . '#' . $business_id)
-                        ->where('business_id', $business_id)
-                        ->count();
+                ->where('business_id', $business_id)
+                ->count();
             if ($count == 0) {
                 $is_service_staff = 0;
                 if ($request->input('is_service_staff') == 1) {
@@ -134,15 +134,17 @@ class RoleController extends Controller
                 }
 
                 $role = Role::create([
-                            'name' => $role_name . '#' . $business_id ,
-                            'business_id' => $business_id,
-                            'is_service_staff' => $is_service_staff
-                        ]);
+                    'name' => $role_name . '#' . $business_id,
+                    'business_id' => $business_id,
+                    'is_service_staff' => $is_service_staff
+                ]);
 
                 //Include location permissions
                 $location_permissions = $request->input('location_permissions');
-                if (!in_array('access_all_locations', $permissions) &&
-                    !empty($location_permissions)) {
+                if (
+                    !in_array('access_all_locations', $permissions) &&
+                    !empty($location_permissions)
+                ) {
                     foreach ($location_permissions as $location_permission) {
                         $permissions[] = $location_permission;
                     }
@@ -159,20 +161,23 @@ class RoleController extends Controller
                 if (!empty($permissions)) {
                     $role->syncPermissions($permissions);
                 }
-                $output = ['success' => 1,
-                            'msg' => __("user.role_added")
-                        ];
+                $output = [
+                    'success' => 1,
+                    'msg' => __("user.role_added")
+                ];
             } else {
-                $output = ['success' => 0,
-                            'msg' => __("user.role_already_exists")
-                        ];
+                $output = [
+                    'success' => 0,
+                    'msg' => __("user.role_already_exists")
+                ];
             }
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => 0,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => 0,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
         return redirect('roles')->with('status', $output);
     }
@@ -202,18 +207,18 @@ class RoleController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $role = Role::where('business_id', $business_id)
-                    ->with(['permissions'])
-                    ->find($id);
+            ->with(['permissions'])
+            ->find($id);
         $role_permissions = [];
         foreach ($role->permissions as $role_perm) {
             $role_permissions[] = $role_perm->name;
         }
 
         $locations = BusinessLocation::where('business_id', $business_id)
-                                    ->get();
+            ->get();
 
         $selling_price_groups = SellingPriceGroup::where('business_id', $business_id)
-                                    ->get();
+            ->get();
 
         $module_permissions = $this->moduleUtil->getModuleData('user_permissions');
 
@@ -240,9 +245,9 @@ class RoleController extends Controller
             $business_id = $request->session()->get('user.business_id');
 
             $count = Role::where('name', $role_name . '#' . $business_id)
-                        ->where('id', '!=', $id)
-                        ->where('business_id', $business_id)
-                        ->count();
+                ->where('id', '!=', $id)
+                ->where('business_id', $business_id)
+                ->count();
             if ($count == 0) {
                 $role = Role::findOrFail($id);
 
@@ -261,8 +266,10 @@ class RoleController extends Controller
 
                     //Include location permissions
                     $location_permissions = $request->input('location_permissions');
-                    if (!in_array('access_all_locations', $permissions) &&
-                        !empty($location_permissions)) {
+                    if (
+                        !in_array('access_all_locations', $permissions) &&
+                        !empty($location_permissions)
+                    ) {
                         foreach ($location_permissions as $location_permission) {
                             $permissions[] = $location_permission;
                         }
@@ -280,25 +287,29 @@ class RoleController extends Controller
                         $role->syncPermissions($permissions);
                     }
 
-                    $output = ['success' => 1,
-                            'msg' => __("user.role_updated")
-                        ];
+                    $output = [
+                        'success' => 1,
+                        'msg' => __("user.role_updated")
+                    ];
                 } else {
-                    $output = ['success' => 0,
-                            'msg' => __("user.role_is_default")
-                        ];
+                    $output = [
+                        'success' => 0,
+                        'msg' => __("user.role_is_default")
+                    ];
                 }
             } else {
-                $output = ['success' => 0,
-                            'msg' => __("user.role_already_exists")
-                        ];
+                $output = [
+                    'success' => 0,
+                    'msg' => __("user.role_already_exists")
+                ];
             }
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => 0,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => 0,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return redirect('roles')->with('status', $output);
@@ -324,20 +335,23 @@ class RoleController extends Controller
 
                 if (!$role->is_default || $role->name == 'Cashier#' . $business_id) {
                     $role->delete();
-                    $output = ['success' => true,
-                            'msg' => __("user.role_deleted")
-                            ];
+                    $output = [
+                        'success' => true,
+                        'msg' => __("user.role_deleted")
+                    ];
                 } else {
-                    $output = ['success' => 0,
-                            'msg' => __("user.role_is_default")
-                        ];
+                    $output = [
+                        'success' => 0,
+                        'msg' => __("user.role_is_default")
+                    ];
                 }
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;

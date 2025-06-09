@@ -17,7 +17,7 @@ class PrinterController extends Controller
     {
         if (request()->ajax()) {
             $business_id = request()->session()->get('user.business_id');
-
+ 
             $printer = Printer::where('business_id', $business_id)
                 ->select([
                     'name',
@@ -40,11 +40,11 @@ class PrinterController extends Controller
                 ->addColumn(
                     'action',
                     '@can("printer.update")
-                    <a href="{{action(\'PrinterController@edit\', [$id])}}" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a>
+                    <a href="{{route(\'printers.edit\', [$id])}}" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a>
                         &nbsp;
                     @endcan
                     @can("printer.delete")
-                        <button data-href="{{action(\'PrinterController@destroy\', [$id])}}" class="btn btn-xs btn-danger delete_printer_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
+                        <button data-href="{{route(\'printers.destroy\', [$id])}}" class="btn btn-xs btn-danger delete_printer_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
                     @endcan'
                 )
                 ->removeColumn('id')

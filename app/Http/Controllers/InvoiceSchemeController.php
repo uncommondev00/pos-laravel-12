@@ -32,13 +32,13 @@ class InvoiceSchemeController extends Controller
             return Datatables::of($schemes)
                 ->addColumn(
                     'action',
-                    '<button type="button" data-href="{{action(\'InvoiceSchemeController@edit\', [$id])}}" class="btn btn-xs btn-primary btn-modal" data-container=".invoice_edit_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
+                    '<button type="button" data-href="{{route(\'invoice-schemes.edit\', [$id])}}" class="btn btn-xs btn-primary btn-modal" data-container=".invoice_edit_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
                         &nbsp;
-                        <button type="button" data-href="{{action(\'InvoiceSchemeController@destroy\', [$id])}}" class="btn btn-xs btn-danger delete_invoice_button" @if($is_default) disabled @endif><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>&nbsp;
+                        <button type="button" data-href="{{route(\'invoice-schemes.destroy\', [$id])}}" class="btn btn-xs btn-danger delete_invoice_button" @if($is_default) disabled @endif><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>&nbsp;
                         @if($is_default)
                             <button type="button" class="btn btn-xs btn-success" disabled><i class="fa fa-check-square-o" aria-hidden="true"></i> @lang("barcode.default")</button>
                         @else
-                            <button class="btn btn-xs btn-info set_default_invoice" data-href="{{action(\'InvoiceSchemeController@setDefault\', [$id])}}">@lang("barcode.set_as_default")</button>
+                            <button class="btn btn-xs btn-info set_default_invoice" data-href="{{route(\'invoice-schemes.setDefault\', [$id])}}">@lang("barcode.set_as_default")</button>
                         @endif
                         '
                 )

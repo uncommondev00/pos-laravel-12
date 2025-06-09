@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CustomerGroup;
 use Illuminate\Http\Request;
 
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 
 class CustomerGroupController extends Controller
 {
@@ -30,12 +30,12 @@ class CustomerGroupController extends Controller
                 ->addColumn(
                     'action',
                     '@can("customer.update")
-                            <button data-href="{{action(\'CustomerGroupController@edit\', [$id])}}" class="btn btn-xs btn-primary edit_customer_group_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
+                            <button data-href="{{route(\'customer-group.edit\', [$id])}}" class="btn btn-xs btn-primary edit_customer_group_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
                         &nbsp;
                         @endcan
 
                         @can("customer.delete")
-                            <button data-href="{{action(\'CustomerGroupController@destroy\', [$id])}}" class="btn btn-xs btn-danger delete_customer_group_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
+                            <button data-href="{{route(\'customer-group.destroy\', [$id])}}" class="btn btn-xs btn-danger delete_customer_group_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
                         @endcan'
                 )
                 ->removeColumn('id')

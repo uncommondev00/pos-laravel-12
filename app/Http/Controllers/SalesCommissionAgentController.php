@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 
 use Illuminate\Support\Facades\DB;
-use DataTables;
+use Yajra\DataTables\DataTables;
+
 
 class SalesCommissionAgentController extends Controller
 {
@@ -26,20 +27,25 @@ class SalesCommissionAgentController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $users = User::where('business_id', $business_id)
-                        ->where('is_cmmsn_agnt', 1)
-                        ->select(['id',
-                            DB::raw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) as full_name"),
-                            'email', 'contact_no', 'address', 'cmmsn_percent']);
+                ->where('is_cmmsn_agnt', 1)
+                ->select([
+                    'id',
+                    DB::raw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) as full_name"),
+                    'email',
+                    'contact_no',
+                    'address',
+                    'cmmsn_percent'
+                ]);
 
             return Datatables::of($users)
                 ->addColumn(
                     'action',
                     '@can("user.update")
-                    <button type="button" data-href="{{action(\'SalesCommissionAgentController@edit\', [$id])}}" data-container=".commission_agent_modal" class="btn btn-xs btn-modal btn-primary"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
+                    <button type="button" data-href="{{route(\'sales-commission-agents.edit\', [$id])}}" data-container=".commission_agent_modal" class="btn btn-xs btn-modal btn-primary"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
                         &nbsp;
                         @endcan
                         @can("user.delete")
-                        <button data-href="{{action(\'SalesCommissionAgentController@destroy\', [$id])}}" class="btn btn-xs btn-danger delete_commsn_agnt_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
+                        <button data-href="{{route(\'sales-commission-agents.destroy\', [$id])}}" class="btn btn-xs btn-danger delete_commsn_agnt_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
                         @endcan'
                 )
                 ->filterColumn('full_name', function ($query, $keyword) {
@@ -88,16 +94,18 @@ class SalesCommissionAgentController extends Controller
             $input['is_cmmsn_agnt'] = 1;
 
             $user = User::create($input);
-            
-            $output = ['success' => true,
-                          'msg' => __("lang_v1.commission_agent_added_success")
-                      ];
+
+            $output = [
+                'success' => true,
+                'msg' => __("lang_v1.commission_agent_added_success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                           'msg' => __("messages.something_went_wrong")
-                       ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -118,7 +126,7 @@ class SalesCommissionAgentController extends Controller
         $user = User::findOrFail($id);
 
         return view('sales_commission_agent.edit')
-                    ->with(compact('user'));
+            ->with(compact('user'));
     }
 
     /**
@@ -140,20 +148,22 @@ class SalesCommissionAgentController extends Controller
                 $business_id = $request->session()->get('user.business_id');
 
                 $user = User::where('id', $id)
-                            ->where('business_id', $business_id)
-                            ->where('is_cmmsn_agnt', 1)
-                            ->first();
+                    ->where('business_id', $business_id)
+                    ->where('is_cmmsn_agnt', 1)
+                    ->first();
                 $user->update($input);
 
-                $output = ['success' => true,
-                            'msg' => __("lang_v1.commission_agent_updated_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("lang_v1.commission_agent_updated_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -181,15 +191,17 @@ class SalesCommissionAgentController extends Controller
                     ->where('is_cmmsn_agnt', 1)
                     ->delete();
 
-                $output = ['success' => true,
-                                'msg' => __("lang_v1.commission_agent_deleted_success")
-                                ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("lang_v1.commission_agent_deleted_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;

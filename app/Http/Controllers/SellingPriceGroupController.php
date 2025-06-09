@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SellingPriceGroup;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 use Spatie\Permission\Models\Permission;
 
 class SellingPriceGroupController extends Controller
@@ -24,14 +24,14 @@ class SellingPriceGroupController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $price_groups = SellingPriceGroup::where('business_id', $business_id)
-                        ->select(['name', 'description', 'id']);
+                ->select(['name', 'description', 'id']);
 
             return Datatables::of($price_groups)
                 ->addColumn(
                     'action',
-                    '<button data-href="{{action(\'SellingPriceGroupController@edit\', [$id])}}" class="btn btn-xs btn-primary btn-modal" data-container=".view_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
+                    '<button data-href="{{route(\'selling-price-group.edit\', [$id])}}" class="btn btn-xs btn-primary btn-modal" data-container=".view_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
                         &nbsp;
-                        <button data-href="{{action(\'SellingPriceGroupController@destroy\', [$id])}}" class="btn btn-xs btn-danger delete_spg_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>'
+                        <button data-href="{{route(\'selling-price-group.destroy\', [$id])}}" class="btn btn-xs btn-danger delete_spg_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>'
                 )
                 ->removeColumn('id')
                 ->rawColumns([2])
@@ -75,18 +75,20 @@ class SellingPriceGroupController extends Controller
             $spg = SellingPriceGroup::create($input);
 
             //Create a new permission related to the created selling price group
-            Permission::create(['name' => 'selling_price_group.' . $spg->id ]);
+            Permission::create(['name' => 'selling_price_group.' . $spg->id]);
 
-            $output = ['success' => true,
-                            'data' => $spg,
-                            'msg' => __("lang_v1.added_success")
-                        ];
+            $output = [
+                'success' => true,
+                'data' => $spg,
+                'msg' => __("lang_v1.added_success")
+            ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
         }
 
         return $output;
@@ -147,15 +149,17 @@ class SellingPriceGroupController extends Controller
                 $spg->description = $input['description'];
                 $spg->save();
 
-                $output = ['success' => true,
-                            'msg' => __("lang_v1.updated_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("lang_v1.updated_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;
@@ -181,15 +185,17 @@ class SellingPriceGroupController extends Controller
                 $spg = SellingPriceGroup::where('business_id', $business_id)->findOrFail($id);
                 $spg->delete();
 
-                $output = ['success' => true,
-                            'msg' => __("lang_v1.deleted_success")
-                            ];
+                $output = [
+                    'success' => true,
+                    'msg' => __("lang_v1.deleted_success")
+                ];
             } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-                $output = ['success' => false,
-                            'msg' => __("messages.something_went_wrong")
-                        ];
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
             }
 
             return $output;

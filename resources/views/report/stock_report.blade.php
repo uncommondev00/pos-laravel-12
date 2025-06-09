@@ -119,7 +119,7 @@
 @endsection
 
 @section('javascript')
-<script src="{{ asset('js/report.js?v=' . $asset_v) }}"></script>
+<script src="{{ asset('js/report.js?v=' . $asset_v) }}"></script>/
 
 <script type="text/javascript">
     $(document).on('click', 'a.print-stock-report', function(e) {
