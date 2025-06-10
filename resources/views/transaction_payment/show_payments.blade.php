@@ -76,7 +76,7 @@
 
           <div class="col-sm-4 invoice-col">
             <b>@lang('purchase.ref_no'):</b> #{{ $transaction->ref_no }}<br/>
-            <b>@lang('messages.date'):</b> {{ @format_date($transaction->transaction_date) }}<br/>
+            <b>@lang('messages.date'):</b> @format_date($transaction->transaction_date)<br/>
             <b>@lang('purchase.purchase_status'):</b> {{ ucfirst( $transaction->status ) }}<br>
             <b>@lang('purchase.payment_status'):</b> {{ ucfirst( $transaction->payment_status ) }}<br>
           </div>
@@ -138,7 +138,7 @@
 
           <div class="col-sm-4 invoice-col">
             <b>@lang('purchase.ref_no'):</b> #{{ $transaction->ref_no }}<br/>
-            <b>@lang('messages.date'):</b> {{ @format_date($transaction->transaction_date) }}<br/>
+            <b>@lang('messages.date'):</b> @format_date($transaction->transaction_date)<br/>
             <b>@lang('purchase.payment_status'):</b> {{ ucfirst( $transaction->payment_status ) }}<br>
           </div>
         </div>
@@ -196,7 +196,7 @@
           </div>
           <div class="col-sm-4 invoice-col">
             <b>@lang('sale.invoice_no'):</b> #{{ $transaction->invoice_no }}<br/>
-            <b>@lang('messages.date'):</b> {{ @format_date($transaction->transaction_date) }}<br/>
+            <b>@lang('messages.date'):</b> @format_date($transaction->transaction_date)<br/>
             <b>@lang('purchase.payment_status'):</b> {{ ucfirst( $transaction->payment_status ) }}<br>
           </div>
         </div>
@@ -251,7 +251,7 @@
             </tr>
             @forelse ($payments as $payment)
                 <tr>
-                  <td>{{ @format_date($payment->paid_on) }}</td>
+                  <td>@format_date($payment->paid_on)</td>
                   <td>{{ $payment->payment_ref_no }}</td>
                   <td><span class="display_currency" data-currency_symbol="true">{{ $payment->amount }}</span></td>
                   <td>{{ $payment_types[$payment->method] }}</td>

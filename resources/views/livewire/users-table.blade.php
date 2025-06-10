@@ -52,12 +52,10 @@
                                             </a>
                                         @endcan
                                         @can('user.delete')
-                                            <button wire:click="delete({{ $user->id }})" class="btn btn-xs btn-danger">
-                                                <i class="glyphicon glyphicon-trash"></i> Delete
-                                            </button>
                                             {{-- <button class="btn btn-xs btn-danger" onclick="confirmDelete({{ $user->id }})">
                                                 <i class="glyphicon glyphicon-trash"></i> Delete
                                             </button> --}}
+                                            <button data-href="{{route('users.destroy',$user->id)}}" class="btn btn-xs btn-danger delete_user_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
                                         @endcan
                                     </td>
                                 </tr>

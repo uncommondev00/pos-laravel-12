@@ -33,7 +33,6 @@
             'search' => $search
             ])
 
-            <div class="table-responsive">
                 <table class="table table-bordered table-striped dataTable">
                     <thead>
                         @if($type == 'supplier')
@@ -129,7 +128,9 @@
                                         <li><a href="{{route('contacts.edit', [$contact->id])}}" class="edit_contact_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
                                         @endcan
                                         @can("supplier.delete")
-                                        <li><a href="#" wire:click.prevent="deleteContact({{ $contact->id }})" class="delete_contact_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a></li>
+                                        <li>
+                                            <a href="{{ route('contacts.destroy', [$contact->id])}}" class="delete_contact_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a>
+                                        </li>
                                         @endcan
                                     </ul>
                                 </div>
@@ -168,7 +169,9 @@
                                         @endif
                                         @if($contact->id != 1 && $contact->id != 2 && !$contact->is_default)
                                         @can("customer.delete")
-                                        <li><a href="#" wire:click.prevent="deleteContact({{ $contact->id }})" class="delete_contact_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a></li>
+                                        <li>
+                                            <a href="{{ route('contacts.destroy', [$contact->id])}}" class="delete_contact_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a>
+                                        </li>
                                         @endcan
                                         @endif
                                     </ul>
@@ -199,7 +202,6 @@
                         </tr>
                     </tfoot>
                 </table>
-            </div>
             @include('includes.pagination', ['paginator' => $contacts])
 
         </div>
@@ -214,16 +216,4 @@
     </section>
     <!-- /.content -->
 
-    @push('scripts')
-    <script>
-        document.addEventListener('livewire:load', function() {
-            Livewire.on('contactDeleted', message => {
-                toastr.success(message);
-            });
-
-            // Initialize currency formatting
-            __currency_convert_recursively($('#contact_table'));
-        });
-    </script>
-    @endpush
 </div>

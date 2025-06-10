@@ -52,7 +52,7 @@
                                             data-container=".commission_agent_modal"><i class="fa fa-edit"></i> @lang( 'messages.edit' )</button>
                                     @endcan
                                     @can('user.delete')
-                                        <button type="button" class="btn btn-xs btn-danger" data-href="{{route('sales-commission-agents.destroy', $sales_commission_agent->id)}}"><i class="fa fa-trash"></i> @lang( 'messages.delete' )</button>                                        
+                                        <button type="button" class="btn btn-xs btn-danger delete_commsn_agnt_button" data-href="{{route('sales-commission-agents.destroy', $sales_commission_agent->id)}}"><i class="fa fa-trash"></i> @lang( 'messages.delete' )</button>                                        
                                     @endcan
                                 </td>                               
                             </tr>

@@ -579,6 +579,7 @@ $(document).ready(function() {
 
     $(document).on('click', 'a.view-product', function(e) {
         e.preventDefault();
+        alert();
         $.ajax({
             url: $(this).attr('href'),
             dataType: 'html',

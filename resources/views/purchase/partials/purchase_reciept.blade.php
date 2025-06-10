@@ -17,7 +17,7 @@
 <div class="modal-body">
   <div class="row">
     <div class="col-sm-12">
-      <p class="pull-right"><b>@lang('messages.date'):</b> {{ @format_date($purchase->transaction_date) }}</p>
+      <p class="pull-right"><b>@lang('messages.date'):</b> @format_date($purchase->transaction_date) </p>
     </div>
   </div>
   <div class="row invoice-info">

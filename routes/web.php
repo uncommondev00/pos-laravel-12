@@ -308,8 +308,8 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('stock-transfers/print/{id}', [StockTransferController::class, 'printInvoice'])->name('stock-transfers.printInvoice');
     Route::resource('stock-transfers', StockTransferController::class);
 
-    Route::get('/opening-stock/add/{product_id}', [OpeningStockController::class, 'add'])->name('opening-stock.add');
-    Route::post('/opening-stock/save', [OpeningStockController::class, 'save'])->name('opening-stock.save');
+    Route::get('/opening-stocks/add/{product_id}', [OpeningStockController::class, 'add'])->name('opening-stocks.add');
+    Route::post('/opening-stock/save', [OpeningStockController::class, 'save'])->name('opening-stocks.save');
 
     // Customer Groups
     Route::resource('customer-group', CustomerGroupController::class);

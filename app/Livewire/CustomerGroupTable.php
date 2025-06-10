@@ -12,6 +12,8 @@ class CustomerGroupTable extends Component
 {
     use WithPagination, WithSortingSearchPagination;
 
+    protected $listeners = ['refreshComponent' => '$refresh'];
+
     public function mount()
     {
         $this->mountWithSortingSearchPagination();

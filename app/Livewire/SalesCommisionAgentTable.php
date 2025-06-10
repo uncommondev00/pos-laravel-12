@@ -11,10 +11,11 @@ use Illuminate\Support\Facades\DB;
 class SalesCommisionAgentTable extends Component
 {
     use WithPagination, WithSortingSearchPagination;
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
     public function mount()
     {
-        $this->sortField = 'name'; // Different default sort field
+        $this->sortField = 'full_name'; // Different default sort field
         $this->mountWithSortingSearchPagination();
 
         if (!auth()->user()->can('user.view') && !auth()->user()->can('user.create')) {

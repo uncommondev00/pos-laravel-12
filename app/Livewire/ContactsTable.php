@@ -13,6 +13,8 @@ class ContactsTable extends Component
 {
     use WithPagination, WithSortingSearchPagination;
 
+    protected $listeners = ['refreshComponent' => '$refresh'];
+
     public $type = '';
     public $totalDue = 0;
     public $totalReturnDue = 0;

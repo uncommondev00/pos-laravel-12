@@ -48,12 +48,7 @@
                                             </a>
                                         @endcan
                                         @can('roles.delete')
-                                            <button wire:click="delete({{ $role->id }})" class="btn btn-xs btn-danger">
-                                                <i class="glyphicon glyphicon-trash"></i> Delete
-                                            </button>
-                                            {{-- <button class="btn btn-xs btn-danger" onclick="confirmDelete({{ $user->id }})">
-                                                <i class="glyphicon glyphicon-trash"></i> Delete
-                                            </button> --}}
+                                            <button data-href="{{route('roles.destroy', $role->id)}}" class="btn btn-xs btn-danger delete_role_button"><i class="glyphicon glyphicon-trash"></i>@lang("messages.delete")</button>
                                         @endcan
                                 </td>
                             </tr>

@@ -6,7 +6,7 @@
 <div class="modal-body">
   <div class="row">
     <div class="col-sm-12">
-      <p class="pull-right"><b>@lang('messages.date'):</b> {{ @format_date($purchase->transaction_date) }}</p>
+      <p class="pull-right"><b>@lang('messages.date'):</b> @format_date($purchase->transaction_date)</p>
     </div>
   </div>
   <div class="row invoice-info">
@@ -72,7 +72,7 @@
 
     <div class="col-sm-4 invoice-col">
       <b>@lang('purchase.ref_no'):</b> #{{ $purchase->ref_no }}<br/>
-      <b>@lang('messages.date'):</b> {{ @format_date($purchase->transaction_date) }}<br/>
+      <b>@lang('messages.date'):</b> @format_date($purchase->transaction_date)<br/>
       <b>@lang('purchase.purchase_status'):</b> {{ ucfirst( $purchase->status ) }}<br>
       <b>@lang('purchase.payment_status'):</b> {{ ucfirst( $purchase->payment_status ) }}<br>
     </div>
@@ -141,7 +141,7 @@
               <td>
                 @if( !empty($purchase_line->product->expiry_period_type) )
                   @if(!empty($purchase_line->mfg_date))
-                    {{ @format_date($purchase_line->mfg_date) }}
+                    @format_date($purchase_line->mfg_date)
                   @endif
                 @else
                   @lang('product.not_applicable')
@@ -150,7 +150,7 @@
               <td>
                 @if( !empty($purchase_line->product->expiry_period_type) )
                   @if(!empty($purchase_line->exp_date))
-                    {{ @format_date($purchase_line->exp_date) }}
+                    @format_date($purchase_line->exp_date) 
                   @endif
                 @else
                   @lang('product.not_applicable')
@@ -192,7 +192,7 @@
             @endphp
             <tr>
               <td>{{ $loop->iteration }}</td>
-              <td>{{ @format_date($payment_line->paid_on) }}</td>
+              <td>@format_date($payment_line->paid_on) </td>
               <td>{{ $payment_line->payment_ref_no }}</td>
               <td><span class="display_currency" data-currency_symbol="true">{{ $payment_line->amount }}</span></td>
               <td>{{ $payment_methods[$payment_line->method] }}</td>

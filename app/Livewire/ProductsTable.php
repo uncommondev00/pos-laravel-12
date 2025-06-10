@@ -16,6 +16,7 @@ use App\Traits\WithSortingSearchPagination;
 class ProductsTable extends Component
 {
     use WithPagination, WithSortingSearchPagination;
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
     // Define your filters
     public $type = '';

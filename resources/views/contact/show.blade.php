@@ -179,6 +179,7 @@
                           </div>
                     </div>
                     <div class="col-sm-12">
+                        <div class="table-responsive">
                         <table class="table table-bordered table-striped ajax_view" id="purchase_table">
                             <thead>
                                 <tr>
@@ -193,6 +194,7 @@
                                 </tr>
                             </thead>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -223,6 +225,7 @@
                           </div>
                     </div>
                     <div class="col-sm-12">
+                        <div class="table-responsive">
                         <table class="table table-bordered table-striped ajax_view" id="sell_table">
                             <thead>
                                 <tr>
@@ -237,6 +240,7 @@
                                 </tr>
                             </thead>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>
