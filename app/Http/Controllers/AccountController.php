@@ -11,7 +11,7 @@ use App\Models\TransactionPayment;
 use Yajra\DataTables\DataTables;
 
 use App\Utils\Util;
-
+use Carbon\Carbon;
 use DB;
 
 class AccountController extends Controller
@@ -163,7 +163,7 @@ class AccountController extends Controller
                         'account_id' => $account->id,
                         'type' => 'credit',
                         'sub_type' => 'opening_balance',
-                        'operation_date' => \Carbon::now(),
+                        'operation_date' => Carbon::now(),
                         'created_by' => $user_id
                     ];
 
