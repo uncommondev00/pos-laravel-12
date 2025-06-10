@@ -13,12 +13,8 @@ use App\Models\Transaction;
 use App\Models\Account;
 
 use Illuminate\Support\Facades\DB;
-<<<<<<< HEAD
-use Yajra\DataTables\Facades\DataTables;
-=======
 use Yajra\DataTables\DataTables;
 
->>>>>>> refs/remotes/origin/main
 use Carbon\Carbon;
 
 use App\Events\TransactionPaymentAdded;

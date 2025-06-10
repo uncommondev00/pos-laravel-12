@@ -12,7 +12,7 @@ use App\Models\User;
 use App\Models\CustomerGroup;
 use App\Models\SellingPriceGroup;
 use App\Models\Contact;
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Utils\ContactUtil;
@@ -861,7 +861,7 @@ class SellController extends Controller
                     '
                 )
                 ->removeColumn('id')
-                ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
+                ->editColumn('transaction_date', '@format_date($transaction_date)')
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can("sell.view")) {
