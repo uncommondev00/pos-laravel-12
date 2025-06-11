@@ -11,6 +11,7 @@ use App\Traits\WithSortingSearchPagination;
 class VariationTemplateTable extends Component
 {
     use WithPagination, WithSortingSearchPagination;
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
     public function mount()
     {
