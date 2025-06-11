@@ -12,7 +12,7 @@
 <section class="content">
     <input type="hidden" id="item_addition_method" value="{{ $business_details->item_addition_method }}">
 
-    <form action="{{ route('pos.update', ['id' => $transaction->id]) }}" method="POST"
+    <form action="{{ route('pos.update',$transaction->id) }}" method="POST"
         id="edit_sell_form">
         @csrf
         @method('PUT')
