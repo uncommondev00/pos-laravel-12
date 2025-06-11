@@ -1,7 +1,7 @@
 <div class="modal-dialog" role="document">
   <div class="modal-content">
 
-    <form action="{{ route('business-location.update', [$location->id]) }}" method="POST" id="business_location_add_form">
+    <form action="{{ route('business-location.update', $location->id) }}" method="POST" id="business_location_add_form">
       @csrf
       @method('PUT')
 

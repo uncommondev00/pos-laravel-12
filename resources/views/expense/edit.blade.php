@@ -10,7 +10,7 @@
 
 <!-- Main content -->
 <section class="content">
-  <form action="{{ route('expenses.update', [$expense->id]) }}" method="POST" id="add_expense_form" enctype="multipart/form-data">
+  <form action="{{ route('expenses.update', $expense->id) }}" method="POST" id="add_expense_form" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div class="box box-solid">

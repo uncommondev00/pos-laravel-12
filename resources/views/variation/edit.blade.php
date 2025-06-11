@@ -1,6 +1,6 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
-        <form action="{{ route('variation-templates.update', [$variation->id]) }}"
+        <form action="{{ route('variation-templates.update', $variation->id) }}"
             method="POST"
             id="variation_edit_form"
             class="form-horizontal">

@@ -14,7 +14,7 @@
 
 <!-- Main content -->
 <section class="content">
-    <form action="{{ route('products.update', [$product->id]) }}"
+    <form action="{{ route('products.update', $product->id) }}"
         method="POST"
         id="product_add_form"
         class="product_form"

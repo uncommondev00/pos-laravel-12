@@ -1,7 +1,7 @@
 <div class="modal-dialog" role="document">
   <div class="modal-content">
 
-    <form action="{{ route('group-taxes.update', [$tax_rate->id]) }}" method="POST" id="tax_group_edit_form">
+    <form action="{{ route('group-taxes.update', $tax_rate->id) }}" method="POST" id="tax_group_edit_form">
       @csrf
       @method('PUT')
 
@@ -20,9 +20,9 @@
           <label for="taxes[]">@lang('tax_rate.sub_taxes') :*</label>
           <select name="taxes[]" id="taxes" class="form-control select2" required multiple>
             @foreach($taxes as $tax_id => $tax_name)
-              <option value="{{ $tax_id }}" {{ in_array($tax_id, $sub_taxes) ? 'selected' : '' }}>
-                {{ $tax_name }}
-              </option>
+            <option value="{{ $tax_id }}" {{ in_array($tax_id, $sub_taxes) ? 'selected' : '' }}>
+              {{ $tax_name }}
+            </option>
             @endforeach
           </select>
         </div>

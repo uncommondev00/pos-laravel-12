@@ -12,7 +12,7 @@
 <!-- Main content -->
 <section class="content">
     @component('components.widget', ['class' => 'box-primary'])
-    <form action="{{ route('users.update', [$user->id]) }}" method="POST" id="user_edit_form">
+    <form action="{{ route('users.update', $user->id) }}" method="POST" id="user_edit_form">
         @csrf
         @method('PUT')
 

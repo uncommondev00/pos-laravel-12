@@ -1,7 +1,7 @@
 <div class="modal-dialog" role="document">
   <div class="modal-content">
 
-    <form action="{{ route('invoice-schemes.update', [$invoice->id]) }}" method="POST" id="invoice_scheme_add_form">
+    <form action="{{ route('invoice-schemes.update', $invoice->id) }}" method="POST" id="invoice_scheme_add_form">
       @csrf
       @method('PUT')
 

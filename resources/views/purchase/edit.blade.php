@@ -21,7 +21,7 @@
 
     @include('layouts.partials.error')
 
-    <form action="{{ route('purchases.update', [$purchase->id]) }}" method="POST" id="add_purchase_form"
+    <form action="{{ route('purchases.update', $purchase->id) }}" method="POST" id="add_purchase_form"
         enctype="multipart/form-data">
         @csrf
         @method('PUT')

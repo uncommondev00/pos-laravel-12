@@ -1,6 +1,6 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
-        <form action="{{ route('categories.update', [$category->id]) }}"
+        <form action="{{ route('categories.update', $category->id) }}"
             method="POST"
             id="category_edit_form">
             @csrf

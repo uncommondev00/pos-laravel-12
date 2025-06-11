@@ -1,6 +1,6 @@
 <div class="modal-dialog" role="document">
   <div class="modal-content">
-    <form action="{{ route('customer-group.update', [$customer_group->id]) }}" method="POST" id="customer_group_edit_form">
+    <form action="{{ route('customer-group.update', $customer_group->id) }}" method="POST" id="customer_group_edit_form">
       @csrf
       @method('PUT')
 
