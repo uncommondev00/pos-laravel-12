@@ -27,7 +27,7 @@ class SellTable extends Component
 
     public $businessLocations = [];
     public $customers = [];
-    
+
     protected $paginationTheme = 'bootstrap';
 
     protected $moduleUtil;
@@ -48,14 +48,14 @@ class SellTable extends Component
 
         $businessId = session('user.business_id');
         $this->businessLocations = Cache::remember(
-            'business_locations_' . $businessId, 
-            now()->addHours(24), 
+            'business_locations_' . $businessId,
+            now()->addHours(24),
             fn() => BusinessLocation::forDropdown($businessId, false)
         );
-        
+
         $this->customers = Cache::remember(
-            'customers_' . $businessId, 
-            now()->addHours(24), 
+            'customers_' . $businessId,
+            now()->addHours(24),
             fn() => Contact::customersDropdown($businessId, false)
         );
     }
@@ -145,7 +145,7 @@ class SellTable extends Component
             $query = $this->baseQuery();
 
             if ($this->search) {
-                $query->where(function($q) {
+                $query->where(function ($q) {
                     $q->where('transactions.invoice_no', 'like', '%' . $this->search . '%');
                 });
             }
@@ -164,8 +164,8 @@ class SellTable extends Component
 
 
             return $query->latest('transactions.transaction_date')
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate($this->perPage == -1 ? 9999 : $this->perPage);
+                ->orderBy($this->sortField, $this->sortDirection)
+                ->paginate($this->perPage == -1 ? 9999 : $this->perPage);
         });
     }
 
@@ -189,5 +189,4 @@ class SellTable extends Component
             'is_woocommerce' => $this->moduleUtil->isModuleInstalled('Woocommerce'),
         ]);
     }
-
 }

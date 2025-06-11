@@ -192,6 +192,10 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::post('/x_reading/post', [XZReportController::class, 'store2'])->name('x_reading.store');
     Route::get('/x_print', [XZReportController::class, 'print_this2'])->name('x_reading.print');
     Route::get('/reports/xreading_print/{id}', [XZReportController::class, 'print_again'])->name('reports.xreading_print');
+
+    Route::get('/reports/xreading_print', [XZReportController::class, 'print_again'])->name('reports.xreading_print');
+
+
     Route::get('/reports/zreading_print/{id}', [XZReportController::class, 'print_again2'])->name('reports.zreading_print');
     // Note: Duplicate route '/reports/xreading_print' was removed to avoid conflicts
 

@@ -58,7 +58,7 @@
 								<span class="input-group-addon">
 									<i class="fa fa-calendar"></i>
 								</span>
-								<input type="text" name="transaction_date" id="expense_transaction_date" class="form-control" value="{{ @format_date('now') }}" readonly required>
+								<input type="text" name="transaction_date" id="expense_transaction_date" class="form-control" value="@format_date('now')" readonly required>
 							</div>
 						</div>
 					</div>

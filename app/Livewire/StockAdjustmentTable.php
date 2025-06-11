@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Transaction;
+use App\Traits\WithSortingSearchPagination;
 use App\Utils\TransactionUtil;
 use App\Utils\BusinessUtil;
 use Illuminate\Support\Facades\DB;
@@ -13,51 +14,28 @@ use Carbon\Carbon;
 
 class StockAdjustmentTable extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSortingSearchPagination;
 
-    public $search = '';
     public $start_date = '';
     public $end_date = '';
     public $location_id = '';
-    public $sortField = 'transaction_date';
-    public $sortDirection = 'desc';
-    public $perPage = 10;
-
-    protected $queryString = [
-        'search' => ['except' => ''],
-        'start_date' => ['except' => ''],
-        'end_date' => ['except' => ''],
-        'location_id' => ['except' => ''],
-        'sortField' => ['except' => 'transaction_date'],
-        'sortDirection' => ['except' => 'desc'],
-        'page' => ['except' => 1],
-    ];
 
     public function mount()
     {
+
+        $this->sortField = 'transaction_date'; // Different default sort field
+
+        $this->mountWithSortingSearchPagination();
+
+        $this->filterConfig = [
+            'start_date' => '',
+            'end_date' => '',
+            'location_id' => '',
+        ];
+
         if (!auth()->user()->can('purchase.view') && !auth()->user()->can('purchase.create')) {
             abort(403, 'Unauthorized action.');
         }
-
-        $this->search = request()->get('search', '');
-        $this->start_date = request()->get('start_date', '');
-        $this->end_date = request()->get('end_date', '');
-        $this->location_id = request()->get('location_id', '');
-    }
-
-    public function sortBy($field)
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
-    }
-
-    public function updatingSearch()
-    {
-        $this->resetPage();
     }
 
     public function render()
@@ -70,18 +48,18 @@ class StockAdjustmentTable extends Component
             '=',
             'BL.id'
         )
-        ->where('transactions.business_id', $business_id)
-        ->where('transactions.type', 'stock_adjustment')
-        ->select(
-            'transactions.id',
-            'transaction_date',
-            'ref_no',
-            'BL.name as location_name',
-            'adjustment_type',
-            'final_total',
-            'total_amount_recovered',
-            'additional_notes'
-        );
+            ->where('transactions.business_id', $business_id)
+            ->where('transactions.type', 'stock_adjustment')
+            ->select(
+                'transactions.id',
+                'transaction_date',
+                'ref_no',
+                'BL.name as location_name',
+                'adjustment_type',
+                'final_total',
+                'total_amount_recovered',
+                'additional_notes'
+            );
 
         $permitted_locations = auth()->user()->permitted_locations();
         if ($permitted_locations != 'all') {
@@ -100,9 +78,9 @@ class StockAdjustmentTable extends Component
 
         // Apply search filter
         if (!empty($this->search)) {
-            $query->where(function($q) {
+            $query->where(function ($q) {
                 $q->where('transactions.ref_no', 'like', '%' . $this->search . '%')
-                  ->orWhere('BL.name', 'like', '%' . $this->search . '%');
+                    ->orWhere('BL.name', 'like', '%' . $this->search . '%');
             });
         }
 
