@@ -48,7 +48,7 @@
                 <div class="form-group">
                     <label for="expense_date_range">{{ __('report.date_range') }}:</label>
                     <input type="text" name="date_range" id="expense_date_range" class="form-control"
-                        value="{{ @format_date('first day of this month') }} ~ {{ @format_date('last day of this month') }}"
+                        value="@format_date('first day of this month')  ~ @format_date('last day of this month') "
                         placeholder="{{ __('lang_v1.select_a_date_range') }}" readonly>
                 </div>
             </div>

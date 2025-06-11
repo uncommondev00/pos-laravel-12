@@ -5,24 +5,24 @@
             <small></small>
         </h1>
     </section>
-    
+
     <!-- Main content -->
     <section class="content no-print">
         @component('components.filters', ['title' => __('report.filters')])
-            @include('sell.partials.sell_list_filters')
-            @if ($is_woocommerce)
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" id="synced_from_woocommerce" name="only_woocommerce_sells" value="1"
-                                    class="input-icheck">
-                                {{ __('lang_v1.synced_from_woocommerce') }}
-                            </label>
-                        </div>
-                    </div>
+        @include('sell.partials.sell_list_filters')
+        @if ($is_woocommerce)
+        <div class="col-md-4">
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="synced_from_woocommerce" name="only_woocommerce_sells" value="1"
+                            class="input-icheck">
+                        {{ __('lang_v1.synced_from_woocommerce') }}
+                    </label>
                 </div>
-            @endif
+            </div>
+        </div>
+        @endif
         @endcomponent
         @component('components.widget', ['class' => 'box-primary', 'title' => __('lang_v1.all_sales')])
             @can('sell.create')
@@ -216,6 +216,6 @@
         @endcomponent
     </section>
     <!-- /.content -->
-    
-    
+
+
 </div>

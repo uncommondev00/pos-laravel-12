@@ -27,6 +27,10 @@ class SellTable extends Component
     public $businessLocations = [];
     public $customers = [];
 
+<<<<<<< HEAD
+=======
+    protected $paginationTheme = 'bootstrap';
+>>>>>>> eca9318ea1d8619d6071b1ade5a8fbeb3ab00f2c
 
     protected $moduleUtil;
 
@@ -114,9 +118,17 @@ class SellTable extends Component
             });
         }
 
+<<<<<<< HEAD
         if ($this->payment_status) {
             $query->where('transactions.payment_status', $this->payment_status);
         }
+=======
+            if ($this->search) {
+                $query->where(function ($q) {
+                    $q->where('transactions.invoice_no', 'like', '%' . $this->search . '%');
+                });
+            }
+>>>>>>> eca9318ea1d8619d6071b1ade5a8fbeb3ab00f2c
 
         if ($this->location_id) {
             $query->where('transactions.location_id', $this->location_id);
@@ -126,9 +138,21 @@ class SellTable extends Component
             $query->where('transactions.contact_id', $this->customer_id);
         }
 
+<<<<<<< HEAD
         return $query->orderBy($this->sortField, $this->sortDirection)
             ->latest('transactions.transaction_date')
             ->paginate($this->perPage == -1 ? PHP_INT_MAX : $this->perPage);
+=======
+            if ($this->customer_id) {
+                $query->where('transactions.contact_id', $this->customer_id);
+            }
+
+
+            return $query->latest('transactions.transaction_date')
+                ->orderBy($this->sortField, $this->sortDirection)
+                ->paginate($this->perPage == -1 ? 9999 : $this->perPage);
+        });
+>>>>>>> eca9318ea1d8619d6071b1ade5a8fbeb3ab00f2c
     }
 
     public function render()

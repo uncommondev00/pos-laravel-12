@@ -201,7 +201,7 @@
     </div><!--End Invoice Mid-->
   </div>
 
-  <iframe id="xtextfile" src="{{route('print_again') }}" style="display: none;"></iframe>
+  <!-- <iframe id="xtextfile" src="{{ route('reports.xreading_print') }}" style="display: none;"></iframe> -->
 </body>
 
 </html>

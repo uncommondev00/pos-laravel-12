@@ -76,7 +76,8 @@
 
 									@if($enable_expiry == 1 && $product->enable_stock == 1)
 									<td>
-										<input type="text" name="stocks[{{ $key }}][{{ $variation->id }}][{{ $sub_key }}][exp_date]" value="{{ !empty($var['exp_date']) ? @format_date($var['exp_date']) : null }}" class="form-control input-sm os_exp_date" readonly>
+										<input type="text" name="stocks[{{ $key }}][{{ $variation->id }}][{{ $sub_key }}][exp_date]" value="{{ !empty($var['exp_date']) ? format_date($var['exp_date']) : '' }}"
+											class="form-control input-sm os_exp_date" readonly>
 									</td>
 									@endif
 
