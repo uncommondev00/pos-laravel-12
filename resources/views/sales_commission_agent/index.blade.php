@@ -12,5 +12,5 @@
 @endsection
 
 @section('javascript')
-    @livewireScripts
+@livewireScripts
 @endsection

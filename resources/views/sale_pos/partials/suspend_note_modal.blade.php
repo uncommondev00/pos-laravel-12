@@ -13,16 +13,16 @@
                     <div class="col-xs-12">
                         <div class="form-group">
                             <label for="cookie_note">@lang('lang_v1.suspend_note'):</label>
-                            <textarea name="additional_notes" 
-                                id="cookie_note" 
-                                class="form-control mousetrap" 
-                                placeholder="Enter the name of customer" 
-                                rows="4" 
+                            <textarea name="additional_notes"
+                                id="cookie_note"
+                                class="form-control mousetrap"
+                                placeholder="Enter the name of customer"
+                                rows="4"
                                 readonly>{{ !empty($transaction->additional_notes) ? $transaction->additional_notes : '' }}</textarea>
-                            
-                            <input type="hidden" 
-                                name="is_suspend" 
-                                id="is_suspend" 
+
+                            <input type="hidden"
+                                name="is_suspend"
+                                id="is_suspend"
                                 value="0">
                         </div>
                     </div>

@@ -15,11 +15,11 @@
                             <label for="shipping_details_modal">
                                 @lang('sale.shipping_details')<span class="required">*</span>
                             </label>
-                            <textarea name="shipping_details_modal" 
-                                id="shipping_details_modal" 
-                                class="form-control" 
-                                rows="4" 
-                                placeholder="@lang('sale.shipping_details')" 
+                            <textarea name="shipping_details_modal"
+                                id="shipping_details_modal"
+                                class="form-control"
+                                rows="4"
+                                placeholder="@lang('sale.shipping_details')"
                                 required>{{ $shipping_details }}</textarea>
                         </div>
                     </div>
@@ -33,11 +33,11 @@
                                 <span class="input-group-addon">
                                     <i class="fa fa-info"></i>
                                 </span>
-                                <input type="text" 
-                                    name="shipping_charges_modal" 
-                                    id="shipping_charges_modal" 
-                                    class="form-control input_number" 
-                                    placeholder="@lang('sale.shipping_charges')" 
+                                <input type="text"
+                                    name="shipping_charges_modal"
+                                    id="shipping_charges_modal"
+                                    class="form-control input_number"
+                                    placeholder="@lang('sale.shipping_charges')"
                                     value="{{ @num_format($shipping_charges) }}">
                             </div>
                         </div>

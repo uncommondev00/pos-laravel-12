@@ -5,9 +5,9 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-<br>
-    <h1>@lang('stock_adjustment.add')</h1>
-    <!-- <ol class="breadcrumb">
+	<br>
+	<h1>@lang('stock_adjustment.add')</h1>
+	<!-- <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
         <li class="active">Here</li>
     </ol> -->
@@ -26,7 +26,7 @@
 							<select name="location_id" id="location_id" class="form-control select2" required>
 								<option value="">{{ __('messages.please_select') }}</option>
 								@foreach($business_locations as $key => $value)
-									<option value="{{ $key }}">{{ $value }}</option>
+								<option value="{{ $key }}">{{ $value }}</option>
 								@endforeach
 							</select>
 						</div>
@@ -83,31 +83,36 @@
 						<input type="hidden" id="product_row_index" value="0">
 						<input type="hidden" id="total_amount" name="final_total" value="0">
 						<div class="table-responsive">
-						<table class="table table-bordered table-striped table-condensed" 
-						id="stock_adjustment_product_table">
-							<thead>
-								<tr>
-									<th class="col-sm-4 text-center">	
-										@lang('sale.product')
-									</th>
-									<th class="col-sm-2 text-center">
-										@lang('sale.qty')
-									</th>
-									<th class="col-sm-2 text-center">
-										@lang('sale.unit_price')
-									</th>
-									<th class="col-sm-2 text-center">
-										@lang('sale.subtotal')
-									</th>
-									<th class="col-sm-2 text-center"><i class="fa fa-trash" aria-hidden="true"></i></th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-							<tfoot>
-								<tr class="text-center"><td colspan="3"></td><td><div class="pull-right"><b>@lang('stock_adjustment.total_amount'):</b> <span id="total_adjustment">0.00</span></div></td></tr>
-							</tfoot>
-						</table>
+							<table class="table table-bordered table-striped table-condensed"
+								id="stock_adjustment_product_table">
+								<thead>
+									<tr>
+										<th class="col-sm-4 text-center">
+											@lang('sale.product')
+										</th>
+										<th class="col-sm-2 text-center">
+											@lang('sale.qty')
+										</th>
+										<th class="col-sm-2 text-center">
+											@lang('sale.unit_price')
+										</th>
+										<th class="col-sm-2 text-center">
+											@lang('sale.subtotal')
+										</th>
+										<th class="col-sm-2 text-center"><i class="fa fa-trash" aria-hidden="true"></i></th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+								<tfoot>
+									<tr class="text-center">
+										<td colspan="3"></td>
+										<td>
+											<div class="pull-right"><b>@lang('stock_adjustment.total_amount'):</b> <span id="total_adjustment">0.00</span></div>
+										</td>
+									</tr>
+								</tfoot>
+							</table>
 						</div>
 					</div>
 				</div>
@@ -118,14 +123,14 @@
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="form-group">
-								<label for="total_amount_recovered">{{ __('stock_adjustment.total_amount_recovered') }}:</label> @show_tooltip(__('tooltip.total_amount_recovered'))
-								<input type="text" name="total_amount_recovered" id="total_amount_recovered" class="form-control input_number" placeholder="{{ __('stock_adjustment.total_amount_recovered') }}" value="0">
+							<label for="total_amount_recovered">{{ __('stock_adjustment.total_amount_recovered') }}:</label> @show_tooltip(__('tooltip.total_amount_recovered'))
+							<input type="text" name="total_amount_recovered" id="total_amount_recovered" class="form-control input_number" placeholder="{{ __('stock_adjustment.total_amount_recovered') }}" value="0">
 						</div>
 					</div>
 					<div class="col-sm-4">
 						<div class="form-group">
-								<label for="additional_notes">{{ __('stock_adjustment.reason_for_stock_adjustment') }}:</label>
-								<textarea name="additional_notes" id="additional_notes" class="form-control" placeholder="{{ __('stock_adjustment.reason_for_stock_adjustment') }}" rows="3"></textarea>
+							<label for="additional_notes">{{ __('stock_adjustment.reason_for_stock_adjustment') }}:</label>
+							<textarea name="additional_notes" id="additional_notes" class="form-control" placeholder="{{ __('stock_adjustment.reason_for_stock_adjustment') }}" rows="3"></textarea>
 						</div>
 					</div>
 				</div>
@@ -141,5 +146,5 @@
 </section>
 @stop
 @section('javascript')
-	<script src="{{ asset('js/stock_adjustment.js?v=' . $asset_v) }}"></script>
+<script src="{{ asset('js/stock_adjustment.js?v=' . $asset_v) }}"></script>
 @endsection

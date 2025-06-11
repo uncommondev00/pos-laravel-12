@@ -8,21 +8,21 @@
 @section('javascript')
 @livewireScripts
 <script type="text/javascript">
-    $(document).ready( function(){
-        
+    $(document).ready(function() {
+
         //selling_price_group_table
         var selling_price_group_table = $('#selling_price_group_table').DataTable({
-                        processing: true,
-                        serverSide: true,
-                        ajax: '/selling-price-group',
-                        columnDefs: [ {
-                            "targets": 2,
-                            "orderable": false,
-                            "searchable": false
-                        } ]
-                    });
+            processing: true,
+            serverSide: true,
+            ajax: '/selling-price-group',
+            columnDefs: [{
+                "targets": 2,
+                "orderable": false,
+                "searchable": false
+            }]
+        });
 
-        $(document).on('submit', 'form#selling_price_group_form', function(e){
+        $(document).on('submit', 'form#selling_price_group_form', function(e) {
             e.preventDefault();
             var data = $(this).serialize();
 
@@ -31,8 +31,8 @@
                 url: $(this).attr("action"),
                 dataType: "json",
                 data: data,
-                success: function(result){
-                    if(result.success == true){
+                success: function(result) {
+                    if (result.success == true) {
                         $('div.view_modal').modal('hide');
                         toastr.success(result.msg);
                         selling_price_group_table.ajax.reload();
@@ -43,12 +43,12 @@
             });
         });
 
-        $(document).on('click', 'button.delete_spg_button', function(){
+        $(document).on('click', 'button.delete_spg_button', function() {
             swal({
-              title: LANG.sure,
-              icon: "warning",
-              buttons: true,
-              dangerMode: true,
+                title: LANG.sure,
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
             }).then((willDelete) => {
                 if (willDelete) {
                     var href = $(this).data('href');
@@ -59,8 +59,8 @@
                         url: href,
                         dataType: "json",
                         data: data,
-                        success: function(result){
-                            if(result.success == true){
+                        success: function(result) {
+                            if (result.success == true) {
                                 toastr.success(result.msg);
                                 selling_price_group_table.ajax.reload();
                             } else {

@@ -1,18 +1,18 @@
 <div class="modal-header">
-    <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <!-- <h4 class="modal-title" id="modalTitle"> @lang('purchase.purchase_details') (<b>@lang('purchase.ref_no'):</b> #{{ $purchase->ref_no }})
+  <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <!-- <h4 class="modal-title" id="modalTitle"> @lang('purchase.purchase_details') (<b>@lang('purchase.ref_no'):</b> #{{ $purchase->ref_no }})
     </h4> -->
 
-    <h4 class="modal-title" id="modalTitle"><strong>{{ $purchase->business->name }}</strong></h4>
-    <p>@if(!empty($purchase->location->city) || !empty($purchase->location->state) ||!empty($purchase->location->country))
-          {{implode(',', array_filter([$purchase->location->city, $purchase->location->state, $purchase->location->country]))}}<br>
-      @endif
+  <h4 class="modal-title" id="modalTitle"><strong>{{ $purchase->business->name }}</strong></h4>
+  <p>@if(!empty($purchase->location->city) || !empty($purchase->location->state) ||!empty($purchase->location->country))
+    {{implode(',', array_filter([$purchase->location->city, $purchase->location->state, $purchase->location->country]))}}<br>
+    @endif
 
-      Tel No. :@if(!empty($purchase->location->mobile))
-          @lang('contact.mobile'): {{$purchase->location->mobile}}
-        @endif
-    </p>
-      
+    Tel No. :@if(!empty($purchase->location->mobile))
+    @lang('contact.mobile'): {{$purchase->location->mobile}}
+    @endif
+  </p>
+
 </div>
 <div class="modal-body">
   <div class="row">
@@ -44,25 +44,25 @@
               <th width="100px">Amount</th>
             </tr>
           </thead>
-          @php 
-            $total_before_tax = 0.00;
+          @php
+          $total_before_tax = 0.00;
           @endphp
           @foreach($purchase->purchase_lines as $purchase_line)
-            <tr>
-              <td>{{ $purchase_line->product->sku }}</td>
-              <td>
-                {{ $purchase_line->product->name }}
-                 @if( $purchase_line->product->type == 'variable')
-                  - {{ $purchase_line->variations->product_variation->name}}
-                  - {{ $purchase_line->variations->name}}
-                 @endif
-              </td>
-              <td><span class="display_currency" data-is_quantity="true" data-currency_symbol="false">{{ $purchase_line->quantity }}</span> @if(!empty($purchase_line->sub_unit)) {{$purchase_line->sub_unit->short_name}} @else {{$purchase_line->product->unit->short_name}} @endif</td>
-              
-              <td><span class="display_currency" data-currency_symbol="true">{{ $purchase_line->purchase_price_inc_tax }}</span></td>
+          <tr>
+            <td>{{ $purchase_line->product->sku }}</td>
+            <td>
+              {{ $purchase_line->product->name }}
+              @if( $purchase_line->product->type == 'variable')
+              - {{ $purchase_line->variations->product_variation->name}}
+              - {{ $purchase_line->variations->name}}
+              @endif
+            </td>
+            <td><span class="display_currency" data-is_quantity="true" data-currency_symbol="false">{{ $purchase_line->quantity }}</span> @if(!empty($purchase_line->sub_unit)) {{$purchase_line->sub_unit->short_name}} @else {{$purchase_line->product->unit->short_name}} @endif</td>
 
-              <td><span class="display_currency" data-currency_symbol="true">{{ $purchase_line->purchase_price_inc_tax * $purchase_line->quantity }}</span></td>
-            </tr>
+            <td><span class="display_currency" data-currency_symbol="true">{{ $purchase_line->purchase_price_inc_tax }}</span></td>
+
+            <td><span class="display_currency" data-currency_symbol="true">{{ $purchase_line->purchase_price_inc_tax * $purchase_line->quantity }}</span></td>
+          </tr>
           @endforeach
         </table>
       </div>
@@ -73,15 +73,17 @@
 <div class="modal-footer">
   <div class="col-sm-12 text-right">
     <div class="col-sm-6">
-      <p> Total Qty:  <span class="display_currency" >{{ \App\Models\Product::sum_qty($purchase->id)}}</span></p>
+      <p> Total Qty: <span class="display_currency">{{ \App\Models\Product::sum_qty($purchase->id)}}</span></p>
     </div>
     <div class="col-sm-6">
-      <p> Total Amount:  <span class="display_currency" data-currency_symbol="true">{{ $purchase->final_total }}</span></p>
+      <p> Total Amount: <span class="display_currency" data-currency_symbol="true">{{ $purchase->final_total }}</span></p>
     </div>
-    
+
   </div><br>
   <div class="col-sm-12 text-center">
-    <p> < < < Nothing Follows > > > </p>
+    <p>
+      < < < Nothing Follows> > >
+    </p>
   </div><br>
 
   <div class="row">
@@ -90,9 +92,15 @@
         <table class="table bg-gray">
           <thead>
             <tr>
-              <th class="text-center"><p>_______________________________</p> Prepared by:</th>
-              <th class="text-center"><p>_______________________________</p> Received by:</th>
-              <th class="text-center"><p>_______________________________</p> Approved by:</th>
+              <th class="text-center">
+                <p>_______________________________</p> Prepared by:
+              </th>
+              <th class="text-center">
+                <p>_______________________________</p> Received by:
+              </th>
+              <th class="text-center">
+                <p>_______________________________</p> Approved by:
+              </th>
             </tr>
           </thead>
         </table>
@@ -100,5 +108,5 @@
     </div>
   </div>
 
- 
+
 </div>

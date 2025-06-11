@@ -2,7 +2,7 @@
 @section('title', __('lang_v1.import_opening_stock'))
 
 @section('content')
-<br/>
+<br />
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>@lang('lang_v1.import_opening_stock')</h1>
@@ -10,21 +10,21 @@
 
 <!-- Main content -->
 <section class="content">
-    
-@if (session('notification') || !empty($notification))
+
+    @if (session('notification') || !empty($notification))
     <div class="row">
         <div class="col-sm-12">
             <div class="alert alert-danger alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                 @if(!empty($notification['msg']))
-                    {{$notification['msg']}}
+                {{$notification['msg']}}
                 @elseif(session('notification.msg'))
-                    {{ session('notification.msg') }}
+                {{ session('notification.msg') }}
                 @endif
-              </div>
-          </div>  
-      </div>     
-@endif
+            </div>
+        </div>
+    </div>
+    @endif
     <div class="row">
         <div class="col-sm-12">
             @component('components.widget', ['class' => 'box-primary'])
@@ -36,11 +36,11 @@
                             <div class="form-group">
                                 <label for="products_csv">{{ __('product.file_to_import') }}:</label>
                                 @show_tooltip(__('lang_v1.tooltip_import_opening_stock'))
-                                <input type="file" 
-                                       name="products_csv" 
-                                       id="products_csv" 
-                                       accept=".csv" 
-                                       required>
+                                <input type="file"
+                                    name="products_csv"
+                                    id="products_csv"
+                                    accept=".csv"
+                                    required>
                             </div>
                         </div>
                         <div class="col-sm-4">
@@ -50,12 +50,12 @@
                     </div>
                 </div>
             </form>
-                <br><br>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <a href="{{ asset('uploads/files/import_opening_stock_csv_template.csv') }}" class="btn btn-success" download><i class="fa fa-download"></i> @lang('product.download_csv_file_template')</a>
-                    </div>
+            <br><br>
+            <div class="row">
+                <div class="col-sm-4">
+                    <a href="{{ asset('uploads/files/import_opening_stock_csv_template.csv') }}" class="btn btn-success" download><i class="fa fa-download"></i> @lang('product.download_csv_file_template')</a>
                 </div>
+            </div>
             @endcomponent
         </div>
     </div>
@@ -99,10 +99,10 @@
                 <tr>
                     <td>6</td>
                     <td>@lang('lang_v1.expiry_date') <small class="text-muted">(@lang('lang_v1.optional'))</small></td>
-                    <td>{!! __('lang_v1.expiry_date_in_business_date_format') !!} <br/> <b>{{$date_format}}</b></td>
+                    <td>{!! __('lang_v1.expiry_date_in_business_date_format') !!} <br /> <b>{{$date_format}}</b></td>
                 </tr>
             </table>
-        @endcomponent
+            @endcomponent
         </div>
     </div>
 </section>

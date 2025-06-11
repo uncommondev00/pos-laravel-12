@@ -4,7 +4,7 @@
         <select id="sell_list_filter_location_id" name="sell_list_filter_location_id" class="form-control select2" style="width:100%">
             <option value="">{{ __('lang_v1.all') }}</option>
             @foreach($business_locations as $key => $value)
-                <option value="{{ $key }}">{{ $value }}</option>
+            <option value="{{ $key }}">{{ $value }}</option>
             @endforeach
         </select>
     </div>
@@ -16,7 +16,7 @@
         <select id="sell_list_filter_customer_id" name="sell_list_filter_customer_id" class="form-control select2" style="width:100%">
             <option value="">{{ __('lang_v1.all') }}</option>
             @foreach($customers as $key => $value)
-                <option value="{{ $key }}">{{ $value }}</option>
+            <option value="{{ $key }}">{{ $value }}</option>
             @endforeach
         </select>
     </div>

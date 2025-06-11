@@ -17,35 +17,35 @@
 <!-- Main content -->
 <section class="content">
 
-	<div class="box">
+    <div class="box">
         <div class="box-header">
-        	<h3 class="box-title">@lang( 'brand.all_your_brands' )</h3>
+            <h3 class="box-title">@lang( 'brand.all_your_brands' )</h3>
             @can('brand.create')
-            	<div class="box-tools">
-                    <button type="button" class="btn btn-block btn-primary btn-modal" 
-                    	data-href="{{route('brands.create')}}" 
-                    	data-container=".brands_modal">
-                    	<i class="fa fa-plus"></i> @lang( 'messages.add' )</button>
-                </div>
+            <div class="box-tools">
+                <button type="button" class="btn btn-block btn-primary btn-modal"
+                    data-href="{{route('brands.create')}}"
+                    data-container=".brands_modal">
+                    <i class="fa fa-plus"></i> @lang( 'messages.add' )</button>
+            </div>
             @endcan
         </div>
         <div class="box-body">
             @can('brand.view')
-            	<table class="table table-bordered table-striped" id="brands_table">
-            		<thead>
-            			<tr>
-            				<th>@lang( 'brand.brands' )</th>
-            				<th>@lang( 'brand.note' )</th>
-            				<th>@lang( 'messages.action' )</th>
-            			</tr>
-            		</thead>
-            	</table>
+            <table class="table table-bordered table-striped" id="brands_table">
+                <thead>
+                    <tr>
+                        <th>@lang( 'brand.brands' )</th>
+                        <th>@lang( 'brand.note' )</th>
+                        <th>@lang( 'messages.action' )</th>
+                    </tr>
+                </thead>
+            </table>
             @endcan
         </div>
     </div>
 
-    <div class="modal fade brands_modal" tabindex="-1" role="dialog" 
-    	aria-labelledby="gridSystemModalLabel">
+    <div class="modal fade brands_modal" tabindex="-1" role="dialog"
+        aria-labelledby="gridSystemModalLabel">
     </div>
 
 </section>

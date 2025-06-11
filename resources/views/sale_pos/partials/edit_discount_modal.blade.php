@@ -17,10 +17,10 @@
                                 <div class="col-md-4 text-center"></div>
                                 <div class="col-md-4 text-center">
                                     <div id="CheckPIN" style="color: red"></div>
-                                    <input type="password" 
-                                        id="inputPIN" 
-                                        name="RNPassword" 
-                                        class="form-control text-center" 
+                                    <input type="password"
+                                        id="inputPIN"
+                                        name="RNPassword"
+                                        class="form-control text-center"
                                         placeholder="Enter Pincode">
                                 </div>
                                 <div class="col-md-4 text-center"></div>
@@ -46,9 +46,9 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-info"></i>
                                     </span>
-                                    <select name="discount_type_modal" 
-                                        id="discount_type_modal" 
-                                        class="form-control" 
+                                    <select name="discount_type_modal"
+                                        id="discount_type_modal"
+                                        class="form-control"
                                         required>
                                         <option value="">@lang('messages.please_select')</option>
                                         <option value="fixed" {{ $discount_type == 'fixed' ? 'selected' : '' }}>
@@ -71,10 +71,10 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-info"></i>
                                     </span>
-                                    <input type="text" 
-                                        name="discount_amount_modal" 
-                                        id="discount_amount_modal" 
-                                        class="form-control input_number" 
+                                    <input type="text"
+                                        name="discount_amount_modal"
+                                        id="discount_amount_modal"
+                                        class="form-control input_number"
                                         value="{{ @num_format($sales_discount) }}">
                                 </div>
                             </div>

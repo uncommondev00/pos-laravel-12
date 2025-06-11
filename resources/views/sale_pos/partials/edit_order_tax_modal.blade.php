@@ -19,15 +19,14 @@
                                 <span class="input-group-addon">
                                     <i class="fa fa-info"></i>
                                 </span>
-                                <select name="order_tax_modal" 
-                                    id="order_tax_modal" 
-                                    class="form-control"
-                                >
+                                <select name="order_tax_modal"
+                                    id="order_tax_modal"
+                                    class="form-control">
                                     <option value="">@lang('messages.please_select')</option>
                                     @foreach($taxes['tax_rates'] as $id => $tax_rate)
-                                        <option value="{{ $id }}" {{ $selected_tax == $id ? 'selected' : '' }}>
-                                            {{ $tax_rate }}
-                                        </option>
+                                    <option value="{{ $id }}" {{ $selected_tax == $id ? 'selected' : '' }}>
+                                        {{ $tax_rate }}
+                                    </option>
                                     @endforeach
                                 </select>
                             </div>

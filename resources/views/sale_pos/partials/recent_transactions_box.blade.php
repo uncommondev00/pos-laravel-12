@@ -5,14 +5,14 @@
 		<div class="box-tools pull-right">
 			<button type="button" class="btn btn-box-tool" data-widget="collapse">
 				@if($pos_settings['hide_product_suggestion'] == 0)
-					<i class="fa fa-plus"></i>
+				<i class="fa fa-plus"></i>
 				@else
-					<i class="fa fa-minus"></i>
+				<i class="fa fa-minus"></i>
 				@endif
 			</button>
 		</div>
 
-	<!-- /.box-tools -->
+		<!-- /.box-tools -->
 	</div>
 	<!-- /.box-header -->
 
@@ -22,7 +22,7 @@
 				<li class="active"><a href="#tab_final" data-toggle="tab" aria-expanded="true"><b><i class="fa fa-check"></i> @lang('sale.final')</b></a></li>
 
 				<li class=""><a href="#tab_quotation" data-toggle="tab" aria-expanded="false"><b><i class="fa fa-terminal"></i> @lang('lang_v1.quotation')</b></a></li>
-				
+
 				<li class=""><a href="#tab_draft" data-toggle="tab" aria-expanded="false"><b><i class="fa fa-terminal"></i> @lang('sale.draft')</b></a></li>
 			</ul>
 			<div class="tab-content">

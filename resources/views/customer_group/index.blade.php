@@ -5,8 +5,8 @@
 
 <livewire:customer-group-table>
 
-@endsection
+    @endsection
 
-@section('javascript')
-@livewireScripts
-@endsection
+    @section('javascript')
+    @livewireScripts
+    @endsection

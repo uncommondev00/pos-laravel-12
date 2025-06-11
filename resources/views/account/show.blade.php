@@ -35,59 +35,71 @@
         <div class="col-sm-8 col-xs-12">
             <div class="box box-solid">
                 <div class="box-header">
-                    <h3 class="box-title"> <i class="fa fa-filter" aria-hidden="true"></i> @lang('report.filters'):</h3>
+                    <h3 class="box-title">
+                        <i class="fa fa-filter" aria-hidden="true"></i> @lang('report.filters'):
+                    </h3>
                 </div>
                 <div class="box-body">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {!! Form::label('transaction_date_range', __('report.date_range') . ':') !!}
+                            <label for="transaction_date_range">@lang('report.date_range'):</label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                {!! Form::text('transaction_date_range', null, ['class' => 'form-control', 'readonly', 'placeholder' => __('report.date_range')]) !!}
+                                <input type="text"
+                                    id="transaction_date_range"
+                                    name="transaction_date_range"
+                                    class="form-control"
+                                    placeholder="@lang('report.date_range')"
+                                    readonly>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            {!! Form::label('transaction_type', __('account.transaction_type') . ':') !!}
+                            <label for="transaction_type">@lang('account.transaction_type'):</label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-exchange"></i></span>
-                                {!! Form::select('transaction_type', ['' => __('messages.all'),'debit' => __('account.debit'), 'credit' => __('account.credit')], '', ['class' => 'form-control']) !!}
+                                <select name="transaction_type" id="transaction_type" class="form-control">
+                                    <option value="">@lang('messages.all')</option>
+                                    <option value="debit">@lang('account.debit')</option>
+                                    <option value="credit">@lang('account.credit')</option>
+                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
     <div class="row">
         <div class="col-sm-12">
-        	<div class="box">
+            <div class="box">
                 <div class="box-body">
                     @can('account.access')
-                        <div class="table-responsive">
-                    	<table class="table table-bordered table-striped" id="account_book">
-                    		<thead>
-                    			<tr>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped" id="account_book">
+                            <thead>
+                                <tr>
                                     <th>@lang( 'messages.date' )</th>
                                     <th>@lang( 'lang_v1.description' )</th>
-                    				<th>@lang('account.credit')</th>
+                                    <th>@lang('account.credit')</th>
                                     <th>@lang('account.debit')</th>
-                    				<th>@lang( 'lang_v1.balance' )</th>
+                                    <th>@lang( 'lang_v1.balance' )</th>
                                     <th>@lang( 'messages.action' )</th>
-                    			</tr>
-                    		</thead>
-                    	</table>
-                        </div>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                     @endcan
                 </div>
             </div>
         </div>
     </div>
-    
 
-    <div class="modal fade account_model" tabindex="-1" role="dialog" 
-    	aria-labelledby="gridSystemModalLabel">
+
+    <div class="modal fade account_model" tabindex="-1" role="dialog"
+        aria-labelledby="gridSystemModalLabel">
     </div>
 
 </section>
@@ -97,75 +109,92 @@
 
 @section('javascript')
 <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
         update_account_balance();
-        
+
         // Account Book
         account_book = $('#account_book').DataTable({
-                        processing: true,
-                        serverSide: true,
-                        ajax: '{{action("AccountController@show",[$account->id])}}',
-                        "ordering": false,
-                        "searching": false,
-                        columns: [
-                            {data: 'operation_date', name: 'operation_date'},
-                            {data: 'sub_type', name: 'sub_type'},
-                            {data: 'credit', name: 'amount'},
-                            {data: 'debit', name: 'amount'},
-                            {data: 'balance', name: 'balance'},
-                            {data: 'action', name: 'action'}
-                        ],
-                        "fnDrawCallback": function (oSettings) {
-                            __currency_convert_recursively($('#account_book'));
-                        }
-                    });
+            processing: true,
+            serverSide: true,
+            ajax: '{{route("action.show",[$account->id])}}',
+            "ordering": false,
+            "searching": false,
+            columns: [{
+                    data: 'operation_date',
+                    name: 'operation_date'
+                },
+                {
+                    data: 'sub_type',
+                    name: 'sub_type'
+                },
+                {
+                    data: 'credit',
+                    name: 'amount'
+                },
+                {
+                    data: 'debit',
+                    name: 'amount'
+                },
+                {
+                    data: 'balance',
+                    name: 'balance'
+                },
+                {
+                    data: 'action',
+                    name: 'action'
+                }
+            ],
+            "fnDrawCallback": function(oSettings) {
+                __currency_convert_recursively($('#account_book'));
+            }
+        });
         dateRangeSettings.autoUpdateInput = false
         $('#transaction_date_range').daterangepicker(
             dateRangeSettings,
-            function (start, end) {
+            function(start, end) {
                 $('#transaction_date_range').val(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
                 var start = '';
                 var end = '';
-                if($('#transaction_date_range').val()){
+                if ($('#transaction_date_range').val()) {
                     start = $('input#transaction_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');
                     end = $('input#transaction_date_range').data('daterangepicker').endDate.format('YYYY-MM-DD');
                 }
                 var transaction_type = $('select#transaction_type').val();
-                account_book.ajax.url( '{{action("AccountController@show",[$account->id])}}?start_date=' + start + '&end_date=' + end + '&type=' + transaction_type ).load();
+                account_book.ajax.url('{{route("action.show",[$account->id])}}?start_date=' + start + '&end_date=' + end + '&type=' + transaction_type).load();
             }
         );
-        $('#transaction_type').change( function(){
+        $('#transaction_type').change(function() {
             var start = '';
             var end = '';
-            if($('#transaction_date_range').val()){
+            if ($('#transaction_date_range').val()) {
                 start = $('input#transaction_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');
                 end = $('input#transaction_date_range').data('daterangepicker').endDate.format('YYYY-MM-DD');
             }
             var transaction_type = $('select#transaction_type').val();
-            account_book.ajax.url( '{{action("AccountController@show",[$account->id])}}?start_date=' + start + '&end_date=' + end + '&type=' + transaction_type ).load();
+            account_book.ajax.url('{{route("action.show",[$account->id])}}?start_date=' + start + '&end_date=' + end + '&type=' + transaction_type).load();
         });
         $('#transaction_date_range').on('cancel.daterangepicker', function(ev, picker) {
             $('#transaction_date_range').val('');
-            account_book.ajax.url( '{{action("AccountController@show",[$account->id])}}?start_date=' + start + '&end_date=' + end + '&type=' + transaction_type ).load();
+            account_book.ajax.url('{{route("action@show",[$account->id])}}?start_date=' + start + '&end_date=' + end + '&type=' + transaction_type).load();
         });
 
     });
 
-    $(document).on('click', '.delete_account_transaction', function(e){
+    $(document).on('click', '.delete_account_transaction', function(e) {
         e.preventDefault();
         swal({
-          title: LANG.sure,
-          icon: "warning",
-          buttons: true,
-          dangerMode: true,
+            title: LANG.sure,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
         }).then((willDelete) => {
             if (willDelete) {
                 var href = $(this).data('href');
                 $.ajax({
                     url: href,
                     dataType: "json",
-                    success: function(result){
-                        if(result.success === true){
+                    success: function(result) {
+                        if (result.success === true) {
                             toastr.success(result.msg);
                             account_book.ajax.reload();
                             update_account_balance();
@@ -181,9 +210,9 @@
     function update_account_balance(argument) {
         $('span#account_balance').html('<i class="fa fa-refresh fa-spin"></i>');
         $.ajax({
-            url: '{{action("AccountController@getAccountBalance", [$account->id])}}',
+            url: '{{route("account.getAccountBalance", [$account->id])}}',
             dataType: "json",
-            success: function(data){
+            success: function(data) {
                 $('span#account_balance').text(__currency_trans_from_en(data.balance, true));
             }
         });

@@ -1,7 +1,7 @@
 <div class="modal-dialog" role="document">
   <div class="modal-content">
 
-    <form action="{{ action('business-location.store') }}" method="POST" id="business_location_add_form">
+    <form action="{{ route('business-location.store') }}" method="POST" id="business_location_add_form">
       @csrf
 
       <div class="modal-header">

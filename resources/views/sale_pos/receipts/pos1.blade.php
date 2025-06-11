@@ -1,295 +1,296 @@
 <style>
-.pos-container{
-  margin: 0 auto;
-  width: 53mm;
-  background: #FFF;
-  font-size: 10px ;
-}
+  .pos-container {
+    margin: 0 auto;
+    width: 53mm;
+    background: #FFF;
+    font-size: 10px;
+  }
 </style>
 
 
 <!-- business information here -->
 <div class="pos-container">
 
-<div class="row">
+  <div class="row">
 
-  <!-- Logo -->
-  @if(!empty($receipt_details->logo))
+    <!-- Logo -->
+    @if(!empty($receipt_details->logo))
     <img src="{{$receipt_details->logo}}" class="img img-responsive center-block">
-  @endif
+    @endif
 
-  <!-- Header text -->
-  @if(!empty($receipt_details->header_text))
+    <!-- Header text -->
+    @if(!empty($receipt_details->header_text))
     <div class="col-xs-12">
       {!! $receipt_details->header_text !!}
     </div>
-  @endif
+    @endif
 
-  <!-- business information here -->
-  <div class="col-xs-12 text-center">
-    <h5 class="text-center">
-      <!-- Shop & Location Name  -->
-      <!-- @if(!empty($receipt_details->display_name))
+    <!-- business information here -->
+    <div class="col-xs-12 text-center">
+      <h5 class="text-center">
+        <!-- Shop & Location Name  -->
+        <!-- @if(!empty($receipt_details->display_name))
         {{$receipt_details->display_name}}
       @endif -->
-    </h5>
+      </h5>
 
-    <!-- Address -->
-    <p style="font-size: 12px !important;">
-    <!-- @if(!empty($receipt_details->address))
+      <!-- Address -->
+      <p style="font-size: 12px !important;">
+        <!-- @if(!empty($receipt_details->address))
         <small class="text-center">
         {!! $receipt_details->address !!}
         </small>
     @endif -->
-    @if(!empty($receipt_details->contact))
-    <small class="text-center">
-      <br/>{{ $receipt_details->contact }}
-    </small>
-    @endif  
-    @if(!empty($receipt_details->contact) && !empty($receipt_details->website))
-    @endif
-    @if(!empty($receipt_details->website))
-    <small class="text-center">
-      {{ $receipt_details->website }}
-    </small>
-    @endif
-    @if(!empty($receipt_details->location_custom_fields))
-    <small class="text-center">
-      <br>{{ $receipt_details->location_custom_fields }}
-    </small>
-    @endif
-    
-    
+        @if(!empty($receipt_details->contact))
+        <small class="text-center">
+          <br />{{ $receipt_details->contact }}
+        </small>
+        @endif
+        @if(!empty($receipt_details->contact) && !empty($receipt_details->website))
+        @endif
+        @if(!empty($receipt_details->website))
+        <small class="text-center">
+          {{ $receipt_details->website }}
+        </small>
+        @endif
+        @if(!empty($receipt_details->location_custom_fields))
+        <small class="text-center">
+          <br>{{ $receipt_details->location_custom_fields }}
+        </small>
+        @endif
 
-    </p>
-    <p>
-    @if(!empty($receipt_details->sub_heading_line1))
-      {{ $receipt_details->sub_heading_line1 }}
-    @endif
-    @if(!empty($receipt_details->sub_heading_line2))
-      <br>{{ $receipt_details->sub_heading_line2 }}
-    @endif
-    @if(!empty($receipt_details->sub_heading_line3))
-      <br>{{ $receipt_details->sub_heading_line3 }}
-    @endif
-    @if(!empty($receipt_details->sub_heading_line4))
-      <br>{{ $receipt_details->sub_heading_line4 }}
-    @endif    
-    @if(!empty($receipt_details->sub_heading_line5))
-      <br>{{ $receipt_details->sub_heading_line5 }}
-    @endif
-    </p>
-    <p>
-    @if(!empty($receipt_details->tax_info1))
-      <b>{{ $receipt_details->tax_label1 }}</b> {{ $receipt_details->tax_info1 }}
-    @endif
 
-    @if(!empty($receipt_details->tax_info2))
-      <b>{{ $receipt_details->tax_label2 }}</b> {{ $receipt_details->tax_info2 }}
-    @endif
-    </p>
 
-    <!-- Title of receipt -->
-    @if(!empty($receipt_details->invoice_heading))
+      </p>
+      <p>
+        @if(!empty($receipt_details->sub_heading_line1))
+        {{ $receipt_details->sub_heading_line1 }}
+        @endif
+        @if(!empty($receipt_details->sub_heading_line2))
+        <br>{{ $receipt_details->sub_heading_line2 }}
+        @endif
+        @if(!empty($receipt_details->sub_heading_line3))
+        <br>{{ $receipt_details->sub_heading_line3 }}
+        @endif
+        @if(!empty($receipt_details->sub_heading_line4))
+        <br>{{ $receipt_details->sub_heading_line4 }}
+        @endif
+        @if(!empty($receipt_details->sub_heading_line5))
+        <br>{{ $receipt_details->sub_heading_line5 }}
+        @endif
+      </p>
+      <p>
+        @if(!empty($receipt_details->tax_info1))
+        <b>{{ $receipt_details->tax_label1 }}</b> {{ $receipt_details->tax_info1 }}
+        @endif
+
+        @if(!empty($receipt_details->tax_info2))
+        <b>{{ $receipt_details->tax_label2 }}</b> {{ $receipt_details->tax_info2 }}
+        @endif
+      </p>
+
+      <!-- Title of receipt -->
+      @if(!empty($receipt_details->invoice_heading))
       <h5 class="text-center">
         {!! $receipt_details->invoice_heading !!}
       </h5>
-    @endif
+      @endif
 
-    <!-- Invoice  number, Date  -->
-    <p style="width: 100% !important; font-size: 11px !important; font-family: Arial Narrow !important;" class="word-wrap">
+      <!-- Invoice  number, Date  -->
+      <p style="width: 100% !important; font-size: 11px !important; font-family: Arial Narrow !important;" class="word-wrap">
 
-      <span class="pull-left">
-        <b>{{$receipt_details->date_label}}:</b> {{$receipt_details->invoice_date}}
-        
-        <!-- Waiter info -->
-        @if(!empty($receipt_details->service_staff_label) || !empty($receipt_details->service_staff))
-              <br/>
+        <span class="pull-left">
+          <b>{{$receipt_details->date_label}}:</b> {{$receipt_details->invoice_date}}
+
+          <!-- Waiter info -->
+          @if(!empty($receipt_details->service_staff_label) || !empty($receipt_details->service_staff))
+          <br />
           @if(!empty($receipt_details->service_staff_label))
-            <b>{!! $receipt_details->service_staff_label !!}</b>
+          <b>{!! $receipt_details->service_staff_label !!}</b>
           @endif
           {{$receipt_details->service_staff}}
-            @endif
-      </span>
+          @endif
+        </span>
 
-      <span class="pull-left text-left word-wrap">
-        @if(!empty($receipt_details->invoice_no_prefix))
+        <span class="pull-left text-left word-wrap">
+          @if(!empty($receipt_details->invoice_no_prefix))
           <b>{!! $receipt_details->invoice_no_prefix !!}:</b>
-        @endif
-        {{$receipt_details->invoice_no}}
-        
-        <!--transaction id-->
+          @endif
+          {{$receipt_details->invoice_no}}
+
+          <!--transaction id-->
           <span class="text-left">
             <br>
             <b>Transaction No.:</b>{{$receipt_details->trans_id}}
 
           </span>
 
-        <!-- Table information-->
-            @if(!empty($receipt_details->table_label) || !empty($receipt_details->table))
-              <br/>
+          <!-- Table information-->
+          @if(!empty($receipt_details->table_label) || !empty($receipt_details->table))
+          <br />
           <span class="pull-left text-left">
             @if(!empty($receipt_details->table_label))
-              <b>{!! $receipt_details->table_label !!}</b>
+            <b>{!! $receipt_details->table_label !!}</b>
             @endif
             {{$receipt_details->table}}
 
             <!-- Waiter info -->
           </span>
-            @endif
+          @endif
 
-        <?php
+          <?php
 
-        $mac_a = config('app.permit_3');
-        $mac_b = config('app.permit_4');
-        $mac_c = config('app.permit_5');
-        $mac_d = config('app.permit_2');
+          $mac_a = config('app.permit_3');
+          $mac_b = config('app.permit_4');
+          $mac_c = config('app.permit_5');
+          $mac_d = config('app.permit_2');
 
-        $ipAdd=$_SERVER['REMOTE_ADDR'];
+          $ipAdd = $_SERVER['REMOTE_ADDR'];
 
-        //echo "$ipAddress - ";
-        $macAdd="";
+          //echo "$ipAddress - ";
+          $macAdd = "";
 
-        #run the external command, break output into lines
-        $arp=`arp -a $ipAdd`;
-        $macs=explode("\n", $arp);
+          #run the external command, break output into lines
+          $arp = `arp -a $ipAdd`;
+          $macs = explode("\n", $arp);
 
-        #look for the output line describing our IP address
-        foreach($macs as $mac)
-        {
-            $configs=preg_split('/\s+/', trim($mac));
-                if ($configs[0]==$ipAdd)
-                    {
-                       $macAdd=$configs[1]; 
-                    }
+          #look for the output line describing our IP address
+          foreach ($macs as $mac) {
+            $configs = preg_split('/\s+/', trim($mac));
+            if ($configs[0] == $ipAdd) {
+              $macAdd = $configs[1];
+            }
+          }
 
-        }
+          // if($macAdd == ""){
+          //  echo " <br><b> SN#:</b> 123456789";
+          // }elseif($macAdd == $mac_a){
+          //   echo " <br><b> SN#:</b> 0987654321";
+          // }elseif($macAdd == $mac_b){
+          //   echo " <br><b> SN#:</b> 0011223344";
+          // }elseif($macAdd == $mac_c){
+          //   echo " <br><b> SN#:</b> 5566778899";
+          // }elseif($macAdd == $mac_d){
+          //   echo " <br><b> SN#:</b> 1010101010";
+          // }
 
-        // if($macAdd == ""){
-        //  echo " <br><b> SN#:</b> 123456789";
-        // }elseif($macAdd == $mac_a){
-        //   echo " <br><b> SN#:</b> 0987654321";
-        // }elseif($macAdd == $mac_b){
-        //   echo " <br><b> SN#:</b> 0011223344";
-        // }elseif($macAdd == $mac_c){
-        //   echo " <br><b> SN#:</b> 5566778899";
-        // }elseif($macAdd == $mac_d){
-        //   echo " <br><b> SN#:</b> 1010101010";
-        // }
-
-    ?>
+          ?>
 
 
-         @if(!empty($receipt_details->sales_person_label))
-         <br/>
+          @if(!empty($receipt_details->sales_person_label))
+          <br />
           <b>{{ $receipt_details->sales_person_label }}:</b> {{ $receipt_details->sales_person }}
-        @endif
+          @endif
 
-        <!-- customer info -->
-        @if(!empty($receipt_details->customer_name))
-          <br/>
+          <!-- customer info -->
+          @if(!empty($receipt_details->customer_name))
+          <br />
           <b>{{ $receipt_details->customer_label }}:</b> {{ $receipt_details->customer_name }} <br>
-        @endif
-         @if(!empty($receipt_details->customer_tax_number))
-        @if(!empty($receipt_details->customer_tax_label))
+          @endif
+          @if(!empty($receipt_details->customer_tax_number))
+          @if(!empty($receipt_details->customer_tax_label))
           <b>{{ $receipt_details->customer_tax_label }}:</b> {{ $receipt_details->customer_tax_number }}
-        @endif
-        @endif
-
-       
-      </span>
-
-      
+          @endif
+          @endif
 
 
-    
-    </p>
+        </span>
+
+
+
+
+
+      </p>
+    </div>
+    <!-- /.col -->
   </div>
-  <!-- /.col -->
-</div>
 
-<hr style="margin-bottom: -10px !important;  border: 1px dashed"/>
+  <hr style="margin-bottom: -10px !important;  border: 1px dashed" />
 
 
-<div class="row">
-  <div class="col-xs-12" >
-    <br/>
-    <table class="table table-condensed" style="margin-left: -5px; font-size: 11px !important; font-family: Arial Narrow !important;">
-      <thead>
-        <tr>
-          <td>Item</td>
-          <td>Qty</td>
-          <td>Price</td>
-          <td>{{$receipt_details->table_subtotal_label}}</td>
-        </tr>
-      </thead>
-      <tbody>
-        <?php 
-        $tqty = 0;
-        function limit_text($text, $limit) {
-        if (str_word_count($text, 0) > $limit) {
-            $words = str_word_count($text, 2);
-            $pos = array_keys($words);
-            $text = substr($text, 0, $pos[$limit]);
-        }
-        return $text;
-      }
+  <div class="row">
+    <div class="col-xs-12">
+      <br />
+      <table class="table table-condensed" style="margin-left: -5px; font-size: 11px !important; font-family: Arial Narrow !important;">
+        <thead>
+          <tr>
+            <td>Item</td>
+            <td>Qty</td>
+            <td>Price</td>
+            <td>{{$receipt_details->table_subtotal_label}}</td>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+          $tqty = 0;
+          function limit_text($text, $limit)
+          {
+            if (str_word_count($text, 0) > $limit) {
+              $words = str_word_count($text, 2);
+              $pos = array_keys($words);
+              $text = substr($text, 0, $pos[$limit]);
+            }
+            return $text;
+          }
 
-         ?>
+          ?>
 
 
-        @forelse($receipt_details->lines as $line)
+          @forelse($receipt_details->lines as $line)
           <tr>
             <td style="word-break: break-all;">
-                <!-- {{ limit_text($line['name'], 3)  }} -->
-                {{$line['name']}}
+              <!-- {{ limit_text($line['name'], 3)  }} -->
+              {{$line['name']}}
             </td>
 
-           <?php 
-             $qty_explode = explode('.',trim($line['quantity']));
-             $tqty += str_replace(',', '', $line['quantity']); 
-           ?>
+            <?php
+            $qty_explode = explode('.', trim($line['quantity']));
+            $tqty += str_replace(',', '', $line['quantity']);
+            ?>
 
             <td class="text-left">{{ $qty_explode[0] }}{{$line['units']}} </td>
             <td class="text-left">{{$line['unit_price_inc_tax']}}</td>
-            <td style="width: 10px;" class="text-left">{{$line['line_total']}}   </td>
+            <td style="width: 10px;" class="text-left">{{$line['line_total']}} </td>
           </tr>
           @if(!empty($line['modifiers']))
-            @foreach($line['modifiers'] as $modifier)
-              <tr>
-                <td>
-                                {{$modifier['name']}} {{$modifier['variation']}} 
-                                @if(!empty($modifier['sub_sku'])), {{$modifier['sub_sku']}} @endif @if(!empty($modifier['cat_code'])), {{$modifier['cat_code']}}@endif
-                                @if(!empty($modifier['sell_line_note']))({{$modifier['sell_line_note']}}) @endif 
-                            </td>
-                <td> {{ $modifier['quantity']}} {{$modifier['units']}} </td>
-                <td >{{$modifier['unit_price_inc_tax']}}</td>
-                <td>{{$modifier['line_total']}} </td>
-              </tr>
-            @endforeach
+          @foreach($line['modifiers'] as $modifier)
+          <tr>
+            <td>
+              {{$modifier['name']}} {{$modifier['variation']}}
+              @if(!empty($modifier['sub_sku'])), {{$modifier['sub_sku']}} @endif @if(!empty($modifier['cat_code'])), {{$modifier['cat_code']}}@endif
+              @if(!empty($modifier['sell_line_note']))({{$modifier['sell_line_note']}}) @endif
+            </td>
+            <td> {{ $modifier['quantity']}} {{$modifier['units']}} </td>
+            <td>{{$modifier['unit_price_inc_tax']}}</td>
+            <td>{{$modifier['line_total']}} </td>
+          </tr>
+          @endforeach
           @endif
-        @empty
+          @empty
           <tr>
             <td colspan="4">&nbsp;</td>
           </tr>
-        @endforelse
-       <?php //echo $sum; ?>
-      </tbody>
-    </table>
+          @endforelse
+          <?php //echo $sum; 
+          ?>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
 
-<div class="row" >
+  <div class="row">
 
 
-  <div class="col-md-12"><hr style="border: 1px dashed; margin-top: -20px !important"/></div>
+    <div class="col-md-12">
+      <hr style="border: 1px dashed; margin-top: -20px !important" />
+    </div>
 
-  <div class="col-md-12" style="margin-top: -20px !important; margin-bottom: -20px !important">
+    <div class="col-md-12" style="margin-top: -20px !important; margin-bottom: -20px !important">
 
-    <table class="table table-condensed " style="font-size: 11px !important; font-family: Arial Narrow !important;">
+      <table class="table table-condensed " style="font-size: 11px !important; font-family: Arial Narrow !important;">
 
-         <!-- Subtotal-->
-      @if(!empty($receipt_details->total_paid))
+        <!-- Subtotal-->
+        @if(!empty($receipt_details->total_paid))
         <tr>
           <th>
             {!! $receipt_details->subtotal_label !!}
@@ -298,37 +299,37 @@
             {{$receipt_details->subtotal}}
           </td>
         </tr>
-      @endif
+        @endif
 
-      <!-- Shipping Charges -->
-          @if(!empty($receipt_details->shipping_charges))
-            <tr>
-              <th style="">
-                {!! $receipt_details->shipping_charges_label !!}:
-              </th>
-              <td class="text-left">
-                (+){{$receipt_details->shipping_charges}}
-              </td>
-            </tr>
-          @endif
+        <!-- Shipping Charges -->
+        @if(!empty($receipt_details->shipping_charges))
+        <tr>
+          <th style="">
+            {!! $receipt_details->shipping_charges_label !!}:
+          </th>
+          <td class="text-left">
+            (+){{$receipt_details->shipping_charges}}
+          </td>
+        </tr>
+        @endif
 
-           <!-- Discount -->
-          @if( !empty($receipt_details->discount) )
-            <tr>
-              <th class="width-40"> 
-                {!! $receipt_details->discount_label !!}
-              </th>
+        <!-- Discount -->
+        @if( !empty($receipt_details->discount) )
+        <tr>
+          <th class="width-40">
+            {!! $receipt_details->discount_label !!}
+          </th>
 
-              <td class="text-left">
+          <td class="text-left">
 
 
-                (-){{$receipt_details->discount}}
-              </td>
-            </tr>
-          @endif
+            (-){{$receipt_details->discount}}
+          </td>
+        </tr>
+        @endif
 
-           <!-- Total Paid-->
-      @if(!empty($receipt_details->total_paid))
+        <!-- Total Paid-->
+        @if(!empty($receipt_details->total_paid))
         <tr>
           <th>
             {!! $receipt_details->total_paid_label !!}:
@@ -337,327 +338,335 @@
             {{$receipt_details->total_paid}}
           </td>
         </tr>
-      @endif
+        @endif
 
-       <!-- Total Due-->
+        <!-- Total Due-->
         @if(!empty($receipt_details->total_due))
-          <tr>
-                <th>
-                  {!! $receipt_details->total_due_label !!}:
-                </th>
-                <td class="text-left" >
-                  <b>{{$receipt_details->total_due}}</b>
-                </td>
-              </tr>
+        <tr>
+          <th>
+            {!! $receipt_details->total_due_label !!}:
+          </th>
+          <td class="text-left">
+            <b>{{$receipt_details->total_due}}</b>
+          </td>
+        </tr>
         @endif
 
         @if(!empty($receipt_details->all_due))
-          <tr style="background-color: red">
-                <th >
-                  {!! $receipt_details->all_bal_label !!}:
-                </th>
-                <td class="text-left">
-                  <b>{{$receipt_details->all_due}}</b>
-                </td>
-              </tr>
+        <tr style="background-color: red">
+          <th>
+            {!! $receipt_details->all_bal_label !!}:
+          </th>
+          <td class="text-left">
+            <b>{{$receipt_details->all_due}}</b>
+          </td>
+        </tr>
         @endif
 
-       @if(!empty($receipt_details->payments))
+        @if(!empty($receipt_details->payments))
         @foreach($receipt_details->payments as $payment)
 
-          <tr>
-            <th class="text-left">{{$payment['method']}}</th>
-            <td class="text-left" style="padding-left: 7px;">{{$payment['amount']}}</td>
-          </tr>
+        <tr>
+          <th class="text-left">{{$payment['method']}}</th>
+          <td class="text-left" style="padding-left: 7px;">{{$payment['amount']}}</td>
+        </tr>
         @endforeach
-      @endif
+        @endif
 
-      <tr>
-              <th class="text-left">
-                Total Qty:
-              </th>
+        <tr>
+          <th class="text-left">
+            Total Qty:
+          </th>
 
-              <td class="text-left">
-               <?php echo $tqty; ?>
-              </td>
-            </tr>
+          <td class="text-left">
+            <?php echo $tqty; ?>
+          </td>
+        </tr>
 
-    </table>
+      </table>
 
-  </div>
+    </div>
 
-    <div class="col-md-12"><hr style="border: 1px dashed; margin-top: -1px !important"/></div>
+    <div class="col-md-12">
+      <hr style="border: 1px dashed; margin-top: -1px !important" />
+    </div>
 
-  <div class="col-md-12" style="margin-top: -20px !important; margin-bottom: -20px !important">
+    <div class="col-md-12" style="margin-top: -20px !important; margin-bottom: -20px !important">
 
-    <table class="table table-condensed " >
-      
-          <!--VATABLE-->
-          <tr>
-            <th>
-              Vatable:
-            </th>
-            <td class="text-left">
-              <?php
+      <table class="table table-condensed ">
 
-              $vatable_val = $trans_1;
+        <!--VATABLE-->
+        <tr>
+          <th>
+            Vatable:
+          </th>
+          <td class="text-left">
+            <?php
 
-              $vatable_value = json_decode($vatable_val, true);
+            $vatable_val = $trans_1;
 
-              $final_vatable = $vatable_value[0]['vatable'];
+            $vatable_value = json_decode($vatable_val, true);
 
-              //echo "$final_vatable";
+            $final_vatable = $vatable_value[0]['vatable'];
 
-              //total paid get Php sign
-              $starr = explode(' ',trim($receipt_details->total_paid));
-            
-              //if no discount vatable is equal to total paid
-             // if(!empty($receipt_details->discount)){
-              //  $disarr = explode(' ',trim($receipt_details->discount));
-              //  $amtdiscount = str_replace(',', '', $disarr[1]);
+            //echo "$final_vatable";
 
-              //  $disc = $receipt_details->dis;
+            //total paid get Php sign
+            $starr = explode(' ', trim($receipt_details->total_paid));
 
-             //   $d = $disc/100;
+            //if no discount vatable is equal to total paid
+            // if(!empty($receipt_details->discount)){
+            //  $disarr = explode(' ',trim($receipt_details->discount));
+            //  $amtdiscount = str_replace(',', '', $disarr[1]);
 
-               
-             //   $f_vatable =  $final_vatable - ($final_vatable * $d);
+            //  $disc = $receipt_details->dis;
 
-                
+            //   $d = $disc/100;
+
+
+            //   $f_vatable =  $final_vatable - ($final_vatable * $d);
+
+
             //  }else{
-                
-                $f_vatable =  $final_vatable;
-               
+
+            $f_vatable =  $final_vatable;
+
             //  }
 
-              $vtable_f =  number_format($f_vatable, 2, '.', ',');
-             
-            echo $starr[0]. ' '. $vtable_f;
-               ?>
+            $vtable_f =  number_format($f_vatable, 2, '.', ',');
 
-            </td>
+            echo $starr[0] . ' ' . $vtable_f;
+            ?>
 
-          </tr>
-          
-          <!--Vat exempt-->
-          <tr>
-            <th>
-              VAT EXEMPT:
-            </th>
-            <td class="text-left">
-              <?php 
+          </td>
 
-              $vat_exempt_val = $trans_2;
+        </tr>
 
-              $vat_exempt_value = json_decode($vat_exempt_val, true);
+        <!--Vat exempt-->
+        <tr>
+          <th>
+            VAT EXEMPT:
+          </th>
+          <td class="text-left">
+            <?php
 
-              $final_vat_exempt = $vat_exempt_value[0]['vat_exempt'];
+            $vat_exempt_val = $trans_2;
 
-              //if no discount vatable is equal to total paid
-              //if(!empty($receipt_details->discount)){
-               // $disarr1 = explode(' ',trim($receipt_details->discount));
-               // $amtdiscount = str_replace(',', '', $disarr1[1]);
+            $vat_exempt_value = json_decode($vat_exempt_val, true);
 
-               // $disc1 = $receipt_details->dis;
+            $final_vat_exempt = $vat_exempt_value[0]['vat_exempt'];
 
-               // $d1 = $disc1/100;
+            //if no discount vatable is equal to total paid
+            //if(!empty($receipt_details->discount)){
+            // $disarr1 = explode(' ',trim($receipt_details->discount));
+            // $amtdiscount = str_replace(',', '', $disarr1[1]);
 
-               
-               // $f_vat_exempt =  $final_vat_exempt - ($final_vat_exempt * $d1);
+            // $disc1 = $receipt_details->dis;
 
-                
-             // }else{
-                
-                $f_vat_exempt =  $final_vat_exempt;
-               
-             // }
-
-              $v_ex_f =  number_format($f_vat_exempt, 2, '.', ',');    
-                           
-              echo $starr[0]. ' '. $v_ex_f;
-              ?>
-            </td>
-          </tr>
-           
-
-          <tr>
-
-            <th>
-              ZERO RATED:
-            </th>
-            <td class="text-left">
-              <?php 
+            // $d1 = $disc1/100;
 
 
-              $zero_rated_val = $trans_3;
+            // $f_vat_exempt =  $final_vat_exempt - ($final_vat_exempt * $d1);
 
-              $zero_rated_value = json_decode($zero_rated_val, true);
 
-              $final_zero_rated = $zero_rated_value[0]['zero_rated'];    
-              
-              if(empty($final_zero_rated)){
-                $final_zero_rated = 0;
+            // }else{
 
-                $z_r_f =  number_format($final_zero_rated, 2, '.', ',');
-                echo $starr[0]. ' '. $z_r_f;
-              }else{
-                $z_r_f =  number_format($final_zero_rated, 2, '.', ',');
-                echo $starr[0]. ' '. $z_r_f;
-              }
+            $f_vat_exempt =  $final_vat_exempt;
 
-              ?>
-            </td>
+            // }
 
-          </tr>
+            $v_ex_f =  number_format($f_vat_exempt, 2, '.', ',');
 
-          <!--VAT@12%-->
-          <tr>
-            <th>
-              VAT@12%:
-            </th>
-            <td class="text-left">
+            echo $starr[0] . ' ' . $v_ex_f;
+            ?>
+          </td>
+        </tr>
 
-              <?php
 
-              $vat_val = $trans_1;
+        <tr>
 
-              $vat_value = json_decode($vat_val, true);
+          <th>
+            ZERO RATED:
+          </th>
+          <td class="text-left">
+            <?php
 
-              $final_vat = $vat_value[0]['vat_12'];
 
-              //total paid get Php sign
-              $starr = explode(' ',trim($receipt_details->total_paid));
+            $zero_rated_val = $trans_3;
 
-               //if no discount vatable is equal to total paid
+            $zero_rated_value = json_decode($zero_rated_val, true);
+
+            $final_zero_rated = $zero_rated_value[0]['zero_rated'];
+
+            if (empty($final_zero_rated)) {
+              $final_zero_rated = 0;
+
+              $z_r_f =  number_format($final_zero_rated, 2, '.', ',');
+              echo $starr[0] . ' ' . $z_r_f;
+            } else {
+              $z_r_f =  number_format($final_zero_rated, 2, '.', ',');
+              echo $starr[0] . ' ' . $z_r_f;
+            }
+
+            ?>
+          </td>
+
+        </tr>
+
+        <!--VAT@12%-->
+        <tr>
+          <th>
+            VAT@12%:
+          </th>
+          <td class="text-left">
+
+            <?php
+
+            $vat_val = $trans_1;
+
+            $vat_value = json_decode($vat_val, true);
+
+            $final_vat = $vat_value[0]['vat_12'];
+
+            //total paid get Php sign
+            $starr = explode(' ', trim($receipt_details->total_paid));
+
+            //if no discount vatable is equal to total paid
             //  if(!empty($receipt_details->discount)){
-             //   $disarr2 = explode(' ',trim($receipt_details->discount));
-              //  $amtdiscount = str_replace(',', '', $disarr2[1]);
+            //   $disarr2 = explode(' ',trim($receipt_details->discount));
+            //  $amtdiscount = str_replace(',', '', $disarr2[1]);
 
             //    $disc2 = $receipt_details->dis;
 
-             //   $d2 = $disc2/100;
+            //   $d2 = $disc2/100;
 
-               
-             //   $f_vat =  $final_vat - ($final_vat * $d2);
 
-                
+            //   $f_vat =  $final_vat - ($final_vat * $d2);
+
+
             //  }else{
-                
-                $f_vat =  $final_vat;
-               
+
+            $f_vat =  $final_vat;
+
             //  }
-            
-              //if no discount vatable is equal to total paid
-              
-              $v_f =  number_format($f_vat, 2, '.', ',');
-              echo $starr[0]. ' '. $v_f;
 
-               ?>
+            //if no discount vatable is equal to total paid
 
-            </td>
-          </tr>
+            $v_f =  number_format($f_vat, 2, '.', ',');
+            echo $starr[0] . ' ' . $v_f;
 
-          
+            ?>
 
-    </table>
+          </td>
+        </tr>
+
+
+
+      </table>
+    </div>
   </div>
-</div>
 
-<?php $sc = $receipt_details->customer_name; 
+  <?php $sc = $receipt_details->customer_name;
 
-if($sc == "Senior Citizen"){
-?>
+  if ($sc == "Senior Citizen") {
+  ?>
 
-<div class="col-12" style="margin-top: -20px !important; margin-bottom: -15px !important"><hr style="border: 1px dashed"/></div>
-<div class="text-left" style="margin-left: 5px;">
-  <label class="text-left">Senoir ID:</label><label class="text-left" style="margin-left: 10px;">{{$receipt_details->s_id}}</label><br>
-  <label class="text-left">Name:</label><label class="text-left" style="margin-left: 25px;">{{$receipt_details->s_name}}</label>
-  <br>
-  <label class="text-left">Address:</label><label class="text-left" style="margin-left: 15px;">{{$receipt_details->s_addr}}</label>
-</div>
-<?php } ?>
+    <div class="col-12" style="margin-top: -20px !important; margin-bottom: -15px !important">
+      <hr style="border: 1px dashed" />
+    </div>
+    <div class="text-left" style="margin-left: 5px;">
+      <label class="text-left">Senoir ID:</label><label class="text-left" style="margin-left: 10px;">{{$receipt_details->s_id}}</label><br>
+      <label class="text-left">Name:</label><label class="text-left" style="margin-left: 25px;">{{$receipt_details->s_name}}</label>
+      <br>
+      <label class="text-left">Address:</label><label class="text-left" style="margin-left: 15px;">{{$receipt_details->s_addr}}</label>
+    </div>
+  <?php } ?>
 
-@if($receipt_details->points_status)
-<div class="col-12" style="margin-top: -20px !important; margin-bottom: -15px !important"><hr style="border: 1px dashed"/></div>
+  @if($receipt_details->points_status)
+  <div class="col-12" style="margin-top: -20px !important; margin-bottom: -15px !important">
+    <hr style="border: 1px dashed" />
+  </div>
 
   <div class="col-12" style="margin-top: -20px !important; margin-bottom: -20px !important">
 
     <table class="table table-condensed ">
-      
-          <!--Points Previous-->
-          <tr>
-            <th>
-              Points Previous:
-            </th>
-            <td class="text-left">
-                  {{$receipt_details->points_prev}}
 
-            </td>
+      <!--Points Previous-->
+      <tr>
+        <th>
+          Points Previous:
+        </th>
+        <td class="text-left">
+          {{$receipt_details->points_prev}}
 
-          </tr>
-          
-          <!--Points Redeemed-->
-          <tr>
-            <th>
-              Points Redeemed:
-            </th>
-            <td class="text-left">
-              {{$receipt_details->points_red}}
-            </td>
-          </tr>
-           
-          <!--Points Earned-->
-          <tr>
+        </td>
 
-            <th>
-              Points Earned:
-            </th>
-            <td class="text-left">
-              {{$receipt_details->points_add}}
-            </td>
+      </tr>
 
-          </tr>
+      <!--Points Redeemed-->
+      <tr>
+        <th>
+          Points Redeemed:
+        </th>
+        <td class="text-left">
+          {{$receipt_details->points_red}}
+        </td>
+      </tr>
 
-          <!--Points Balance-->
-          <tr>
-            <th>
-              Points Balance:
-            </th>
-            <td class="text-left">
-              {{$receipt_details->points_balance}}
-            </td>
-          </tr>
+      <!--Points Earned-->
+      <tr>
 
-          
+        <th>
+          Points Earned:
+        </th>
+        <td class="text-left">
+          {{$receipt_details->points_add}}
+        </td>
+
+      </tr>
+
+      <!--Points Balance-->
+      <tr>
+        <th>
+          Points Balance:
+        </th>
+        <td class="text-left">
+          {{$receipt_details->points_balance}}
+        </td>
+      </tr>
+
+
 
     </table>
   </div>
-@endif
+  @endif
 
- <div class="col-12" style="margin-top: -20px !important; margin-bottom: -15px !important"><hr style="border: 1px dashed"/></div>
+  <div class="col-12" style="margin-top: -20px !important; margin-bottom: -15px !important">
+    <hr style="border: 1px dashed" />
+  </div>
 
- <div class="text-center" style="margin-top: -10px; margin-bottom: 10px;">
-  THESE SERVES AS YOUR<br>
-  SALES INVOICE<br/>
+  <div class="text-center" style="margin-top: -10px; margin-bottom: 10px;">
+    THESE SERVES AS YOUR<br>
+    SALES INVOICE<br />
 
-  <br>
+    <br>
 
-  THANK YOU! COME AGAIN <br> 
-  This Receipt is Valid until<br/>
+    THANK YOU! COME AGAIN <br>
+    This Receipt is Valid until<br />
 
-	<?php
-		$date = $receipt_details->invoice_date;
-		echo date('Y-m-d', strtotime($date. ' + 2 months'));
-	?>	
-  <br/>
-  For return and exchange item <br> 
-  must be within 7 days from<br/>
-  Date of Purchase <br> 
-  No Receipt, No Exchange 
-</div>
+    <?php
+    $date = $receipt_details->invoice_date;
+    echo date('Y-m-d', strtotime($date . ' + 2 months'));
+    ?>
+    <br />
+    For return and exchange item <br>
+    must be within 7 days from<br />
+    Date of Purchase <br>
+    No Receipt, No Exchange
+  </div>
 
 
 
-	
+
 
 </div>

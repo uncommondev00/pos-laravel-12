@@ -7,5 +7,5 @@
 @stop
 @section('javascript')
 @livewireScripts
-	<script src="{{ asset('js/stock_adjustment.js?v=' . $asset_v) }}"></script>
+<script src="{{ asset('js/stock_adjustment.js?v=' . $asset_v) }}"></script>
 @endsection

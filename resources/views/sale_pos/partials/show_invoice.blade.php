@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-12">
             <button type="button" class="btn btn-primary no-print pull-right"
-                 aria-label="Print" onclick="$('#invoice_content').printThis();"><i class="fa fa-print"></i> @lang( 'messages.print' )
+                aria-label="Print" onclick="$('#invoice_content').printThis();"><i class="fa fa-print"></i> @lang( 'messages.print' )
             </button>
         </div>
     </div>
