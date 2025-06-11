@@ -1,6 +1,6 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
-        <form action="{{ route('payments.update', [$payment_line->id]) }}"
+        <form action="{{ route('payments.update', $payment_line->id) }}"
             method="POST"
             id="transaction_payment_add_form"
             enctype="multipart/form-data">

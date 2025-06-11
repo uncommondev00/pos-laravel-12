@@ -1,6 +1,6 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
-        <form action="{{ route('brands.update', [$brand->id]) }}"
+        <form action="{{ route('brands.update', $brand->id) }}"
             method="POST"
             id="brand_edit_form">
             @csrf

@@ -1,6 +1,6 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
-        <form action="{{ route('selling-price-group.update', [$spg->id]) }}"
+        <form action="{{ route('selling-price-group.update', $spg->id) }}"
             method="POST"
             id="selling_price_group_form">
             @csrf

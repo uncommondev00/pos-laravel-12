@@ -1,7 +1,7 @@
 <div class="modal-dialog" role="document">
   <div class="modal-content">
 
-    <form action="{{ route('expense-categories.update', [$expense_category->id]) }}" method="POST" id="expense_category_add_form">
+    <form action="{{ route('expense-categories.update', $expense_category->id) }}" method="POST" id="expense_category_add_form">
       @csrf
       @method('PUT')
       <div class="modal-header">
