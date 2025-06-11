@@ -22,8 +22,7 @@
             class="form-control"
             value="{{ $brand->name }}"
             required
-            placeholder="@lang('brand.brand_name')"
-          >
+            placeholder="@lang('brand.brand_name')">
         </div>
 
         <div class="form-group">
@@ -34,8 +33,7 @@
             id="description"
             class="form-control"
             value="{{ $brand->description }}"
-            placeholder="@lang('brand.short_description')"
-          >
+            placeholder="@lang('brand.short_description')">
         </div>
       </div>
 

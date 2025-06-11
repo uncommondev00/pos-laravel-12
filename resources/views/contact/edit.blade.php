@@ -24,8 +24,8 @@
                                 <select name="type" id="contact_type" class="form-control" required>
                                     <option value="">@lang('messages.please_select')</option>
                                     @foreach ($types as $key => $value)
-                                        <option value="{{ $key }}"
-                                            {{ $contact->type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                    <option value="{{ $key }}"
+                                        {{ $contact->type == $key ? 'selected' : '' }}>{{ $value }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -110,9 +110,10 @@
                                 </span>
                                 <select name="customer_group_id" class="form-control">
                                     @foreach ($customer_groups as $key => $value)
-                                        <option value="{{ $key }}"
-                                            {{ $contact->customer_group_id == $key ? 'selected' : '' }}>
-                                            {{ $value }}</option>
+                                    <option value="{{ $key }}"
+                                        {{ $contact->customer_group_id == $key ? 'selected' : '' }}>
+                                        {{ $value }}
+                                    </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -237,30 +238,30 @@
 
                     @for ($i = 1; $i <= 4; $i++)
                         <div class="col-md-3">
-                            <div class="form-group">
-                                <label
-                                    for="custom_field{{ $i }}">{{ __('lang_v1.custom_field', ['number' => $i]) }}:</label>
-                                <input type="text" name="custom_field{{ $i }}"
-                                    id="custom_field{{ $i }}" class="form-control"
-                                    placeholder="{{ __('lang_v1.custom_field', ['number' => $i]) }}"
-                                    value="{{ old('custom_field' . $i, $contact->{'custom_field' . $i}) }}">
-                            </div>
+                        <div class="form-group">
+                            <label
+                                for="custom_field{{ $i }}">{{ __('lang_v1.custom_field', ['number' => $i]) }}:</label>
+                            <input type="text" name="custom_field{{ $i }}"
+                                id="custom_field{{ $i }}" class="form-control"
+                                placeholder="{{ __('lang_v1.custom_field', ['number' => $i]) }}"
+                                value="{{ old('custom_field' . $i, $contact->{'custom_field' . $i}) }}">
                         </div>
-                    @endfor
-
-                    <div class="clearfix"></div>
-
-
                 </div>
+                @endfor
+
+                <div class="clearfix"></div>
+
 
             </div>
 
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">@lang('messages.update')</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">@lang('messages.close')</button>
-            </div>
+    </div>
 
-        </form>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">@lang('messages.update')</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">@lang('messages.close')</button>
+    </div>
 
-    </div><!-- /.modal-content -->
+    </form>
+
+</div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->

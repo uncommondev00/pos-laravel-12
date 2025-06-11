@@ -10,37 +10,37 @@
         <th>@lang('sale.total_amount')</th>
       </tr>
       @php
-        $total_amount = 0;
-        $total_quantity = 0;
+      $total_amount = 0;
+      $total_quantity = 0;
       @endphp
       @foreach($details['product_details'] as $detail)
-        <tr>
-          <td>
-            {{$loop->iteration}}.
-          </td>
-          <td>
-            {{$detail->brand_name}}
-          </td>
-          <td>
-            {{$detail->total_quantity}}
-            @php
-              $total_quantity += $detail->total_quantity;
-            @endphp
-          </td>
-          <td>
-            <span class="display_currency" data-currency_symbol="true">
-              {{$detail->total_amount}}
-            </span>
-            @php
-              $total_amount += $detail->total_amount;
-            @endphp
-          </td>
-        </tr>
+      <tr>
+        <td>
+          {{$loop->iteration}}.
+        </td>
+        <td>
+          {{$detail->brand_name}}
+        </td>
+        <td>
+          {{$detail->total_quantity}}
+          @php
+          $total_quantity += $detail->total_quantity;
+          @endphp
+        </td>
+        <td>
+          <span class="display_currency" data-currency_symbol="true">
+            {{$detail->total_amount}}
+          </span>
+          @php
+          $total_amount += $detail->total_amount;
+          @endphp
+        </td>
+      </tr>
       @endforeach
 
-      
+
       @php
-        $total_amount += ($details['transaction_details']->total_tax - $details['transaction_details']->total_discount);
+      $total_amount += ($details['transaction_details']->total_tax - $details['transaction_details']->total_discount);
       @endphp
 
       <!-- Final details -->
@@ -51,19 +51,19 @@
         <th>
 
           @if($details['transaction_details']->total_tax != 0)
-            @lang('sale.order_tax'): (+)
-            <span class="display_currency" data-currency_symbol="true">
-              {{$details['transaction_details']->total_tax}}
-            </span>
-            <br/>
+          @lang('sale.order_tax'): (+)
+          <span class="display_currency" data-currency_symbol="true">
+            {{$details['transaction_details']->total_tax}}
+          </span>
+          <br />
           @endif
 
           @if($details['transaction_details']->total_discount != 0)
-            @lang('sale.discount'): (-)
-            <span class="display_currency" data-currency_symbol="true">
-              {{$details['transaction_details']->total_discount}}
-            </span>
-            <br/>
+          @lang('sale.discount'): (-)
+          <span class="display_currency" data-currency_symbol="true">
+            {{$details['transaction_details']->total_discount}}
+          </span>
+          <br />
           @endif
 
           @lang('lang_v1.grand_total'):

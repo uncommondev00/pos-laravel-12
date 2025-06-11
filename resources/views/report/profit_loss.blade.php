@@ -11,15 +11,17 @@
 
 <!-- Main content -->
 <section class="content">
-    <div class="print_section"><h2>{{session()->get('business.name')}} - @lang( 'report.profit_loss' )</h2></div>
-    
+    <div class="print_section">
+        <h2>{{session()->get('business.name')}} - @lang( 'report.profit_loss' )</h2>
+    </div>
+
     <div class="row no-print">
         <div class="col-md-3 col-md-offset-7 col-xs-6">
             <div class="input-group">
                 <span class="input-group-addon bg-light-blue"><i class="fa fa-map-marker"></i></span>
-                 <select class="form-control select2" id="profit_loss_location_filter">
+                <select class="form-control select2" id="profit_loss_location_filter">
                     @foreach($business_locations as $key => $value)
-                        <option value="{{ $key }}">{{ $value }}</option>
+                    <option value="{{ $key }}">{{ $value }}</option>
                     @endforeach
                 </select>
             </div>
@@ -27,12 +29,12 @@
         <div class="col-md-2 col-xs-6">
             <div class="form-group pull-right">
                 <div class="input-group">
-                  <button type="button" class="btn btn-primary" id="profit_loss_date_filter">
-                    <span>
-                      <i class="fa fa-calendar"></i> {{ __('messages.filter_by_date') }}
-                    </span>
-                    <i class="fa fa-caret-down"></i>
-                  </button>
+                    <button type="button" class="btn btn-primary" id="profit_loss_date_filter">
+                        <span>
+                            <i class="fa fa-calendar"></i> {{ __('messages.filter_by_date') }}
+                        </span>
+                        <i class="fa fa-caret-down"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -41,121 +43,121 @@
     <div class="row">
         <div class="col-xs-6">
             @component('components.widget')
-                <table class="table table-striped">
-                    <tr>
-                        <th>{{ __('report.opening_stock') }}:</th>
-                        <td>
-                            <span class="opening_stock">
-                                <i class="fa fa-refresh fa-spin fa-fw"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{ __('home.total_purchase') }}:</th>
-                        <td>
-                             <span class="total_purchase">
-                                <i class="fa fa-refresh fa-spin fa-fw"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{ __('report.total_stock_adjustment') }}:</th>
-                        <td>
-                             <span class="total_adjustment">
-                                <i class="fa fa-refresh fa-spin fa-fw"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{ __('report.total_expense') }}:</th>
-                        <td>
-                             <span class="total_expense">
-                                <i class="fa fa-refresh fa-spin fa-fw"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{ __('lang_v1.total_shipping_charges') }}:</th>
-                        <td>
-                             <span class="total_transfer_shipping_charges">
-                                <i class="fa fa-refresh fa-spin fa-fw"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{ __('lang_v1.total_sell_discount') }}:</th>
-                        <td>
-                             <span class="total_sell_discount">
-                                <i class="fa fa-refresh fa-spin fa-fw"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{ __('lang_v1.total_sell_return') }}:</th>
-                        <td>
-                             <span class="total_sell_return">
-                                <i class="fa fa-refresh fa-spin fa-fw"></i>
-                            </span>
-                        </td>
-                    </tr>
-                </table>
+            <table class="table table-striped">
+                <tr>
+                    <th>{{ __('report.opening_stock') }}:</th>
+                    <td>
+                        <span class="opening_stock">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ __('home.total_purchase') }}:</th>
+                    <td>
+                        <span class="total_purchase">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ __('report.total_stock_adjustment') }}:</th>
+                    <td>
+                        <span class="total_adjustment">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ __('report.total_expense') }}:</th>
+                    <td>
+                        <span class="total_expense">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ __('lang_v1.total_shipping_charges') }}:</th>
+                    <td>
+                        <span class="total_transfer_shipping_charges">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ __('lang_v1.total_sell_discount') }}:</th>
+                    <td>
+                        <span class="total_sell_discount">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ __('lang_v1.total_sell_return') }}:</th>
+                    <td>
+                        <span class="total_sell_return">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                    </td>
+                </tr>
+            </table>
             @endcomponent
         </div>
 
         <div class="col-xs-6">
             @component('components.widget')
-                <table class="table table-striped">
-                    <tr>
-                        <th>{{ __('report.closing_stock') }}:</th>
-                        <td>
-                            <span class="closing_stock">
-                                <i class="fa fa-refresh fa-spin fa-fw"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{ __('home.total_sell') }}:</th>
-                        <td>
-                             <span class="total_sell">
-                                <i class="fa fa-refresh fa-spin fa-fw"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{ __('report.total_stock_recovered') }}:</th>
-                        <td>
-                             <span class="total_recovered">
-                                <i class="fa fa-refresh fa-spin fa-fw"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{ __('lang_v1.total_purchase_return') }}:</th>
-                        <td>
-                             <span class="total_purchase_return">
-                                <i class="fa fa-refresh fa-spin fa-fw"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{ __('lang_v1.total_purchase_discount') }}:</th>
-                        <td>
-                             <span class="total_purchase_discount">
-                                <i class="fa fa-refresh fa-spin fa-fw"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
+            <table class="table table-striped">
+                <tr>
+                    <th>{{ __('report.closing_stock') }}:</th>
+                    <td>
+                        <span class="closing_stock">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ __('home.total_sell') }}:</th>
+                    <td>
+                        <span class="total_sell">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ __('report.total_stock_recovered') }}:</th>
+                    <td>
+                        <span class="total_recovered">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ __('lang_v1.total_purchase_return') }}:</th>
+                    <td>
+                        <span class="total_purchase_return">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ __('lang_v1.total_purchase_discount') }}:</th>
+                    <td>
+                        <span class="total_purchase_discount">
+                            <i class="fa fa-refresh fa-spin fa-fw"></i>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
                         &nbsp;
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
                         &nbsp;
-                        </td>
-                    </tr>
-                </table>
+                    </td>
+                </tr>
+            </table>
             @endcomponent
         </div>
     </div>
@@ -163,24 +165,23 @@
     <div class="row">
         <div class="col-xs-12">
             @component('components.widget')
-                <h3 class="text-muted">
-                    {{ __('report.net_profit') }}: 
-                    <span class="net_profit">
-                        <i class="fa fa-refresh fa-spin fa-fw"></i>
-                    </span>
-                </h3>
+            <h3 class="text-muted">
+                {{ __('report.net_profit') }}:
+                <span class="net_profit">
+                    <i class="fa fa-refresh fa-spin fa-fw"></i>
+                </span>
+            </h3>
             @endcomponent
         </div>
     </div>
 
     <div class="row no-print">
         <div class="col-sm-12">
-            <button type="button" class="btn btn-primary pull-right" 
-            aria-label="Print" onclick="window.print();"
-            ><i class="fa fa-print"></i> @lang( 'messages.print' )</button>
+            <button type="button" class="btn btn-primary pull-right"
+                aria-label="Print" onclick="window.print();"><i class="fa fa-print"></i> @lang( 'messages.print' )</button>
         </div>
     </div>
-	
+
 
 </section>
 <!-- /.content -->

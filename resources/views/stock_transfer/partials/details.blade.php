@@ -9,24 +9,24 @@
 					<th>@lang('sale.subtotal')</th>
 				</tr>
 				@foreach( $stock_adjustment_details as $details )
-					<tr>
-						<td>
-							{{ $details->product }} 
-							@if( $details->type == 'variable')
-							 {{ '-' . $details->product_variation . '-' . $details->variation }} 
-							@endif 
-							( {{ $details->sub_sku }} )
-						</td>
-						<td>
-							{{@num_format($details->quantity)}}
-						</td>
-						<td>
-							{{@num_format($details->unit_price)}}
-						</td>
-						<td>
-							{{@num_format($details->unit_price * $details->quantity)}}
-						</td>
-					</tr>
+				<tr>
+					<td>
+						{{ $details->product }}
+						@if( $details->type == 'variable')
+						{{ '-' . $details->product_variation . '-' . $details->variation }}
+						@endif
+						( {{ $details->sub_sku }} )
+					</td>
+					<td>
+						{{@num_format($details->quantity)}}
+					</td>
+					<td>
+						{{@num_format($details->unit_price)}}
+					</td>
+					<td>
+						{{@num_format($details->unit_price * $details->quantity)}}
+					</td>
+				</tr>
 				@endforeach
 			</table>
 		</div>

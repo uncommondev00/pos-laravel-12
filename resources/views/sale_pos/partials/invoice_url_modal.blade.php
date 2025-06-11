@@ -12,13 +12,13 @@
 			</div>
 		</div>
 		<div class="modal-footer">
-		    <button type="button" class="btn btn-default" data-dismiss="modal">@lang('messages.close')</button>
+			<button type="button" class="btn btn-default" data-dismiss="modal">@lang('messages.close')</button>
 		</div>
 	</div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
 
 <script type="text/javascript">
-	$('input#invoice_url').click(function(){
+	$('input#invoice_url').click(function() {
 		$(this).select().focus();
 	});
 </script>

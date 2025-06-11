@@ -5,7 +5,7 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1>@lang('lang_v1.add_stock_transfer')</h1>
+	<h1>@lang('lang_v1.add_stock_transfer')</h1>
 </section>
 
 <!-- Main content -->
@@ -38,7 +38,7 @@
 							<select name="location_id" id="location_id" class="form-control select2" required>
 								<option value="">{{ __('messages.please_select') }}</option>
 								@foreach($business_locations as $key => $value)
-									<option value="{{ $key }}">{{ $value }}</option>
+								<option value="{{ $key }}">{{ $value }}</option>
 								@endforeach
 							</select>
 						</div>
@@ -49,12 +49,12 @@
 							<select name="transfer_location_id" id="transfer_location_id" class="form-control select2" required>
 								<option value="">{{ __('messages.please_select') }}</option>
 								@foreach($business_locations as $key => $value)
-									<option value="{{ $key }}">{{ $value }}</option>
+								<option value="{{ $key }}">{{ $value }}</option>
 								@endforeach
 							</select>
 						</div>
 					</div>
-					
+
 				</div>
 			</div>
 		</div> <!--box end-->
@@ -80,31 +80,36 @@
 						<input type="hidden" id="product_row_index" value="0">
 						<input type="hidden" id="total_amount" name="final_total" value="0">
 						<div class="table-responsive">
-						<table class="table table-bordered table-striped table-condensed" 
-						id="stock_adjustment_product_table">
-							<thead>
-								<tr>
-									<th class="col-sm-4 text-center">	
-										@lang('sale.product')
-									</th>
-									<th class="col-sm-2 text-center">
-										@lang('sale.qty')
-									</th>
-									<th class="col-sm-2 text-center">
-										@lang('sale.unit_price')
-									</th>
-									<th class="col-sm-2 text-center">
-										@lang('sale.subtotal')
-									</th>
-									<th class="col-sm-2 text-center"><i class="fa fa-trash" aria-hidden="true"></i></th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-							<tfoot>
-								<tr class="text-center"><td colspan="3"></td><td><div class="pull-right"><b>@lang('stock_adjustment.total_amount'):</b> <span id="total_adjustment">0.00</span></div></td></tr>
-							</tfoot>
-						</table>
+							<table class="table table-bordered table-striped table-condensed"
+								id="stock_adjustment_product_table">
+								<thead>
+									<tr>
+										<th class="col-sm-4 text-center">
+											@lang('sale.product')
+										</th>
+										<th class="col-sm-2 text-center">
+											@lang('sale.qty')
+										</th>
+										<th class="col-sm-2 text-center">
+											@lang('sale.unit_price')
+										</th>
+										<th class="col-sm-2 text-center">
+											@lang('sale.subtotal')
+										</th>
+										<th class="col-sm-2 text-center"><i class="fa fa-trash" aria-hidden="true"></i></th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+								<tfoot>
+									<tr class="text-center">
+										<td colspan="3"></td>
+										<td>
+											<div class="pull-right"><b>@lang('stock_adjustment.total_amount'):</b> <span id="total_adjustment">0.00</span></div>
+										</td>
+									</tr>
+								</tfoot>
+							</table>
 						</div>
 					</div>
 				</div>
@@ -115,8 +120,8 @@
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="form-group">
-								<label for="shipping_charges">{{ __('lang_v1.shipping_charges') }}:</label>
-								<input type="text" name="shipping_charges" id="shipping_charges" class="form-control input_number" placeholder="{{ __('lang_v1.shipping_charges') }}" value="0">
+							<label for="shipping_charges">{{ __('lang_v1.shipping_charges') }}:</label>
+							<input type="text" name="shipping_charges" id="shipping_charges" class="form-control input_number" placeholder="{{ __('lang_v1.shipping_charges') }}" value="0">
 						</div>
 					</div>
 					<div class="col-sm-4">
@@ -138,5 +143,5 @@
 </section>
 @stop
 @section('javascript')
-	<script src="{{ asset('js/stock_transfer.js?v=' . $asset_v) }}"></script>
+<script src="{{ asset('js/stock_transfer.js?v=' . $asset_v) }}"></script>
 @endsection

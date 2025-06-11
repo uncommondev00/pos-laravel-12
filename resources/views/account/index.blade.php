@@ -14,24 +14,24 @@
 <!-- Main content -->
 <section class="content">
     @if(!empty($not_linked_payments))
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="alert alert-danger">
-                    <ul>
-                        @if(!empty($not_linked_payments))
-                            <li>{!! __('account.payments_not_linked_with_account', ['payments' => $not_linked_payments]) !!} <a href="{{action('AccountReportsController@paymentAccountReport')}}">@lang('account.view_details')</a></li>
-                        @endif
-                    </ul>
-                </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="alert alert-danger">
+                <ul>
+                    @if(!empty($not_linked_payments))
+                    <li>{!! __('account.payments_not_linked_with_account', ['payments' => $not_linked_payments]) !!} <a href="{{route('account.paymentAccountReport')}}">@lang('account.view_details')</a></li>
+                    @endif
+                </ul>
             </div>
         </div>
+    </div>
     @endif
     @can('account.access')
-     <div class="row">
+    <div class="row">
         <div class="col-sm-12">
-            <button type="button" class="btn btn-primary btn-modal pull-right" 
+            <button type="button" class="btn btn-primary btn-modal pull-right"
                 data-container=".account_model"
-                data-href="{{action('AccountController@create')}}">
+                data-href="{{route('action.create')}}">
                 <i class="fa fa-plus"></i> @lang( 'messages.add' )</button>
         </div>
     </div>
@@ -88,9 +88,9 @@
         </div>
     </div>
     @endcan
-    
-    <div class="modal fade account_model" tabindex="-1" role="dialog" 
-    	aria-labelledby="gridSystemModalLabel">
+
+    <div class="modal fade account_model" tabindex="-1" role="dialog"
+        aria-labelledby="gridSystemModalLabel">
     </div>
 
 </section>
@@ -101,28 +101,28 @@
 @section('javascript')
 <script src="{{ asset('plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js?v=' . $asset_v) }}"></script>
 <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
 
-        $(document).on('click', 'button.close_account', function(){
+        $(document).on('click', 'button.close_account', function() {
             swal({
                 title: LANG.sure,
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
-            }).then((willDelete)=>{
-                if(willDelete){
-                     var url = $(this).data('url');
+            }).then((willDelete) => {
+                if (willDelete) {
+                    var url = $(this).data('url');
 
-                     $.ajax({
-                         method: "get",
-                         url: url,
-                         dataType: "json",
-                         success: function(result){
-                             if(result.success == true){
+                    $.ajax({
+                        method: "get",
+                        url: url,
+                        dataType: "json",
+                        success: function(result) {
+                            if (result.success == true) {
                                 toastr.success(result.msg);
                                 capital_account_table.ajax.reload();
                                 other_account_table.ajax.reload();
-                             }else{
+                            } else {
                                 toastr.error(result.msg);
                             }
 
@@ -132,7 +132,7 @@
             });
         });
 
-        $(document).on('submit', 'form#edit_payment_account_form', function(e){
+        $(document).on('submit', 'form#edit_payment_account_form', function(e) {
             e.preventDefault();
             var data = $(this).serialize();
             $.ajax({
@@ -140,20 +140,20 @@
                 url: $(this).attr("action"),
                 dataType: "json",
                 data: data,
-                success:function(result){
-                    if(result.success == true){
+                success: function(result) {
+                    if (result.success == true) {
                         $('div.account_model').modal('hide');
                         toastr.success(result.msg);
                         capital_account_table.ajax.reload();
                         other_account_table.ajax.reload();
-                    }else{
+                    } else {
                         toastr.error(result.msg);
                     }
                 }
             });
         });
 
-        $(document).on('submit', 'form#payment_account_form', function(e){
+        $(document).on('submit', 'form#payment_account_form', function(e) {
             e.preventDefault();
             var data = $(this).serialize();
             $.ajax({
@@ -161,13 +161,13 @@
                 url: $(this).attr("action"),
                 dataType: "json",
                 data: data,
-                success:function(result){
-                    if(result.success == true){
+                success: function(result) {
+                    if (result.success == true) {
                         $('div.account_model').modal('hide');
                         toastr.success(result.msg);
                         capital_account_table.ajax.reload();
                         other_account_table.ajax.reload();
-                    }else{
+                    } else {
                         toastr.error(result.msg);
                     }
                 }
@@ -176,91 +176,120 @@
 
         // capital_account_table
         capital_account_table = $('#capital_account_table').DataTable({
-                        processing: true,
-                        serverSide: true,
-                        ajax: '/account/account?account_type=capital',
-                        columnDefs:[{
-                                "targets": 4,
-                                "orderable": false,
-                                "searchable": false
-                            }],
-                        columns: [
-                            {data: 'name', name: 'name'},
-                            {data: 'account_number', name: 'account_number'},
-                            {data: 'note', name: 'note'},
-                            {data: 'balance', name: 'balance', searchable: false},
-                            {data: 'action', name: 'action'}
-                        ],
-                        "fnDrawCallback": function (oSettings) {
-                            __currency_convert_recursively($('#capital_account_table'));
-                        }
-                    });
+            processing: true,
+            serverSide: true,
+            ajax: '/account/account?account_type=capital',
+            columnDefs: [{
+                "targets": 4,
+                "orderable": false,
+                "searchable": false
+            }],
+            columns: [{
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'account_number',
+                    name: 'account_number'
+                },
+                {
+                    data: 'note',
+                    name: 'note'
+                },
+                {
+                    data: 'balance',
+                    name: 'balance',
+                    searchable: false
+                },
+                {
+                    data: 'action',
+                    name: 'action'
+                }
+            ],
+            "fnDrawCallback": function(oSettings) {
+                __currency_convert_recursively($('#capital_account_table'));
+            }
+        });
         // capital_account_table
         other_account_table = $('#other_account_table').DataTable({
-                        processing: true,
-                        serverSide: true,
-                        ajax: '/account/account?account_type=other',
-                        columnDefs:[{
-                                "targets": 4,
-                                "orderable": false,
-                                "searchable": false
-                            }],
-                        columns: [
-                            {data: 'name', name: 'name'},
-                            {data: 'account_number', name: 'account_number'},
-                            {data: 'note', name: 'note'},
-                            {data: 'balance', name: 'balance', searchable: false},
-                            {data: 'action', name: 'action'}
-                        ],
-                        "fnDrawCallback": function (oSettings) {
-                            __currency_convert_recursively($('#other_account_table'));
-                        }
-                    });
+            processing: true,
+            serverSide: true,
+            ajax: '/account/account?account_type=other',
+            columnDefs: [{
+                "targets": 4,
+                "orderable": false,
+                "searchable": false
+            }],
+            columns: [{
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'account_number',
+                    name: 'account_number'
+                },
+                {
+                    data: 'note',
+                    name: 'note'
+                },
+                {
+                    data: 'balance',
+                    name: 'balance',
+                    searchable: false
+                },
+                {
+                    data: 'action',
+                    name: 'action'
+                }
+            ],
+            "fnDrawCallback": function(oSettings) {
+                __currency_convert_recursively($('#other_account_table'));
+            }
+        });
 
     });
 
-    $(document).on('submit', 'form#fund_transfer_form', function(e){
+    $(document).on('submit', 'form#fund_transfer_form', function(e) {
         e.preventDefault();
         var data = $(this).serialize();
 
         $.ajax({
-          method: "POST",
-          url: $(this).attr("action"),
-          dataType: "json",
-          data: data,
-          success: function(result){
-            if(result.success == true){
-              $('div.view_modal').modal('hide');
-              toastr.success(result.msg);
-              capital_account_table.ajax.reload();
-              other_account_table.ajax.reload();
-            } else {
-              toastr.error(result.msg);
+            method: "POST",
+            url: $(this).attr("action"),
+            dataType: "json",
+            data: data,
+            success: function(result) {
+                if (result.success == true) {
+                    $('div.view_modal').modal('hide');
+                    toastr.success(result.msg);
+                    capital_account_table.ajax.reload();
+                    other_account_table.ajax.reload();
+                } else {
+                    toastr.error(result.msg);
+                }
             }
-          }
         });
     });
-    $(document).on('submit', 'form#deposit_form', function(e){
+    $(document).on('submit', 'form#deposit_form', function(e) {
         e.preventDefault();
         var data = $(this).serialize();
 
         $.ajax({
-          method: "POST",
-          url: $(this).attr("action"),
-          dataType: "json",
-          data: data,
-          success: function(result){
-            if(result.success == true){
-              $('div.view_modal').modal('hide');
-              toastr.success(result.msg);
-              capital_account_table.ajax.reload();
-              other_account_table.ajax.reload();
-            } else {
-              toastr.error(result.msg);
+            method: "POST",
+            url: $(this).attr("action"),
+            dataType: "json",
+            data: data,
+            success: function(result) {
+                if (result.success == true) {
+                    $('div.view_modal').modal('hide');
+                    toastr.success(result.msg);
+                    capital_account_table.ajax.reload();
+                    other_account_table.ajax.reload();
+                } else {
+                    toastr.error(result.msg);
+                }
             }
-          }
         });
     });
-
 </script>
 @endsection

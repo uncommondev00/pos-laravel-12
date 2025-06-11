@@ -13,16 +13,16 @@
       <div class="modal-body">
         <div class="form-group">
           <label for="name">@lang('lang_v1.customer_group_name')*</label>
-          <input type="text" id="name" name="name" class="form-control" required 
-                 placeholder="@lang('lang_v1.customer_group_name')">
+          <input type="text" id="name" name="name" class="form-control" required
+            placeholder="@lang('lang_v1.customer_group_name')">
         </div>
 
         <div class="form-group">
           <label for="amount">@lang('lang_v1.calculation_percentage')</label>
           @show_tooltip(__('lang_v1.tooltip_calculation_percentage'))
-          <input type="number" id="amount" name="amount" class="form-control" 
-                 placeholder="@lang('lang_v1.calculation_percentage')" 
-                 max="100" min="-100" step="0.1">
+          <input type="number" id="amount" name="amount" class="form-control"
+            placeholder="@lang('lang_v1.calculation_percentage')"
+            max="100" min="-100" step="0.1">
         </div>
       </div>
 

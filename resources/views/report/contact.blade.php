@@ -31,12 +31,12 @@
             <tfoot>
                 <tr class="bg-gray font-17 footer-total text-center">
                     <td><strong>@lang('sale.total'):</strong></td>
-                    <td><span class="display_currency" id="footer_total_purchase" data-currency_symbol ="true"></span></td>
-                    <td><span class="display_currency" id="footer_total_purchase_return" data-currency_symbol ="true"></span></td>
-                    <td><span class="display_currency" id="footer_total_sell" data-currency_symbol ="true"></span></td>
-                    <td><span class="display_currency" id="footer_total_sell_return" data-currency_symbol ="true"></span></td>
-                    <td><span class="display_currency" id="footer_total_opening_bal_due" data-currency_symbol ="true"></span></td>
-                    <td><span class="display_currency" id="footer_total_due" data-currency_symbol ="true"></span></td>
+                    <td><span class="display_currency" id="footer_total_purchase" data-currency_symbol="true"></span></td>
+                    <td><span class="display_currency" id="footer_total_purchase_return" data-currency_symbol="true"></span></td>
+                    <td><span class="display_currency" id="footer_total_sell" data-currency_symbol="true"></span></td>
+                    <td><span class="display_currency" id="footer_total_sell_return" data-currency_symbol="true"></span></td>
+                    <td><span class="display_currency" id="footer_total_opening_bal_due" data-currency_symbol="true"></span></td>
+                    <td><span class="display_currency" id="footer_total_due" data-currency_symbol="true"></span></td>
                 </tr>
             </tfoot>
         </table>
@@ -48,5 +48,5 @@
 @endsection
 
 @section('javascript')
-    <script src="{{ asset('js/report.js?v=' . $asset_v) }}"></script>
+<script src="{{ asset('js/report.js?v=' . $asset_v) }}"></script>
 @endsection

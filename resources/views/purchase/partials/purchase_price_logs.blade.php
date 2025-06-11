@@ -5,8 +5,8 @@
   <div class="modal-content">
 
     <div class="modal-header">
-	    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	      <h4 class="modal-title" id="modalTitle"><b>({{$name}})</b> Purchase Price Logs</h4>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title" id="modalTitle"><b>({{$name}})</b> Purchase Price Logs</h4>
     </div>
     <div class="modal-body">
       <div class="row">
@@ -25,14 +25,14 @@
                 </tr>
               </thead>
               <tbody>
-                  @foreach($price_logs as $pl)
-                    <tr>
-                      <td>{{$pl->current_price}}</td>
-                      <td>{{$pl->selling_price}}</td>
-                      <td>{{$pl->first_name}} {{$pl->last_name}}</td>
-                      <td>{{$pl->created_at->toDayDateTimeString()}}</td>
-                    </tr>
-                  @endforeach
+                @foreach($price_logs as $pl)
+                <tr>
+                  <td>{{$pl->current_price}}</td>
+                  <td>{{$pl->selling_price}}</td>
+                  <td>{{$pl->first_name}} {{$pl->last_name}}</td>
+                  <td>{{$pl->created_at->toDayDateTimeString()}}</td>
+                </tr>
+                @endforeach
               </tbody>
             </table>
           </div>
@@ -46,6 +46,6 @@
   </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
 
-        {!! Charts::scripts() !!}
+{!! Charts::scripts() !!}
 
-        {!! $chart->script() !!}
+{!! $chart->script() !!}

@@ -15,28 +15,28 @@
       <div class="modal-body">
         <div class="row">
           @if(!empty($transaction->contact))
-            <div class="col-md-4">
-              <div class="well">
-                <strong>
+          <div class="col-md-4">
+            <div class="well">
+              <strong>
                 @if(in_array($transaction->type, ['purchase', 'purchase_return']))
-                  @lang('purchase.supplier') 
+                @lang('purchase.supplier')
                 @elseif(in_array($transaction->type, ['sell', 'sell_return']))
-                  @lang('contact.customer') 
+                @lang('contact.customer')
                 @endif
-                </strong>: {{ $transaction->contact->name }}<br>
-                @if($transaction->type == 'purchase')
-                  <strong>@lang('business.business'):</strong> {{ $transaction->contact->supplier_business_name }}
-                @endif
-              </div>
+              </strong>: {{ $transaction->contact->name }}<br>
+              @if($transaction->type == 'purchase')
+              <strong>@lang('business.business'):</strong> {{ $transaction->contact->supplier_business_name }}
+              @endif
             </div>
+          </div>
           @endif
 
           <div class="col-md-4">
             <div class="well">
               @if(in_array($transaction->type, ['sell', 'sell_return']))
-                <strong>@lang('sale.invoice_no'):</strong> {{ $transaction->invoice_no }}
+              <strong>@lang('sale.invoice_no'):</strong> {{ $transaction->invoice_no }}
               @else
-                <strong>@lang('purchase.ref_no'):</strong> {{ $transaction->ref_no }}
+              <strong>@lang('purchase.ref_no'):</strong> {{ $transaction->ref_no }}
               @endif
               <br>
               <strong>@lang('purchase.location'):</strong> {{ $transaction->location->name }}
@@ -45,13 +45,13 @@
 
           <div class="col-md-4">
             <div class="well">
-              <strong>@lang('sale.total_amount'):</strong> 
+              <strong>@lang('sale.total_amount'):</strong>
               <span class="display_currency" data-currency_symbol="true">{{ $transaction->final_total }}</span><br>
               <strong>@lang('purchase.payment_note'):</strong>
               @if(!empty($transaction->additional_notes))
-                {{ $transaction->additional_notes }}
+              {{ $transaction->additional_notes }}
               @else
-                --
+              --
               @endif
             </div>
           </div>
@@ -74,8 +74,7 @@
                   value="{{ @num_format($payment_line->amount) }}"
                   placeholder="Amount"
                   data-rule-max-value="{{ $payment_line->amount }}"
-                  data-msg-max-value="@lang('lang_v1.max_amount_to_be_paid_is', ['amount' => $amount_formated])"
-                >
+                  data-msg-max-value="@lang('lang_v1.max_amount_to_be_paid_is', ['amount' => $amount_formated])">
               </div>
             </div>
           </div>
@@ -94,8 +93,7 @@
                   class="form-control"
                   value="{{ date('m/d/Y', strtotime($payment_line->paid_on)) }}"
                   required
-                  readonly
-                >
+                  readonly>
               </div>
             </div>
           </div>
@@ -109,7 +107,7 @@
                 </span>
                 <select name="method" id="method" class="form-control select2 payment_types_dropdown" required style="width:100%;">
                   @foreach($payment_types as $key => $value)
-                    <option value="{{ $key }}" {{ $payment_line->method == $key ? 'selected' : '' }}>{{ $value }}</option>
+                  <option value="{{ $key }}" {{ $payment_line->method == $key ? 'selected' : '' }}>{{ $value }}</option>
                   @endforeach
                 </select>
               </div>
@@ -117,22 +115,22 @@
           </div>
 
           @if(!empty($accounts))
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="account_id">@lang('lang_v1.payment_account'):</label>
-                <div class="input-group">
-                  <span class="input-group-addon">
-                    <i class="fa fa-money"></i>
-                  </span>
-                  <select name="account_id" id="account_id" class="form-control select2" style="width:100%;">
-                    <option value="">--</option>
-                    @foreach($accounts as $key => $value)
-                      <option value="{{ $key }}" {{ !empty($payment_line->account_id) && $payment_line->account_id == $key ? 'selected' : '' }}>{{ $value }}</option>
-                    @endforeach
-                  </select>
-                </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="account_id">@lang('lang_v1.payment_account'):</label>
+              <div class="input-group">
+                <span class="input-group-addon">
+                  <i class="fa fa-money"></i>
+                </span>
+                <select name="account_id" id="account_id" class="form-control select2" style="width:100%;">
+                  <option value="">--</option>
+                  @foreach($accounts as $key => $value)
+                  <option value="{{ $key }}" {{ !empty($payment_line->account_id) && $payment_line->account_id == $key ? 'selected' : '' }}>{{ $value }}</option>
+                  @endforeach
+                </select>
               </div>
             </div>
+          </div>
           @endif
 
           <div class="col-md-4">

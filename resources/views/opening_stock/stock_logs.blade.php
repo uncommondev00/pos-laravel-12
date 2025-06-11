@@ -1,7 +1,7 @@
 <div class="col-sm-12">
 	<h4>Stock Logs:</h4>
 	<table class="table table-condensed table-bordered table-th-green text-center table-striped add_opening_stock_table">
-			<thead>
+		<thead>
 			<tr>
 				<th>@lang( 'Previous Stock' )</th>
 				<th>@lang( 'Current Stock' )</th>
@@ -9,23 +9,23 @@
 				<th>@lang( 'Changed By' )</th>
 
 			</tr>
-			</thead>
+		</thead>
 
-			
-			<tbody>
-				@foreach($stock_logs as $sl)
 
-					<tr>
-						<td>{{$sl->previous_stock}}</td>
-						<td>{{$sl->current_stock}}</td>
-						<td>{{$sl->created_at->toDayDateTimeString()}}</td>
-						<td>{{$sl->first_name}} {{$sl->last_name}}</td>
-					</tr>
+		<tbody>
+			@foreach($stock_logs as $sl)
 
-				@endforeach
-			</tbody>
-			
+			<tr>
+				<td>{{$sl->previous_stock}}</td>
+				<td>{{$sl->current_stock}}</td>
+				<td>{{$sl->created_at->toDayDateTimeString()}}</td>
+				<td>{{$sl->first_name}} {{$sl->last_name}}</td>
+			</tr>
+
+			@endforeach
+		</tbody>
+
 
 	</table>
-	
+
 </div>

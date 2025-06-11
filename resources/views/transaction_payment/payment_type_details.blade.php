@@ -69,12 +69,12 @@
 </div>
 
 @foreach ([1, 2, 3] as $index)
-    <div class="payment_details_div {{ $payment_line->method !== 'custom_pay_' . $index ? 'hide' : '' }}" data-type="custom_pay_{{ $index }}">
-        <div class="col-md-12">
-            <div class="form-group">
-                <label for="transaction_no_{{ $index }}">{{ __('lang_v1.transaction_no') }}</label>
-                <input type="text" name="transaction_no_{{ $index }}" value="{{ $payment_line->transaction_no }}" class="form-control" placeholder="{{ __('lang_v1.transaction_no') }}">
-            </div>
+<div class="payment_details_div {{ $payment_line->method !== 'custom_pay_' . $index ? 'hide' : '' }}" data-type="custom_pay_{{ $index }}">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="transaction_no_{{ $index }}">{{ __('lang_v1.transaction_no') }}</label>
+            <input type="text" name="transaction_no_{{ $index }}" value="{{ $payment_line->transaction_no }}" class="form-control" placeholder="{{ __('lang_v1.transaction_no') }}">
         </div>
     </div>
+</div>
 @endforeach
