@@ -55,10 +55,12 @@
 						<span class="input-group-addon">
 							<i class="fa fa-map-marker"></i>
 						</span>
-						{!! Form::select('select_location_id', $business_locations, null, ['class' => 'form-control input-sm mousetrap',
-						'placeholder' => __('lang_v1.select_location'),
-						'id' => 'select_location_id',
-						'required', 'autofocus'], $bl_attributes); !!}
+						<select name="select_location_id" class="form-control input-sm mousetrap" id="select_location_id" required autofocus>
+							<option value="" selected disabled>{{ __('lang_v1.select_location') }}</option>
+							@foreach($business_locations as $key => $value)
+							<option value="{{ $key }}" {{ isset($bl_attributes[$key]) ? $bl_attributes[$key] : '' }}>{{ $value }}</option>
+							@endforeach
+						</select>
 						<span class="input-group-addon">
 							@show_tooltip(__('tooltip.sale_location'))
 						</span>
