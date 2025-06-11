@@ -1986,9 +1986,9 @@ class SellPosController extends Controller
 
         //Check if subscribed or not, then check for users quota
         if (!$this->moduleUtil->isSubscribed($business_id)) {
-            return $this->moduleUtil->expiredResponse(action('HomeController@index'));
+            return $this->moduleUtil->expiredResponse(route('home.index'));
         } elseif (!$this->moduleUtil->isQuotaAvailable('invoices', $business_id)) {
-            return $this->moduleUtil->quotaExpiredResponse('invoices', $business_id, action('SellPosController@index'));
+            return $this->moduleUtil->quotaExpiredResponse('invoices', $business_id, route('pos.index'));
         }
 
         //Check if there is a open register, if no then redirect to Create Register screen.

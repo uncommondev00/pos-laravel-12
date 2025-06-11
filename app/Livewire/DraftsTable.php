@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class DraftsTable extends Component
 {
     use WithPagination;
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
     public $search = '';
     public $perPage = 10;

@@ -9,6 +9,7 @@ use App\Models\Barcode;
 class BarcodeTable extends Component
 {
     use WithPagination;
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
     public $search = '';
 

@@ -12,6 +12,8 @@ class InvoiceSchemesTable extends Component
     public $schemes = [];
     public $invoiceLayouts = [];
 
+    protected $listeners = ['refreshComponent' => '$refresh'];
+
     public function mount()
     {
         $businessId = Session::get('user.business_id');

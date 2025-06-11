@@ -66,7 +66,8 @@ $(document).ready(function() {
                 if (result.success == true) {
                     $('div.brands_modal').modal('hide');
                     toastr.success(result.msg);
-                    brands_table.ajax.reload();
+                    //brands_table.ajax.reload();
+                    Livewire.dispatchTo('brand-table', 'refreshComponent');
                 } else {
                     toastr.error(result.msg);
                 }
@@ -108,7 +109,8 @@ $(document).ready(function() {
                         if (result.success == true) {
                             $('div.brands_modal').modal('hide');
                             toastr.success(result.msg);
-                            brands_table.ajax.reload();
+                            //brands_table.ajax.reload();
+                            Livewire.dispatchTo('brand-table', 'refreshComponent');
                         } else {
                             toastr.error(result.msg);
                         }
@@ -119,33 +121,44 @@ $(document).ready(function() {
     });
 
     $(document).on('click', 'button.delete_brand_button', function() {
-        swal({
-            title: LANG.sure,
-            text: LANG.confirm_delete_brand,
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then(willDelete => {
-            if (willDelete) {
-                var href = $(this).data('href');
-                var data = $(this).serialize();
-
-                $.ajax({
-                    method: 'DELETE',
-                    url: href,
-                    dataType: 'json',
-                    data: data,
-                    success: function(result) {
-                        if (result.success == true) {
-                            toastr.success(result.msg);
-                            brands_table.ajax.reload();
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            }
-        });
+        Swal.fire({
+        title: LANG.sure,
+        text: LANG.confirm_delete_brand,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, remove it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-default'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) { // Check if the user clicked "Confirm"
+            var href = $(this).data('href');
+            var data = $(this).serialize();
+            $.ajax({
+                method: "DELETE",
+                url: href,
+                dataType: "json",
+                data: data,
+                success: function(result) {
+                    if (result.success == true) {
+                        toastr.success(result.msg);
+                        // Trigger Livewire table refresh
+                            //brands_table.ajax.reload();
+                        Livewire.dispatchTo('brand-table', 'refreshComponent');
+                    } else {
+                        toastr.error(result.msg);
+                    }
+                }
+            });
+        }
+        // No action needed for "Cancel" (result.isDismissed)
+    });
     });
 
     //Start: CRUD for tax Rate
@@ -220,34 +233,45 @@ $(document).ready(function() {
     });
 
     $(document).on('click', 'button.delete_tax_rate_button', function() {
-        swal({
-            title: LANG.sure,
-            text: LANG.confirm_delete_tax_rate,
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then(willDelete => {
-            if (willDelete) {
-                var href = $(this).data('href');
-                var data = $(this).serialize();
-
-                $.ajax({
-                    method: 'DELETE',
-                    url: href,
-                    dataType: 'json',
-                    data: data,
-                    success: function(result) {
-                        if (result.success == true) {
-                            toastr.success(result.msg);
-                            tax_rates_table.ajax.reload();
-                            tax_groups_table.ajax.reload();
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            }
-        });
+        Swal.fire({
+        title: LANG.sure,
+        text: LANG.confirm_delete_tax_rate,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, remove it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-default'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) { // Check if the user clicked "Confirm"
+            var href = $(this).data('href');
+            var data = $(this).serialize();
+            $.ajax({
+                method: "DELETE",
+                url: href,
+                dataType: "json",
+                data: data,
+                success: function(result) {
+                    if (result.success == true) {
+                        toastr.success(result.msg);
+                        // Trigger Livewire table refresh
+                            //tax_rates_table.ajax.reload();
+                            //tax_groups_table.ajax.reload();
+                        //Livewire.dispatchTo('category-table', 'refreshComponent');
+                    } else {
+                        toastr.error(result.msg);
+                    }
+                }
+            });
+        }
+        // No action needed for "Cancel" (result.isDismissed)
+    });
     });
 
     //End: CRUD for tax Rate
@@ -289,7 +313,8 @@ $(document).ready(function() {
                 if (result.success == true) {
                     $('div.unit_modal').modal('hide');
                     toastr.success(result.msg);
-                    units_table.ajax.reload();
+                    //units_table.ajax.reload();
+                    Livewire.dispatchTo('unit-table', 'refreshComponent');
                 } else {
                     toastr.error(result.msg);
                 }
@@ -317,7 +342,8 @@ $(document).ready(function() {
                         if (result.success == true) {
                             $('div.unit_modal').modal('hide');
                             toastr.success(result.msg);
-                            units_table.ajax.reload();
+                            //units_table.ajax.reload();
+                            Livewire.dispatchTo('unit-table', 'refreshComponent');
                         } else {
                             toastr.error(result.msg);
                         }
@@ -328,33 +354,44 @@ $(document).ready(function() {
     });
 
     $(document).on('click', 'button.delete_unit_button', function() {
-        swal({
-            title: LANG.sure,
-            text: LANG.confirm_delete_unit,
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then(willDelete => {
-            if (willDelete) {
-                var href = $(this).data('href');
-                var data = $(this).serialize();
-
-                $.ajax({
-                    method: 'DELETE',
-                    url: href,
-                    dataType: 'json',
-                    data: data,
-                    success: function(result) {
-                        if (result.success == true) {
-                            toastr.success(result.msg);
-                            units_table.ajax.reload();
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            }
-        });
+        Swal.fire({
+        title: LANG.sure,
+        text: LANG.confirm_delete_unit,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, remove it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-default'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) { // Check if the user clicked "Confirm"
+            var href = $(this).data('href');
+            var data = $(this).serialize();
+            $.ajax({
+                method: "DELETE",
+                url: href,
+                dataType: "json",
+                data: data,
+                success: function(result) {
+                    if (result.success == true) {
+                        toastr.success(result.msg);
+                        // Trigger Livewire table refresh
+                        Livewire.dispatchTo('unit-table', 'refreshComponent');
+                    } else {
+                        toastr.error(result.msg);
+                    }
+                }
+            });
+        }
+        // No action needed for "Cancel" (result.isDismissed)
+    });
+        
     });
 
     //Start: CRUD for Contacts
@@ -546,7 +583,8 @@ $(document).ready(function() {
                 if (result.success === true) {
                     $('div.category_modal').modal('hide');
                     toastr.success(result.msg);
-                    category_table.ajax.reload();
+                    //category_table.ajax.reload();
+                    Livewire.dispatchTo('category-table', 'refreshComponent');
                 } else {
                     toastr.error(result.msg);
                 }
@@ -573,7 +611,8 @@ $(document).ready(function() {
                         if (result.success === true) {
                             $('div.category_modal').modal('hide');
                             toastr.success(result.msg);
-                            category_table.ajax.reload();
+                            //category_table.ajax.reload();
+                            Livewire.dispatchTo('category-table', 'refreshComponent');
                         } else {
                             toastr.error(result.msg);
                         }
@@ -584,33 +623,44 @@ $(document).ready(function() {
     });
 
     $(document).on('click', 'button.delete_category_button', function() {
-        swal({
-            title: LANG.sure,
-            text: LANG.confirm_delete_category,
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then(willDelete => {
-            if (willDelete) {
-                var href = $(this).data('href');
-                var data = $(this).serialize();
-
-                $.ajax({
-                    method: 'DELETE',
-                    url: href,
-                    dataType: 'json',
-                    data: data,
-                    success: function(result) {
-                        if (result.success === true) {
-                            toastr.success(result.msg);
-                            category_table.ajax.reload();
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            }
-        });
+        Swal.fire({
+        title: LANG.sure,
+        text: LANG.confirm_delete_category,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, remove it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-default'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) { // Check if the user clicked "Confirm"
+            var href = $(this).data('href');
+            var data = $(this).serialize();
+            $.ajax({
+                method: "DELETE",
+                url: href,
+                dataType: "json",
+                data: data,
+                success: function(result) {
+                    if (result.success == true) {
+                        toastr.success(result.msg);
+                        // Trigger Livewire table refresh
+                        Livewire.dispatchTo('category-table', 'refreshComponent');
+                    } else {
+                        toastr.error(result.msg);
+                    }
+                }
+            });
+        }
+        // No action needed for "Cancel" (result.isDismissed)
+    });
+        
     });
     //End: CRUD for category
 
@@ -957,33 +1007,45 @@ $(document).ready(function() {
     });
 
     $(document).on('click', 'button.delete_tax_group_button', function() {
-        swal({
-            title: LANG.sure,
-            text: LANG.confirm_tax_group,
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then(willDelete => {
-            if (willDelete) {
-                var href = $(this).data('href');
-                var data = $(this).serialize();
+        Swal.fire({
+        title: LANG.sure,
+        text: LANG.confirm_tax_group,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, remove it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-default'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) { // Check if the user clicked "Confirm"
+            var href = $(this).data('href');
+            var data = $(this).serialize();
+            $.ajax({
+                method: "DELETE",
+                url: href,
+                dataType: "json",
+                data: data,
+                success: function(result) {
+                    if (result.success == true) {
+                        toastr.success(result.msg);
+                        // Trigger Livewire table refresh
+                        //tax_groups_table.ajax.reload();
+                        //Livewire.dispatchTo('category-table', 'refreshComponent');
+                    } else {
+                        toastr.error(result.msg);
+                    }
+                }
+            });
+        }
+        // No action needed for "Cancel" (result.isDismissed)
+    });
 
-                $.ajax({
-                    method: 'DELETE',
-                    url: href,
-                    dataType: 'json',
-                    data: data,
-                    success: function(result) {
-                        if (result.success == true) {
-                            toastr.success(result.msg);
-                            tax_groups_table.ajax.reload();
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            }
-        });
     });
 
     //option-div
@@ -1092,33 +1154,45 @@ $(document).ready(function() {
         show_invoice_preview();
     });
     $(document).on('click', 'button.delete_invoice_button', function() {
-        swal({
-            title: LANG.sure,
-            text: LANG.delete_invoice_confirm,
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then(willDelete => {
-            if (willDelete) {
-                var href = $(this).data('href');
-                var data = $(this).serialize();
-
-                $.ajax({
-                    method: 'DELETE',
-                    url: href,
-                    dataType: 'json',
-                    data: data,
-                    success: function(result) {
-                        if (result.success === true) {
-                            toastr.success(result.msg);
-                            invoice_table.ajax.reload();
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            }
-        });
+        Swal.fire({
+        title: LANG.sure,
+        text: LANG.delete_invoice_confirm,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, remove it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-default'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) { // Check if the user clicked "Confirm"
+            var href = $(this).data('href');
+            var data = $(this).serialize();
+            $.ajax({
+                method: "DELETE",
+                url: href,
+                dataType: "json",
+                data: data,
+                success: function(result) {
+                    if (result.success == true) {
+                        toastr.success(result.msg);
+                        // Trigger Livewire table refresh
+                        //invoice_table.ajax.reload();
+                        //Livewire.dispatchTo('category-table', 'refreshComponent');
+                    } else {
+                        toastr.error(result.msg);
+                    }
+                }
+            });
+        }
+        // No action needed for "Cancel" (result.isDismissed)
+    });
+        
     });
 
     $('#add_barcode_settings_form').validate();
@@ -1286,33 +1360,44 @@ $(document).ready(function() {
         });
     });
     $(document).on('click', 'button.delete_expense_category', function() {
-        swal({
-            title: LANG.sure,
-            text: LANG.confirm_delete_expense_category,
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then(willDelete => {
-            if (willDelete) {
-                var href = $(this).data('href');
-                var data = $(this).serialize();
-
-                $.ajax({
-                    method: 'DELETE',
-                    url: href,
-                    dataType: 'json',
-                    data: data,
-                    success: function(result) {
-                        if (result.success === true) {
-                            toastr.success(result.msg);
-                            expense_cat_table.ajax.reload();
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            }
-        });
+        Swal.fire({
+        title: LANG.sure,
+        text: LANG.confirm_delete_expense_category,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, remove it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-default'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) { // Check if the user clicked "Confirm"
+            var href = $(this).data('href');
+            var data = $(this).serialize();
+            $.ajax({
+                method: "DELETE",
+                url: href,
+                dataType: "json",
+                data: data,
+                success: function(result) {
+                    if (result.success == true) {
+                        toastr.success(result.msg);
+                        // Trigger Livewire table refresh
+                        //expense_cat_table.ajax.reload();
+                        //Livewire.dispatchTo('category-table', 'refreshComponent');
+                    } else {
+                        toastr.error(result.msg);
+                    }
+                }
+            });
+        }
+        // No action needed for "Cancel" (result.isDismissed)
+    });
     });
 
     //date filter for expense table
@@ -1407,33 +1492,44 @@ $(document).ready(function() {
 
     $(document).on('click', 'a.delete_expense', function(e) {
         e.preventDefault();
-        swal({
-            title: LANG.sure,
-            text: LANG.confirm_delete_expense,
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then(willDelete => {
-            if (willDelete) {
-                var href = $(this).data('href');
-                var data = $(this).serialize();
-
-                $.ajax({
-                    method: 'DELETE',
-                    url: href,
-                    dataType: 'json',
-                    data: data,
-                    success: function(result) {
-                        if (result.success === true) {
-                            toastr.success(result.msg);
-                            expense_table.ajax.reload();
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            }
-        });
+        Swal.fire({
+        title: LANG.sure,
+        text: LANG.confirm_delete_expense,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, remove it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-default'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) { // Check if the user clicked "Confirm"
+            var href = $(this).data('href');
+            var data = $(this).serialize();
+            $.ajax({
+                method: "DELETE",
+                url: href,
+                dataType: "json",
+                data: data,
+                success: function(result) {
+                    if (result.success == true) {
+                        toastr.success(result.msg);
+                        // Trigger Livewire table refresh
+                        //expense_table.ajax.reload();
+                        //Livewire.dispatchTo('category-table', 'refreshComponent');
+                    } else {
+                        toastr.error(result.msg);
+                    }
+                }
+            });
+        }
+        // No action needed for "Cancel" (result.isDismissed)
+    });
     });
 
     $(document).on('change', '.payment_types_dropdown', function() {
@@ -1824,36 +1920,52 @@ $(document).ready(function() {
     //Delete Sale
     $(document).on('click', '.delete-sale', function(e) {
         e.preventDefault();
-        swal({
-            title: LANG.sure,
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then(willDelete => {
-            if (willDelete) {
-                var href = $(this).attr('href');
-                $.ajax({
-                    method: 'DELETE',
-                    url: href,
-                    dataType: 'json',
-                    success: function(result) {
-                        if (result.success == true) {
-                            toastr.success(result.msg);
+        Swal.fire({
+        title: LANG.sure,
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, remove it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-default'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) { // Check if the user clicked "Confirm"
+            var href = $(this).attr('href');
+            var data = $(this).serialize();
+            $.ajax({
+                method: "DELETE",
+                url: href,
+                dataType: "json",
+                data: data,
+                success: function(result) {
+                    if (result.success == true) {
+                        toastr.success(result.msg);
+                        // Trigger Livewire table refresh
                             if (typeof sell_table !== 'undefined') {
-                                sell_table.ajax.reload();
+                                //sell_table.ajax.reload();
                             }
                             //Displays list of recent transactions
                             if (typeof get_recent_transactions !== 'undefined') {
                                 get_recent_transactions('final', $('div#tab_final'));
                                 get_recent_transactions('draft', $('div#tab_draft'));
                             }
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            }
-        });
+                        //Livewire.dispatchTo('category-table', 'refreshComponent');
+                    } else {
+                        toastr.error(result.msg);
+                    }
+                }
+            });
+        }
+        // No action needed for "Cancel" (result.isDismissed)
+    });
+
     });
 
     if ($('form#add_invoice_layout_form').length > 0) {
@@ -1967,31 +2079,43 @@ $(document).on('submit', 'form#discount_form', function(e) {
 });
 
 $(document).on('click', 'button.delete_discount_button', function() {
-    swal({
+    Swal.fire({
         title: LANG.sure,
+        text: "You won't be able to revert this!",
         icon: 'warning',
-        buttons: true,
-        dangerMode: true,
-    }).then(willDelete => {
-        if (willDelete) {
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, remove it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-default'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) { // Check if the user clicked "Confirm"
             var href = $(this).data('href');
             var data = $(this).serialize();
-
             $.ajax({
-                method: 'DELETE',
+                method: "DELETE",
                 url: href,
-                dataType: 'json',
+                dataType: "json",
                 data: data,
                 success: function(result) {
                     if (result.success == true) {
                         toastr.success(result.msg);
-                        discounts_table.ajax.reload();
+                        // Trigger Livewire table refresh
+                            discounts_table.ajax.reload();
+                        //Livewire.dispatchTo('category-table', 'refreshComponent');
                     } else {
                         toastr.error(result.msg);
                     }
-                },
+                }
             });
         }
+        // No action needed for "Cancel" (result.isDismissed)
     });
 });
 

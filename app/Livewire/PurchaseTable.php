@@ -6,6 +6,7 @@ use App\Models\BusinessLocation;
 use App\Models\Contact;
 use Livewire\Component;
 use App\Models\Transaction;
+use App\Traits\WithSortingSearchPagination;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -13,85 +14,41 @@ use App\Utils\ProductUtil;
 
 class PurchaseTable extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSortingSearchPagination;
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
-    public $search = '';
     public $location_id = '';
     public $supplier_id = '';
     public $order_status = '';
     public $payment_status = '';
     public $start_date = '';
     public $end_date = '';
-    public $perPage = 10;
-    public $perPageOptions = [10, 25, 50, 100, -1];
-    public $sortField = 'ref_no';
-    public $sortDirection = 'asc';
     
-    protected $paginationTheme = 'bootstrap';
-
     protected $productUtil;
-
-    protected $queryString = [
-        'location_id' => ['except' => ''],
-        'supplier_id' => ['except' => ''],
-        'payment_status' => ['except' => ''],
-        'start_date' => ['except' => ''],
-        'end_date' => ['except' => ''],
-        'search' => ['except' => ''],
-        'sortField' => ['except' => 'ref_no'],
-        'sortDirection' => ['except' => 'asc'],
-        'perPage' => ['except' => 10],
-    ];
 
     public function boot(ProductUtil $productUtil)
     {
         $this->productUtil = $productUtil;
-        
-        if (!auth()->user()->can('purchase.view') && !auth()->user()->can('purchase.create')) {
-            abort(403, 'Unauthorized action.');
-        }
     }
 
     public function mount()
     {
-
-        $this->search = request()->query('search', $this->search);
-        $this->location_id = request()->query('location_id', $this->location_id);
-        $this->supplier_id = request()->query('supplier_id', $this->supplier_id);
-        $this->order_status = request()->query('order_status', $this->order_status);
-        $this->payment_status = request()->query('payment_status', $this->payment_status);
-        $this->start_date = request()->query('start_date', $this->start_date);
-        $this->end_date = request()->query('end_date', $this->end_date);
-        $this->sortField = request()->query('sortField', $this->sortField);
-        $this->sortDirection = request()->query('sortDirection', $this->sortDirection);
-        $this->perPage = request()->query('perPage', $this->perPage);
-    }
-
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingPerPage()
-    {
-        $this->resetPage();
-    }
-
-    public function updatePerPage()
-    {
-        $this->resetPage();
-    }
-
-    public function sortBy($field)
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
+        if (!auth()->user()->can('purchase.view') && !auth()->user()->can('purchase.create')) {
+            abort(403, 'Unauthorized action.');
         }
-    }
+        
+        $this->sortField = 'transaction_date';
+        $this->mountWithSortingSearchPagination();
 
+        $this->filterConfig = [
+            'location_id' => '',
+            'supplier_id' => '',
+            'order_status' => '',
+            'payment_status' => '',
+            'start_date' => '',
+            'end_date' => ''
+        ];
+    }
 
     private function getBaseQuery()
     {
@@ -144,40 +101,41 @@ class PurchaseTable extends Component
 
     public function render()
     {
-        $cacheKey = $this->getCacheKey();
         $business_id = request()->session()->get('user.business_id');
+        
+        // Get the base query
+        $query = $this->getBaseQuery();
 
-        $purchases = Cache::remember($cacheKey, 300, function () {
-            $query = $this->getBaseQuery();
+        // Apply filters
+        $query->when($this->search, function ($query) {
+            $query->where(function ($q) {
+                $q->where('transactions.ref_no', 'like', '%' . $this->search . '%')
+                    ->orWhereHas('contact', function ($q) {
+                        $q->where('name', 'like', '%' . $this->search . '%');
+                    });
+            });
+        })
+        ->when($this->supplier_id, function ($query) {
+            $query->where('contact_id', $this->supplier_id);
+        })
+        ->when($this->location_id, function ($query) {
+            $query->where('location_id', $this->location_id);
+        })
+        ->when($this->payment_status, function ($query) {
+            $query->where('payment_status', $this->payment_status);
+        })
+        ->when($this->order_status, function ($query) {
+            $query->where('status', $this->order_status);
+        })
+        ->when($this->start_date && $this->end_date, function ($query) {
+            $query->whereDate('transaction_date', '>=', $this->start_date)
+                ->whereDate('transaction_date', '<=', $this->end_date);
+        })
+        ->orderBy($this->sortField, $this->sortDirection);
 
-            return $query->when($this->search, function ($query) {
-                $query->where(function ($q) {
-                    $q->where('transactions.ref_no', 'like', '%' . $this->search . '%')
-                        ->orWhereHas('contact', function ($q) {
-                            $q->where('name', 'like', '%' . $this->search . '%');
-                        });
-                });
-            })
-                ->when($this->supplier_id, function ($query) {
-                    $query->where('contact_id', $this->supplier_id);
-                })
-                ->when($this->location_id, function ($query) {
-                    $query->where('location_id', $this->location_id);
-                })
-                ->when($this->payment_status, function ($query) {
-                    $query->where('payment_status', $this->payment_status);
-                })
-                ->when($this->order_status, function ($query) {
-                    $query->where('status', $this->order_status);
-                })
-                ->when($this->start_date && $this->end_date, function ($query) {
-                    $query->whereDate('transaction_date', '>=', $this->start_date)
-                        ->whereDate('transaction_date', '<=', $this->end_date);
-                })
-                ->latest('transaction_date')
-                ->orderBy($this->sortField, $this->sortDirection)
-                ->paginate($this->perPage == -1 ? 9999 : $this->perPage);
-        });
+        // Paginate the results
+        $purchases = $query->paginate($this->perPage == -1 ? PHP_INT_MAX : $this->perPage);
+
         $business_locations = BusinessLocation::forDropdown($business_id);
         $suppliers = Contact::suppliersDropdown($business_id, false);
         $orderStatuses = $this->productUtil->orderStatuses();
@@ -188,24 +146,6 @@ class PurchaseTable extends Component
             'suppliers' => $suppliers,
             'orderStatuses' => $orderStatuses
         ]);
-    }
-
-    private function getCacheKey(): string
-    {
-        $user_id = auth()->id();
-        return sprintf(
-            'purchases_table_%s_%s_%s_%s_%s_%s_%s_%s_%s_%d',
-            $user_id,
-            $this->search,
-            $this->supplier_id ?? 'null',
-            $this->location_id ?? 'null',
-            $this->payment_status ?? 'null',
-            $this->order_status ?? 'null',
-            $this->start_date ?? 'null',
-            $this->end_date ?? 'null',
-            $this->page ?? 1,
-            $this->perPage
-        );
     }
 
     public function getPaymentDue($purchase)
@@ -224,86 +164,82 @@ class PurchaseTable extends Component
 
     public function getFooterTotals()
     {
-        $business_id = request()->session()->get('user.business_id');
+        $query = $this->getBaseQuery();
 
-        return Cache::remember('purchase_footer_totals_' . $this->getCacheKey(), 300, function () use ($business_id) {
-            $query = $this->getBaseQuery();
-
-            return $query->select([
-                DB::raw('COUNT(DISTINCT transactions.id) as total_count'),
-                DB::raw('SUM(transactions.final_total) as total_amount'),
-                DB::raw('SUM(
-                CASE 
-                    WHEN transactions.payment_status = "paid" THEN 1 
-                    ELSE 0 
-                END
-            ) as total_paid'),
-                DB::raw('SUM(
-                CASE 
-                    WHEN transactions.payment_status = "partial" THEN 1 
-                    ELSE 0 
-                END
-            ) as total_partial'),
-                DB::raw('SUM(
-                CASE 
-                    WHEN transactions.payment_status = "due" THEN 1 
-                    ELSE 0 
-                END
-            ) as total_due'),
-                DB::raw('SUM(
-                CASE 
-                    WHEN transactions.status = "received" THEN 1 
-                    ELSE 0 
-                END
-            ) as total_received'),
-                DB::raw('SUM(
-                CASE 
-                    WHEN transactions.status = "pending" THEN 1 
-                    ELSE 0 
-                END
-            ) as total_pending'),
-                DB::raw('SUM(
-                CASE 
-                    WHEN transactions.status = "ordered" THEN 1 
-                    ELSE 0 
-                END
-            ) as total_ordered'),
-                DB::raw('COALESCE(SUM(
-                transactions.final_total - COALESCE((
-                    SELECT SUM(amount) 
-                    FROM transaction_payments 
-                    WHERE transaction_id = transactions.id
+        return $query->select([
+            DB::raw('COUNT(DISTINCT transactions.id) as total_count'),
+            DB::raw('SUM(transactions.final_total) as total_amount'),
+            DB::raw('SUM(
+            CASE 
+                WHEN transactions.payment_status = "paid" THEN 1 
+                ELSE 0 
+            END
+        ) as total_paid'),
+            DB::raw('SUM(
+            CASE 
+                WHEN transactions.payment_status = "partial" THEN 1 
+                ELSE 0 
+            END
+        ) as total_partial'),
+            DB::raw('SUM(
+            CASE 
+                WHEN transactions.payment_status = "due" THEN 1 
+                ELSE 0 
+            END
+        ) as total_due'),
+            DB::raw('SUM(
+            CASE 
+                WHEN transactions.status = "received" THEN 1 
+                ELSE 0 
+            END
+        ) as total_received'),
+            DB::raw('SUM(
+            CASE 
+                WHEN transactions.status = "pending" THEN 1 
+                ELSE 0 
+            END
+        ) as total_pending'),
+            DB::raw('SUM(
+            CASE 
+                WHEN transactions.status = "ordered" THEN 1 
+                ELSE 0 
+            END
+        ) as total_ordered'),
+            DB::raw('COALESCE(SUM(
+            transactions.final_total - COALESCE((
+                SELECT SUM(amount) 
+                FROM transaction_payments 
+                WHERE transaction_id = transactions.id
+            ), 0)
+        ), 0) as total_due_amount'),
+            DB::raw('COALESCE(SUM(
+            CASE 
+                WHEN return_parent_id IS NOT NULL 
+                THEN final_total - COALESCE((
+                    SELECT SUM(tp.amount) 
+                    FROM transaction_payments as tp
+                    WHERE tp.transaction_id = transactions.id
                 ), 0)
-            ), 0) as total_due_amount'),
-                DB::raw('COALESCE(SUM(
-                CASE 
-                    WHEN return_parent_id IS NOT NULL 
-                    THEN final_total - COALESCE((
-                        SELECT SUM(tp.amount) 
-                        FROM transaction_payments as tp
-                        WHERE tp.transaction_id = transactions.id
-                    ), 0)
-                    ELSE 0 
-                END
-            ), 0) as total_return_due_amount')
-            ])
-                ->when($this->supplier_id, function ($query) {
-                    return $query->where('contact_id', $this->supplier_id);
-                })
-                ->when($this->location_id, function ($query) {
-                    return $query->where('location_id', $this->location_id);
-                })
-                ->when($this->payment_status, function ($query) {
-                    return $query->where('payment_status', $this->payment_status);
-                })
-                ->when($this->order_status, function ($query) {
-                    return $query->where('status', $this->order_status);
-                })
-                ->when($this->start_date && $this->end_date, function ($query) {
-                    return $query->whereDate('transaction_date', '>=', $this->start_date)
-                        ->whereDate('transaction_date', '<=', $this->end_date);
-                })
-                ->first();
-        });
+                ELSE 0 
+            END
+        ), 0) as total_return_due_amount')
+        ])
+            ->when($this->supplier_id, function ($query) {
+                return $query->where('contact_id', $this->supplier_id);
+            })
+            ->when($this->location_id, function ($query) {
+                return $query->where('location_id', $this->location_id);
+            })
+            ->when($this->payment_status, function ($query) {
+                return $query->where('payment_status', $this->payment_status);
+            })
+            ->when($this->order_status, function ($query) {
+                return $query->where('status', $this->order_status);
+            })
+            ->when($this->start_date && $this->end_date, function ($query) {
+                return $query->whereDate('transaction_date', '>=', $this->start_date)
+                    ->whereDate('transaction_date', '<=', $this->end_date);
+            })
+            ->first();
     }
 }

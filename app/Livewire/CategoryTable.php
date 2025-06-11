@@ -10,6 +10,7 @@ use App\Traits\WithSortingSearchPagination;
 class CategoryTable extends Component
 {
     use WithPagination,WithSortingSearchPagination;
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
     public function mount()
     {

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 class CashRegisterTable extends Component
 {
     use WithPagination;
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
     public $search = '';
     public $userId = null;
