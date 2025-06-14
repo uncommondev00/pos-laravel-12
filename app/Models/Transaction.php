@@ -12,7 +12,7 @@ class Transaction extends Model
      * @var array
      */
     protected $guarded = ['id'];
-    
+
     public function purchase_lines()
     {
         return $this->hasMany(PurchaseLine::class);
@@ -89,7 +89,7 @@ class Transaction extends Model
     public function getDocumentPathAttribute()
     {
         $path = !empty($this->document) ? asset('/uploads/documents/' . $this->document) : null;
-        
+
         return $path;
     }
 
@@ -98,7 +98,7 @@ class Transaction extends Model
      */
     public function getDocumentNameAttribute()
     {
-        $document_name = !empty(explode("_", $this->document, 2)[1]) ? explode("_", $this->document, 2)[1] : $this->document ;
+        $document_name = !empty(explode("_", $this->document, 2)[1]) ? explode("_", $this->document, 2)[1] : $this->document;
         return $document_name;
     }
 
