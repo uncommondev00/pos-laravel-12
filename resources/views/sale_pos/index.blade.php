@@ -31,20 +31,47 @@
 @section('javascript')
 @livewireScripts
 <script type="text/javascript">
+// Add this script to your layout file
+document.addEventListener('livewire:load', function() {
+    // Initialize date range picker
+    $('#sell_list_filter_date_range').daterangepicker(
+        {
+            locale: {
+                format: 'YYYY-MM-DD'
+            },
+            opens: 'left',
+            autoUpdateInput: false
+        },
+        function(start, end) {
+            alert(0)
+            // Update the input display
+            $(this).val(start.format('YYYY-MM-DD') + ' ~ ' + end.format('YYYY-MM-DD'));
+            
+            // Send dates to Livewire
+            Livewire.emit('dateRangeChanged', start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+        }
+    );
+
+    // Clear handler
+    $('#sell_list_filter_date_range').on('cancel.daterangepicker', function() {
+        $(this).val('');
+        Livewire.emit('dateRangeChanged', '', '');
+    });
+});
     $(document).ready(function() {
         //Date range as a button
         //Date range as a button
-        $('#sell_list_filter_date_range').daterangepicker(
-            dateRangeSettings,
-            function(start, end) {
-                $('#sell_list_filter_date_range').val(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
-                sell_table.ajax.reload();
-            }
-        );
-        $('#sell_list_filter_date_range').on('cancel.daterangepicker', function(ev, picker) {
-            $('#sell_list_filter_date_range').val('');
-            sell_table.ajax.reload();
-        });
+        // $('#sell_list_filter_date_range').daterangepicker(
+        //     dateRangeSettings,
+        //     function(start, end) {
+        //         $('#sell_list_filter_date_range').val(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
+        //         sell_table.ajax.reload();
+        //     }
+        // );
+        // $('#sell_list_filter_date_range').on('cancel.daterangepicker', function(ev, picker) {
+        //     $('#sell_list_filter_date_range').val('');
+        //     sell_table.ajax.reload();
+        // });
 
         sell_table = $('#sell_table').DataTable({
             processing: true,

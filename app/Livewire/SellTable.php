@@ -16,7 +16,7 @@ class SellTable extends Component
 {
     use WithPagination, WithSortingSearchPagination;
 
-    protected $listeners = ['refreshComponent' => '$refresh'];
+    protected $listeners = ['refreshComponent' => '$refresh', 'dateRangeChanged'];
 
     public $location_id = '';
     public $customer_id = '';
@@ -29,6 +29,16 @@ class SellTable extends Component
 
 
     protected $moduleUtil;
+
+    // Totals will be stored here
+    public $totals = [
+        'vatable' => 0,
+        'vat' => 0,
+        'vat_exempt' => 0,
+        'vat_zero_rated' => 0,
+        'final_total' => 0,
+        'total_paid' => 0
+    ];
 
     public function boot(ModuleUtil $moduleUtil)
     {
@@ -61,13 +71,21 @@ class SellTable extends Component
             'end_date' => ''
         ];
     }
+
+    public function dateRangeChanged($start, $end)
+    {
+        $this->start_date = $start;
+        $this->end_date = $end;
+        $this->resetPage();
+    }
+
     private function baseQuery()
     {
         $businessId = session('user.business_id');
         $permittedLocations = auth()->user()->permitted_locations();
 
         $query = Transaction::query()
-            ->with(['contact', 'return_parent'])
+            ->with('return_parent')
             ->select([
                 'transactions.id',
                 'transactions.transaction_date',
@@ -80,6 +98,8 @@ class SellTable extends Component
                 'transactions.discount_type',
                 'transactions.total_before_tax',
                 'transactions.is_suspend',
+                'contacts.name as customer_name',
+                'business_locations.name as business_location',
                 // DB::raw('(SELECT COUNT(*) FROM transactions as sr WHERE sr.return_parent_id = transactions.id) as return_exists'),
                 // DB::raw('(SELECT COALESCE(SUM(final_total), 0) FROM transactions as sr WHERE sr.return_parent_id = transactions.id) as amount_return'),
                 // DB::raw('(SELECT COUNT(1) FROM transactions sr WHERE sr.return_parent_id = transactions.id) as return_exists'),
@@ -90,7 +110,8 @@ class SellTable extends Component
                 'transactions.return_parent_id as return_transaction_id'
             ])
             ->leftJoin('transaction_payments as tp', 'transactions.id', '=', 'tp.transaction_id')
-            //->leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
+            ->leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
+            ->leftJoin('business_locations', 'transactions.location_id', '=', 'business_locations.id')
             ->where('transactions.business_id', $businessId)
             ->where('transactions.type', 'sell')
             ->where('transactions.status', 'final');
@@ -108,10 +129,7 @@ class SellTable extends Component
 
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('transactions.invoice_no', 'like', '%' . $this->search . '%')
-                    ->orWhereHas('contact', function ($q) {
-                        $q->where('name', 'like', '%' . $this->search . '%');
-                    });
+                $q->where('transactions.invoice_no', 'like', '%' . $this->search . '%');
             });
         }
 
@@ -127,14 +145,34 @@ class SellTable extends Component
             $query->where('transactions.contact_id', $this->customer_id);
         }
 
+        if ($this->start_date && $this->end_date) {
+             $query->whereBetween('transaction_date', [
+                    $this->start_date,
+                    $this->end_date
+                ]);
+        }
+
         return $query->orderBy($this->sortField, $this->sortDirection)
             ->latest('transactions.transaction_date')
-            ->take(50)
             ->paginate($this->perPage == -1 ? PHP_INT_MAX : $this->perPage);
+    }
+
+    public function calculateTotals($sales)
+    {
+        $this->totals = [
+            'vatable' => $sales->sum('vatable'),
+            'vat' => $sales->sum('vat'),
+            'vat_exempt' => $sales->sum('vat_exempt'),
+            'vat_zero_rated' => $sales->sum('vat_zero_rated'),
+            'final_total' => $sales->sum('final_total'),
+            'total_paid' => $sales->sum('total_paid')
+        ];
     }
 
     public function render()
     {
+        $this->calculateTotals($this->getSales());
+
         return view('livewire.sell-table', [
             'sales' => $this->getSales(),
             'business_locations' => $this->businessLocations,

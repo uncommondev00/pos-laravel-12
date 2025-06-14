@@ -275,8 +275,10 @@ ranges[LANG.last_month] = [
 ranges[LANG.this_financial_year] = [financial_year.start, financial_year.end];
 var dateRangeSettings = {
     ranges: ranges,
-    startDate: financial_year.start,
-    endDate: financial_year.end,
+    // startDate: financial_year.start,
+    // endDate: financial_year.end,
+    startDate: moment(),
+    endDate: moment(),
     locale: {
         cancelLabel: LANG.clear,
         applyLabel: LANG.apply,

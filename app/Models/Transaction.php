@@ -23,6 +23,34 @@ class Transaction extends Model
         return $this->hasMany(TransactionSellLine::class);
     }
 
+    public function getVatableAttribute()
+    {
+        return $this->sell_lines()
+            ->selectRaw('SUM(IF(tax_id >= 2, 0, unit_price*quantity)) as vatable')
+            ->value('vatable');
+    }
+
+    public function getVatAttribute()
+    {
+        return $this->sell_lines()
+            ->selectRaw('SUM(IF(tax_id > 1, 0, item_tax*quantity)) as vat')
+            ->value('vat');
+    }
+
+    public function getVatExemptAttribute()
+    {
+        return $this->sell_lines()
+            ->selectRaw('SUM(IF(tax_id != 2, 0, unit_price*quantity)) as vat_exempt')
+            ->value('vat_exempt');
+    }
+
+    public function getVatZeroRatedAttribute()
+    {
+        return $this->sell_lines()
+            ->selectRaw('SUM(IF(tax_id != 3, 0, unit_price*quantity)) as vat_zero_rated')
+            ->value('vat_zero_rated');
+    }
+
     public function contact()
     {
         return $this->belongsTo(Contact::class, 'contact_id');
