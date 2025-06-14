@@ -97,7 +97,7 @@
                                                 @if($sale->is_direct_sale == 0)
                                                     @can('sell.update')
                                                         <li>
-                                                            <a target="_blank" href="{{ route('sells.edit', [$sale->id]) }}">
+                                                            <a target="_blank" href="{{ route('pos.edit', [$sale->id]) }}">
                                                                 <i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')
                                                             </a>
                                                         </li>

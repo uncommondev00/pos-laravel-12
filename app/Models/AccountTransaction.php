@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class AccountTransaction extends Model
 {
@@ -58,7 +59,7 @@ class AccountTransaction extends Model
             'account_id' => $data['account_id'],
             'type' => $data['type'],
             'sub_type' => !empty($data['sub_type']) ? $data['sub_type'] : null,
-            'operation_date' => !empty($data['operation_date']) ? $data['operation_date'] : \Carbon::now(),
+            'operation_date' => !empty($data['operation_date']) ? $data['operation_date'] : Carbon::now(),
             'created_by' => $data['created_by'],
             'transaction_id' => !empty($data['transaction_id']) ? $data['transaction_id'] : null,
             'transaction_payment_id' => !empty($data['transaction_payment_id']) ? $data['transaction_payment_id'] : null,

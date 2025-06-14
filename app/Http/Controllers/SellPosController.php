@@ -1227,10 +1227,10 @@ class SellPosController extends Controller
 
                 Media::uploadMedia($business_id, $transaction, $request, 'documents');
 
-                activity()
-                    ->performedOn($transaction)
-                    ->withProperties($log_properties)
-                    ->log(__('edited'));
+                // activity()
+                //     ->performedOn($transaction)
+                //     ->withProperties($log_properties)
+                //     ->log(__('edited'));
 
                 DB::commit();
 
@@ -1254,7 +1254,7 @@ class SellPosController extends Controller
                         $receipt = '';
                     }
                 }
-
+                //$output = ['success' => 1, 'msg' => 'test', 'receipt' => 'test'];
                 $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt];
             } else {
                 $output = [
@@ -1278,22 +1278,25 @@ class SellPosController extends Controller
             if ($input['status'] == 'draft') {
                 if (isset($input['is_quotation']) && $input['is_quotation'] == 1) {
                     return redirect()
-                        ->action('SellController@getQuotations')
+                        ->route('sells.getQuotations')
                         ->with('status', $output);
                 } else {
                     return redirect()
-                        ->action('SellController@getDrafts')
+                        ->route('sells.getDrafts')
                         ->with('status', $output);
                 }
             } else {
                 if (!empty($transaction->sub_type) && $transaction->sub_type == 'repair') {
+                    // return redirect()
+                    //     ->action('\Modules\Repair\Http\Controllers\RepairController@index')
+                    //     ->with('status', $output);
                     return redirect()
-                        ->action('\Modules\Repair\Http\Controllers\RepairController@index')
-                        ->with('status', $output);
+                    ->route('sells.index')
+                    ->with('status', $output);
                 }
 
                 return redirect()
-                    ->action('SellController@index')
+                    ->route('sells.index')
                     ->with('status', $output);
             }
         }
