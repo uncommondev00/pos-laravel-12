@@ -31,33 +31,7 @@
 @section('javascript')
 @livewireScripts
 <script type="text/javascript">
-// Add this script to your layout file
-document.addEventListener('livewire:load', function() {
-    // Initialize date range picker
-    $('#sell_list_filter_date_range').daterangepicker(
-        {
-            locale: {
-                format: 'YYYY-MM-DD'
-            },
-            opens: 'left',
-            autoUpdateInput: false
-        },
-        function(start, end) {
-            alert(0)
-            // Update the input display
-            $(this).val(start.format('YYYY-MM-DD') + ' ~ ' + end.format('YYYY-MM-DD'));
-            
-            // Send dates to Livewire
-            Livewire.emit('dateRangeChanged', start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
-        }
-    );
 
-    // Clear handler
-    $('#sell_list_filter_date_range').on('cancel.daterangepicker', function() {
-        $(this).val('');
-        Livewire.emit('dateRangeChanged', '', '');
-    });
-});
     $(document).ready(function() {
         //Date range as a button
         //Date range as a button

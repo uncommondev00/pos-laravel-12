@@ -22,7 +22,12 @@
 @section('javascript')
 @livewireScripts
 <script type="text/javascript">
+document.addEventListener('livewire:load', function() {
+       
+        console.log('Datepicker initialized');
+    });
     $(document).ready(function() {
+        alert(2)
         //Date range as a button
         $('#sell_list_filter_date_range').daterangepicker(
             dateRangeSettings,
