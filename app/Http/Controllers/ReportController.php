@@ -1978,119 +1978,6 @@ class ReportController extends Controller
      * @return \Illuminate\Http\Response
      */
     // old query
-    // public function purchasePaymentReport(Request $request)
-    // {
-    //     if (!auth()->user()->can('purchase_n_sell_report.view')) {
-    //         abort(403, 'Unauthorized action.');
-    //     }
-
-    //     $business_id = $request->session()->get('user.business_id');
-    //     if ($request->ajax()) {
-    //         $supplier_id = $request->get('supplier_id', null);
-    //         $contact_filter1 = !empty($supplier_id) ? "AND t.contact_id=$supplier_id" : '';
-    //         $contact_filter2 = !empty($supplier_id) ? "AND transactions.contact_id=$supplier_id" : '';
-
-    //         $query = TransactionPayment::leftjoin('transactions as t', function ($join) use ($business_id) {
-    //             $join->on('transaction_payments.transaction_id', '=', 't.id')
-    //                 ->where('t.business_id', $business_id)
-    //                 ->whereIn('t.type', ['purchase', 'opening_balance']);
-    //         })
-    //             ->where('transaction_payments.business_id', $business_id)
-    //             ->where(function ($q) use ($business_id, $contact_filter1, $contact_filter2) {
-    //                 $q->whereRaw("(transaction_payments.transaction_id IS NOT NULL AND t.type IN ('purchase', 'opening_balance')  AND transaction_payments.parent_id IS NULL $contact_filter1)")
-    //                     ->orWhereRaw("EXISTS(SELECT * FROM transaction_payments as tp JOIN transactions ON tp.transaction_id = transactions.id WHERE transactions.type IN ('purchase', 'opening_balance') AND transactions.business_id = $business_id AND tp.parent_id=transaction_payments.id $contact_filter2)");
-    //             })
-
-    //             ->select(
-    //                 DB::raw("IF(transaction_payments.transaction_id IS NULL,
-    //                             (SELECT c.name FROM transactions as ts
-    //                             JOIN contacts as c ON ts.contact_id=c.id
-    //                             WHERE ts.id=(
-    //                                     SELECT tps.transaction_id FROM transaction_payments as tps
-    //                                     WHERE tps.parent_id=transaction_payments.id LIMIT 1
-    //                                 )
-    //                             ),
-    //                             (SELECT c.name FROM transactions as ts JOIN
-    //                                 contacts as c ON ts.contact_id=c.id
-    //                                 WHERE ts.id=t.id
-    //                             )
-    //                         ) as supplier"),
-    //                 'transaction_payments.amount',
-    //                 'method',
-    //                 'paid_on',
-    //                 'transaction_payments.payment_ref_no',
-    //                 'transaction_payments.document',
-    //                 't.ref_no',
-    //                 't.id as transaction_id',
-    //                 'cheque_number',
-    //                 'card_transaction_number',
-    //                 'bank_account_number',
-    //                 'transaction_no',
-    //                 'transaction_payments.id as DT_RowId'
-    //             )
-    //             ->groupBy('transaction_payments.id');
-
-    //         $start_date = $request->get('start_date');
-    //         $end_date = $request->get('end_date');
-    //         if (!empty($start_date) && !empty($end_date)) {
-    //             $query->whereBetween(DB::raw('date(paid_on)'), [$start_date, $end_date]);
-    //         }
-
-    //         $permitted_locations = auth()->user()->permitted_locations();
-    //         if ($permitted_locations != 'all') {
-    //             $query->whereIn('t.location_id', $permitted_locations);
-    //         }
-
-    //         $location_id = $request->get('location_id', null);
-    //         if (!empty($location_id)) {
-    //             $query->where('t.location_id', $location_id);
-    //         }
-
-    //         return Datatables::of($query)
-    //             ->editColumn('ref_no', function ($row) {
-    //                 if (!empty($row->ref_no)) {
-    //                     return '<a data-href="' . route('purchases.show', [$row->transaction_id])
-    //                         . '" href="#" data-container=".view_modal" class="btn-modal">' . $row->ref_no . '</a>';
-    //                 } else {
-    //                     return '';
-    //                 }
-    //             })
-
-    //             ->editColumn('paid_on', '@format_date($paid_on)')
-    //             ->editColumn('method', function ($row) {
-    //                 $method = __('lang_v1.' . $row->method);
-    //                 if ($row->method == 'cheque') {
-    //                     $method .= '<br>(' . __('lang_v1.cheque_no') . ': ' . $row->cheque_number . ')';
-    //                 } elseif ($row->method == 'card') {
-    //                     $method .= '<br>(' . __('lang_v1.card_transaction_no') . ': ' . $row->card_transaction_number . ')';
-    //                 } elseif ($row->method == 'bank_transfer') {
-    //                     $method .= '<br>(' . __('lang_v1.bank_account_no') . ': ' . $row->bank_account_number . ')';
-    //                 } elseif ($row->method == 'custom_pay_1') {
-    //                     $method = __('lang_v1.custom_payment_1') . '<br>(' . __('lang_v1.transaction_no') . ': ' . $row->transaction_no . ')';
-    //                 } elseif ($row->method == 'custom_pay_2') {
-    //                     $method = __('lang_v1.custom_payment_2') . '<br>(' . __('lang_v1.transaction_no') . ': ' . $row->transaction_no . ')';
-    //                 } elseif ($row->method == 'custom_pay_3') {
-    //                     $method = __('lang_v1.custom_payment_3') . '<br>(' . __('lang_v1.transaction_no') . ': ' . $row->transaction_no . ')';
-    //                 }
-    //                 return $method;
-    //             })
-    //             ->editColumn('amount', function ($row) {
-    //                 return '<span class="display_currency paid-amount" data-currency_symbol = true data-orig-value="' . $row->amount . '">' . $row->amount . '</span>';
-    //             })
-    //             ->addColumn('action', '<button type="button" class="btn btn-primary btn-xs view_payment" data-href="{{ route("payments.viewPayment", [$DT_RowId]) }}">@lang("messages.view")
-    //                 </button> @if(!empty($document))<a href="{{asset("/uploads/documents/" . $document)}}" class="btn btn-success btn-xs" download=""><i class="fa fa-download"></i> @lang("purchase.download_document")</a>@endif')
-    //             ->rawColumns(['ref_no', 'amount', 'method', 'action'])
-    //             ->make(true);
-    //     }
-    //     $business_locations = BusinessLocation::forDropdown($business_id);
-    //     $suppliers = Contact::suppliersDropdown($business_id, false);
-
-    //     return view('report.purchase_payment_report')
-    //         ->with(compact('business_locations', 'suppliers'));
-    // }
-
-
-    // optimize query
     public function purchasePaymentReport(Request $request)
     {
         if (!auth()->user()->can('purchase_n_sell_report.view')) {
@@ -2098,129 +1985,244 @@ class ReportController extends Controller
         }
 
         $business_id = $request->session()->get('user.business_id');
-
+        $supplier_id = $request->get('supplier_id', null);
         if ($request->ajax()) {
-            $supplier_id = $request->get('supplier_id');
+            $supplier_id = $request->get('supplier_id', null);
+            $contact_filter1 = !empty($supplier_id) ? "AND t.contact_id=$supplier_id" : '';
+            $contact_filter2 = !empty($supplier_id) ? "AND transactions.contact_id=$supplier_id" : '';
 
-            $query = TransactionPayment::from('transaction_payments')
-                ->leftJoin('transactions as t', function ($join) use ($business_id) {
-                    $join->on('transaction_payments.transaction_id', '=', 't.id')
-                        ->where('t.business_id', $business_id)
-                        ->whereIn('t.type', ['purchase', 'opening_balance']);
-                })
-                ->leftJoin('contacts as main_contact', 't.contact_id', '=', 'main_contact.id')
-                ->leftJoin('transaction_payments as tps', 'tps.parent_id', '=', 'transaction_payments.id')
-                ->leftJoin('transactions as parent_ts', function ($join) use ($business_id) {
-                    $join->on('tps.transaction_id', '=', 'parent_ts.id')
-                        ->where('parent_ts.business_id', $business_id)
-                        ->whereIn('parent_ts.type', ['purchase', 'opening_balance']);
-                })
-                ->leftJoin('contacts as parent_contact', 'parent_ts.contact_id', '=', 'parent_contact.id')
+            $query = TransactionPayment::leftjoin('transactions as t', function ($join) use ($business_id) {
+                $join->on('transaction_payments.transaction_id', '=', 't.id')
+                    ->where('t.business_id', $business_id)
+                    ->whereIn('t.type', ['purchase', 'opening_balance']);
+            })
                 ->where('transaction_payments.business_id', $business_id)
-                ->where(function ($q) use ($supplier_id) {
-                    $q->where(function ($q2) use ($supplier_id) {
-                        $q2->whereNotNull('transaction_payments.transaction_id')
-                            ->whereNull('transaction_payments.parent_id');
-                        if ($supplier_id) {
-                            $q2->where('t.contact_id', $supplier_id);
-                        }
-                    })
-                        ->orWhere(function ($q3) use ($supplier_id) {
-                            $q3->whereExists(function ($sub) use ($supplier_id) {
-                                $sub->select(DB::raw(1))
-                                    ->from('transaction_payments as tp2')
-                                    ->join('transactions as tr', 'tp2.transaction_id', '=', 'tr.id')
-                                    ->whereColumn('tp2.parent_id', 'transaction_payments.id')
-                                    ->whereIn('tr.type', ['purchase', 'opening_balance']);
-                                if ($supplier_id) {
-                                    $sub->where('tr.contact_id', $supplier_id);
-                                }
-                            });
-                        });
+                ->where(function ($q) use ($business_id, $contact_filter1, $contact_filter2) {
+                    $q->whereRaw("(transaction_payments.transaction_id IS NOT NULL AND t.type IN ('purchase', 'opening_balance')  AND transaction_payments.parent_id IS NULL $contact_filter1)")
+                        ->orWhereRaw("EXISTS(SELECT * FROM transaction_payments as tp JOIN transactions ON tp.transaction_id = transactions.id WHERE transactions.type IN ('purchase', 'opening_balance') AND transactions.business_id = $business_id AND tp.parent_id=transaction_payments.id $contact_filter2)");
                 })
-                ->select([
-                    DB::raw('COALESCE(main_contact.name, parent_contact.name) as supplier'),
+
+                ->select(
+                    DB::raw("IF(transaction_payments.transaction_id IS NULL,
+                                (SELECT c.name FROM transactions as ts
+                                JOIN contacts as c ON ts.contact_id=c.id
+                                WHERE ts.id=(
+                                        SELECT tps.transaction_id FROM transaction_payments as tps
+                                        WHERE tps.parent_id=transaction_payments.id LIMIT 1
+                                    )
+                                ),
+                                (SELECT c.name FROM transactions as ts JOIN
+                                    contacts as c ON ts.contact_id=c.id
+                                    WHERE ts.id=t.id
+                                )
+                            ) as supplier"),
                     'transaction_payments.amount',
-                    'transaction_payments.method',
-                    'transaction_payments.paid_on',
+                    'method',
+                    'paid_on',
                     'transaction_payments.payment_ref_no',
                     'transaction_payments.document',
                     't.ref_no',
                     't.id as transaction_id',
-                    'transaction_payments.cheque_number',
-                    'transaction_payments.card_transaction_number',
-                    'transaction_payments.bank_account_number',
-                    'transaction_payments.transaction_no',
-                    'transaction_payments.id as DT_RowId',
-                ])
+                    'cheque_number',
+                    'card_transaction_number',
+                    'bank_account_number',
+                    'transaction_no',
+                    'transaction_payments.id as DT_RowId'
+                )
                 ->groupBy('transaction_payments.id');
 
-            if ($start = $request->get('start_date')) {
-                if ($end = $request->get('end_date')) {
-                    $query->whereBetween(DB::raw('date(transaction_payments.paid_on)'), [$start, $end]);
-                }
+            $start_date = $request->get('start_date');
+            $end_date = $request->get('end_date');
+            if (!empty($start_date) && !empty($end_date)) {
+                $query->whereBetween(DB::raw('date(paid_on)'), [$start_date, $end_date]);
             }
 
-            $permitted = auth()->user()->permitted_locations();
-            if ($permitted !== 'all') {
-                $query->whereIn('t.location_id', $permitted);
+            $permitted_locations = auth()->user()->permitted_locations();
+            if ($permitted_locations != 'all') {
+                $query->whereIn('t.location_id', $permitted_locations);
             }
 
-            if ($loc = $request->get('location_id')) {
-                $query->where('t.location_id', $loc);
+            $location_id = $request->get('location_id', null);
+            if (!empty($location_id)) {
+                $query->where('t.location_id', $location_id);
             }
 
             return Datatables::of($query)
                 ->editColumn('ref_no', function ($row) {
-                    return $row->ref_no
-                        ? '<a data-href="' . route('purchases.show', $row->transaction_id) . '" href="#" data-container=".view_modal" class="btn-modal">'
-                        . $row->ref_no . '</a>'
-                        : '';
+                    if (!empty($row->ref_no)) {
+                        return '<a data-href="' . route('purchases.show', [$row->transaction_id])
+                            . '" href="#" data-container=".view_modal" class="btn-modal">' . $row->ref_no . '</a>';
+                    } else {
+                        return '';
+                    }
                 })
+
                 ->editColumn('paid_on', '@format_date($paid_on)')
                 ->editColumn('method', function ($row) {
-                    $m = __('lang_v1.' . $row->method);
-                    switch ($row->method) {
-                        case 'cheque':
-                            $m .= '<br>(' . __('lang_v1.cheque_no') . ': ' . $row->cheque_number . ')';
-                            break;
-                        case 'card':
-                            $m .= '<br>(' . __('lang_v1.card_transaction_no') . ': ' . $row->card_transaction_number . ')';
-                            break;
-                        case 'bank_transfer':
-                            $m .= '<br>(' . __('lang_v1.bank_account_no') . ': ' . $row->bank_account_number . ')';
-                            break;
-                        case 'custom_pay_1':
-                        case 'custom_pay_2':
-                        case 'custom_pay_3':
-                            $m = __('lang_v1.' . $row->method) . '<br>(' . __('lang_v1.transaction_no') . ': ' . $row->transaction_no . ')';
-                            break;
+                    $method = __('lang_v1.' . $row->method);
+                    if ($row->method == 'cheque') {
+                        $method .= '<br>(' . __('lang_v1.cheque_no') . ': ' . $row->cheque_number . ')';
+                    } elseif ($row->method == 'card') {
+                        $method .= '<br>(' . __('lang_v1.card_transaction_no') . ': ' . $row->card_transaction_number . ')';
+                    } elseif ($row->method == 'bank_transfer') {
+                        $method .= '<br>(' . __('lang_v1.bank_account_no') . ': ' . $row->bank_account_number . ')';
+                    } elseif ($row->method == 'custom_pay_1') {
+                        $method = __('lang_v1.custom_payment_1') . '<br>(' . __('lang_v1.transaction_no') . ': ' . $row->transaction_no . ')';
+                    } elseif ($row->method == 'custom_pay_2') {
+                        $method = __('lang_v1.custom_payment_2') . '<br>(' . __('lang_v1.transaction_no') . ': ' . $row->transaction_no . ')';
+                    } elseif ($row->method == 'custom_pay_3') {
+                        $method = __('lang_v1.custom_payment_3') . '<br>(' . __('lang_v1.transaction_no') . ': ' . $row->transaction_no . ')';
                     }
-                    return $m;
+                    return $method;
                 })
                 ->editColumn('amount', function ($row) {
-                    return '<span class="display_currency paid-amount" data-currency_symbol=true data-orig-value="' . $row->amount . '">'
-                        . $row->amount . '</span>';
+                    return '<span class="display_currency paid-amount" data-currency_symbol = true data-orig-value="' . $row->amount . '">' . $row->amount . '</span>';
                 })
-                ->addColumn('action', function ($row) {
-                    $btn = '<button type="button" class="btn btn-primary btn-xs view_payment" data-href="'
-                        . route('payments.viewPayment', [$row->DT_RowId]) . '">'
-                        . __('messages.view') . '</button>';
-                    if (!empty($row->document)) {
-                        $btn .= ' <a href="' . asset('/uploads/documents/' . $row->document) . '" class="btn btn-success btn-xs" download><i class="fa fa-download"></i> '
-                            . __('purchase.download_document') . '</a>';
-                    }
-                    return $btn;
-                })
+                ->addColumn('action', '<button type="button" class="btn btn-primary btn-xs view_payment" data-href="{{ route("payments.viewPayment", [$DT_RowId]) }}">@lang("messages.view")
+                    </button> @if(!empty($document))<a href="{{asset("/uploads/documents/" . $document)}}" class="btn btn-success btn-xs" download=""><i class="fa fa-download"></i> @lang("purchase.download_document")</a>@endif')
                 ->rawColumns(['ref_no', 'amount', 'method', 'action'])
                 ->make(true);
         }
-
         $business_locations = BusinessLocation::forDropdown($business_id);
         $suppliers = Contact::suppliersDropdown($business_id, false);
 
-        return view('report.purchase_payment_report', compact('business_locations', 'suppliers'));
+        return view('report.purchase_payment_report')
+            ->with(compact('business_locations', 'suppliers'));
     }
+
+
+    // optimize query
+    // public function purchasePaymentReport(Request $request)
+    // {
+    //     if (!auth()->user()->can('purchase_n_sell_report.view')) {
+    //         abort(403, 'Unauthorized action.');
+    //     }
+
+    //     $business_id = $request->session()->get('user.business_id');
+
+    //     if ($request->ajax()) {
+    //         $supplier_id = $request->get('supplier_id');
+
+    //         $query = TransactionPayment::from('transaction_payments')
+    //             ->leftJoin('transactions as t', function ($join) use ($business_id) {
+    //                 $join->on('transaction_payments.transaction_id', '=', 't.id')
+    //                     ->where('t.business_id', $business_id)
+    //                     ->whereIn('t.type', ['purchase', 'opening_balance']);
+    //             })
+    //             ->leftJoin('contacts as main_contact', 't.contact_id', '=', 'main_contact.id')
+    //             ->leftJoin('transaction_payments as tps', 'tps.parent_id', '=', 'transaction_payments.id')
+    //             ->leftJoin('transactions as parent_ts', function ($join) use ($business_id) {
+    //                 $join->on('tps.transaction_id', '=', 'parent_ts.id')
+    //                     ->where('parent_ts.business_id', $business_id)
+    //                     ->whereIn('parent_ts.type', ['purchase', 'opening_balance']);
+    //             })
+    //             ->leftJoin('contacts as parent_contact', 'parent_ts.contact_id', '=', 'parent_contact.id')
+    //             ->where('transaction_payments.business_id', $business_id)
+    //             ->where(function ($q) use ($supplier_id) {
+    //                 $q->where(function ($q2) use ($supplier_id) {
+    //                     $q2->whereNotNull('transaction_payments.transaction_id')
+    //                         ->whereNull('transaction_payments.parent_id');
+    //                     if ($supplier_id) {
+    //                         $q2->where('t.contact_id', $supplier_id);
+    //                     }
+    //                 })
+    //                     ->orWhere(function ($q3) use ($supplier_id) {
+    //                         $q3->whereExists(function ($sub) use ($supplier_id) {
+    //                             $sub->select(DB::raw(1))
+    //                                 ->from('transaction_payments as tp2')
+    //                                 ->join('transactions as tr', 'tp2.transaction_id', '=', 'tr.id')
+    //                                 ->whereColumn('tp2.parent_id', 'transaction_payments.id')
+    //                                 ->whereIn('tr.type', ['purchase', 'opening_balance']);
+    //                             if ($supplier_id) {
+    //                                 $sub->where('tr.contact_id', $supplier_id);
+    //                             }
+    //                         });
+    //                     });
+    //             })
+    //             ->select([
+    //                 DB::raw('COALESCE(main_contact.name, parent_contact.name) as supplier'),
+    //                 'transaction_payments.amount',
+    //                 'transaction_payments.method',
+    //                 'transaction_payments.paid_on',
+    //                 'transaction_payments.payment_ref_no',
+    //                 'transaction_payments.document',
+    //                 DB::raw('COALESCE(t.ref_no, parent_ts.ref_no) as ref_no'),
+    //                 DB::raw('COALESCE(t.id, parent_ts.id) as transaction_id'),
+    //                 'transaction_payments.cheque_number',
+    //                 'transaction_payments.card_transaction_number',
+    //                 'transaction_payments.bank_account_number',
+    //                 'transaction_payments.transaction_no',
+    //                 'transaction_payments.id as DT_RowId',
+    //             ])
+    //             ->groupBy('transaction_payments.id');
+
+    //         if ($start = $request->get('start_date')) {
+    //             if ($end = $request->get('end_date')) {
+    //                 $query->whereBetween(DB::raw('date(transaction_payments.paid_on)'), [$start, $end]);
+    //             }
+    //         }
+
+
+    //         $permitted = auth()->user()->permitted_locations();
+    //         if ($permitted !== 'all') {
+    //             $query->whereIn('t.location_id', $permitted);
+    //         }
+
+    //         if ($loc = $request->get('location_id')) {
+    //             $query->where('t.location_id', $loc);
+    //         }
+
+    //         return Datatables::of($query)
+    //             ->editColumn('ref_no', function ($row) {
+    //                 return $row->ref_no
+    //                     ? '<a data-href="' . route('purchases.show', $row->transaction_id) . '" href="#" data-container=".view_modal" class="btn-modal">'
+    //                     . $row->ref_no . '</a>'
+    //                     : '';
+    //             })
+    //             ->editColumn('paid_on', '@format_date($paid_on)')
+    //             ->editColumn('method', function ($row) {
+    //                 $m = __('lang_v1.' . $row->method);
+    //                 switch ($row->method) {
+    //                     case 'cheque':
+    //                         $m .= '<br>(' . __('lang_v1.cheque_no') . ': ' . $row->cheque_number . ')';
+    //                         break;
+    //                     case 'card':
+    //                         $m .= '<br>(' . __('lang_v1.card_transaction_no') . ': ' . $row->card_transaction_number . ')';
+    //                         break;
+    //                     case 'bank_transfer':
+    //                         $m .= '<br>(' . __('lang_v1.bank_account_no') . ': ' . $row->bank_account_number . ')';
+    //                         break;
+    //                     case 'custom_pay_1':
+    //                     case 'custom_pay_2':
+    //                     case 'custom_pay_3':
+    //                         $m = __('lang_v1.' . $row->method) . '<br>(' . __('lang_v1.transaction_no') . ': ' . $row->transaction_no . ')';
+    //                         break;
+    //                 }
+    //                 return $m;
+    //             })
+    //             ->editColumn('amount', function ($row) {
+    //                 return '<span class="display_currency paid-amount" data-currency_symbol=true data-orig-value="' . $row->amount . '">'
+    //                     . $row->amount . '</span>';
+    //             })
+    //             ->addColumn('action', function ($row) {
+    //                 $btn = '<button type="button" class="btn btn-primary btn-xs view_payment" data-href="'
+    //                     . route('payments.viewPayment', [$row->DT_RowId]) . '">'
+    //                     . __('messages.view') . '</button>';
+    //                 if (!empty($row->document)) {
+    //                     $btn .= ' <a href="' . asset('/uploads/documents/' . $row->document) . '" class="btn btn-success btn-xs" download><i class="fa fa-download"></i> '
+    //                         . __('purchase.download_document') . '</a>';
+    //                 }
+    //                 return $btn;
+    //             })
+    //             ->rawColumns(['ref_no', 'amount', 'method', 'action'])
+    //             ->make(true);
+    //     }
+
+    //     $business_locations = BusinessLocation::forDropdown($business_id);
+    //     $suppliers = Contact::suppliersDropdown($business_id, false);
+
+    //     return view('report.purchase_payment_report', compact('business_locations', 'suppliers'));
+    // }
 
 
     /**

@@ -167,13 +167,23 @@ $(document).ready(function() {
     });
 
     $(document).on('click', 'button.delete_stock_adjustment', function() {
-        swal({
+        Swal.fire({
             title: LANG.sure,
+            text: LANG.confirm_delete_expense_category,
             icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then(willDelete => {
-            if (willDelete) {
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, remove it!',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+            focusCancel: true,
+            customClass: {
+                confirmButton: 'btn btn-danger',
+                cancelButton: 'btn btn-default'
+            }
+        }).then(result => {
+            if (result.isConfirmed) {
                 var href = $(this).data('href');
                 $.ajax({
                     method: 'DELETE',

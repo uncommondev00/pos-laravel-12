@@ -391,7 +391,7 @@ $(document).ready(function() {
         }
         // No action needed for "Cancel" (result.isDismissed)
     });
-        
+
     });
 
     //Start: CRUD for Contacts
@@ -550,7 +550,7 @@ $(document).ready(function() {
         }
         // No action needed for "Cancel" (result.isDismissed)
     });
-        
+
     });
 
     //Start: CRUD for category
@@ -660,7 +660,7 @@ $(document).ready(function() {
         }
         // No action needed for "Cancel" (result.isDismissed)
     });
-        
+
     });
     //End: CRUD for category
 
@@ -1192,7 +1192,7 @@ $(document).ready(function() {
         }
         // No action needed for "Cancel" (result.isDismissed)
     });
-        
+
     });
 
     $('#add_barcode_settings_form').validate();
@@ -1388,7 +1388,7 @@ $(document).ready(function() {
                     if (result.success == true) {
                         toastr.success(result.msg);
                         // Trigger Livewire table refresh
-                        //expense_cat_table.ajax.reload();
+                        expense_cat_table.ajax.reload(); //bro don't touch it its working
                         //Livewire.dispatchTo('category-table', 'refreshComponent');
                     } else {
                         toastr.error(result.msg);

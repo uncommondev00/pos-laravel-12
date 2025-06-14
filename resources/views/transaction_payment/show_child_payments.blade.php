@@ -11,7 +11,7 @@
   @forelse ($child_payments as $payment)
   <tr>
     <td>{{ $payment->payment_ref_no }}</td>
-    <td>{{ @format_date($payment->paid_on) }}</td>
+    <td>@format_date($payment->paid_on)</td>
     <td><span class="display_currency" data-currency_symbol="true">{{ $payment->amount }}</span></td>
     <td>{{$payment->transaction->contact->name}}</td>
     <td>{{ $payment_types[$payment->method] }}</td>

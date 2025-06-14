@@ -3,15 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\BusinessLocation;
 use App\Models\Transaction;
 use App\Models\TransactionSellLinesPurchaseLines;
 use App\Models\PurchaseLine;
-
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use App\Utils\ModuleUtil;
+use Carbon\Carbon;
 use Yajra\DataTables\DataTables;
 
 use DB;
@@ -86,15 +85,15 @@ class StockTransferController extends Controller
                 ->addColumn('action', function ($row) use ($edit_days) {
                     $html = '<button type="button" title="' . __("stock_adjustment.view_details") . '" class="btn btn-primary btn-xs view_stock_transfer"><i class="fa fa-eye-slash" aria-hidden="true"></i></button>';
 
-                    $html .= ' <a href="#" class="print-invoice btn btn-info btn-xs" data-href="' . action('StockTransferController@printInvoice', [$row->id]) . '"><i class="fa fa-print" aria-hidden="true"></i> ' . __("messages.print") . '</a>';
+                    $html .= ' <a href="#" class="print-invoice btn btn-info btn-xs" data-href="' . route('stock-transfers.printInvoice', [$row->id]) . '"><i class="fa fa-print" aria-hidden="true"></i> ' . __("messages.print") . '</a>';
 
-                    $date = \Carbon::parse($row->transaction_date)
+                    $date = Carbon::parse($row->transaction_date)
                         ->addDays($edit_days);
                     $today = today();
 
                     if ($date->gte($today)) {
                         $html .= '&nbsp;
-                        <button type="button" data-href="' . action("StockTransferController@destroy", [$row->id]) . '" class="btn btn-danger btn-xs delete_stock_transfer"><i class="fa fa-trash" aria-hidden="true"></i> ' . __("messages.delete") . '</button>';
+                        <button type="button" data-href="' . route("stock-transfers.destroy", [$row->id]) . '" class="btn btn-danger btn-xs delete_stock_transfer"><i class="fa fa-trash" aria-hidden="true"></i> ' . __("messages.delete") . '</button>';
                     }
 
                     return $html;
@@ -300,6 +299,7 @@ class StockTransferController extends Controller
      */
     public function show($id)
     {
+
         if (!auth()->user()->can('purchase.view')) {
             abort(403, 'Unauthorized action.');
         }
