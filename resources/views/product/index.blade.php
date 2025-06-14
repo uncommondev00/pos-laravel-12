@@ -45,13 +45,22 @@
 
         $('table#product_table tbody').on('click', 'a.delete-product', function(e) {
             e.preventDefault();
-            swal({
+            Swal.fire({
                 title: LANG.sure,
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, remove it!',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+                focusCancel: true,
+                customClass: {
+                    confirmButton: 'btn btn-danger',
+                    cancelButton: 'btn btn-default'
+                }
             }).then((willDelete) => {
-                if (willDelete) {
+                if (willDelete.isConfirmed) {
                     var href = $(this).attr('href');
                     $.ajax({
                         method: "DELETE",
@@ -80,13 +89,22 @@
 
             if (selected_rows.length > 0) {
                 $('input#selected_rows').val(selected_rows);
-                swal({
+                Swal.fire({
                     title: LANG.sure,
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, remove it!',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true,
+                    focusCancel: true,
+                    customClass: {
+                        confirmButton: 'btn btn-danger',
+                        cancelButton: 'btn btn-default'
+                    }
                 }).then((willDelete) => {
-                    if (willDelete) {
+                    if (willDelete.isConfirmed) {
                         $('form#mass_delete_form').submit();
                     }
                 });
@@ -106,13 +124,22 @@
 
             if (selected_rows.length > 0) {
                 $('input#selected_products').val(selected_rows);
-                swal({
+                Swal.fire({
                     title: LANG.sure,
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, deactivate it!',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true,
+                    focusCancel: true,
+                    customClass: {
+                        confirmButton: 'btn btn-danger',
+                        cancelButton: 'btn btn-default'
+                    }
                 }).then((willDelete) => {
-                    if (willDelete) {
+                    if (willDelete.isConfirmed) {
                         $('form#mass_deactivate_form').submit();
                     }
                 });
@@ -132,7 +159,7 @@
                 success: function(result) {
                     if (result.success == true) {
                         toastr.success(result.msg);
-                        product_table.ajax.reload();
+                        Livewire.dispatchTo('products-table', 'refreshComponent');
                     } else {
                         toastr.error(result.msg);
                     }

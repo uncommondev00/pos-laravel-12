@@ -201,26 +201,18 @@
     </div><!--End Invoice Mid-->
   </div>
 
-  <!-- <iframe id="xtextfile" src="{{ route('reports.xreading_print') }}" style="display: none;"></iframe> -->
 </body>
 
 </html>
 
 <script type="text/javascript">
-  function printElem() {
-    var content = document.getElementById('invoicePOS').innerHTML;
-    var mywindow = window.open('', 'Print', 'height=600,width=800');
+  window.onload = function() {
 
-    mywindow.document.write('<html><head><title>Print</title>');
-    mywindow.document.write('</head><body >');
-    mywindow.document.write(content);
-    mywindow.document.write('</body></html>');
+    window.print();
 
-    mywindow.document.close();
-    mywindow.focus()
-    mywindow.print();
-    mywindow.close();
-    var routeUrl = "<?php echo url('home'); ?>"
-    document.location.href = routeUrl;
-  }
+    window.onafterprint = function() {
+      var routeUrl = "<?php echo url('home'); ?>"
+      document.location.href = routeUrl;
+    };
+  };
 </script>

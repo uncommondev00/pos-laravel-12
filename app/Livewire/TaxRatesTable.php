@@ -9,6 +9,7 @@ use App\Models\TaxRate;
 class TaxRatesTable extends Component
 {
     use WithPagination;
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
     public $search = '';
 

@@ -14,7 +14,7 @@
 
 <!-- Main content -->
 <section class="content">
-  <form action="{{ route('barcode.update', $barcode->id) }}" method="POST" id="add_barcode_settings_form">
+  <form action="{{ route('barcodes.update', $barcode->id) }}" method="POST" id="add_barcode_settings_form">
     @csrf
     @method('PUT')
     <div class="box box-solid">

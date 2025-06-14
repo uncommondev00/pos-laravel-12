@@ -193,7 +193,10 @@ $(document).ready(function() {
                 if (result.success == true) {
                     $('div.tax_rate_modal').modal('hide');
                     toastr.success(result.msg);
-                    tax_rates_table.ajax.reload();
+                    Livewire.dispatchTo('tax-rates-table', 'refreshComponent');
+
+
+                    // tax_rates_table.ajax.reload();
                 } else {
                     toastr.error(result.msg);
                 }
@@ -221,8 +224,10 @@ $(document).ready(function() {
                         if (result.success == true) {
                             $('div.tax_rate_modal').modal('hide');
                             toastr.success(result.msg);
-                            tax_rates_table.ajax.reload();
-                            tax_groups_table.ajax.reload();
+                            // window.location.reload();
+                            Livewire.dispatchTo('tax-rates-table', 'refreshComponent');
+                            // tax_rates_table.ajax.reload();
+                            // tax_groups_table.ajax.reload();
                         } else {
                             toastr.error(result.msg);
                         }
@@ -263,7 +268,7 @@ $(document).ready(function() {
                         // Trigger Livewire table refresh
                             //tax_rates_table.ajax.reload();
                             //tax_groups_table.ajax.reload();
-                        //Livewire.dispatchTo('category-table', 'refreshComponent');
+                        Livewire.dispatchTo('tax-rates-table', 'refreshComponent');
                     } else {
                         toastr.error(result.msg);
                     }
@@ -998,7 +1003,9 @@ $(document).ready(function() {
                 if (result.success == true) {
                     $('div.tax_group_modal').modal('hide');
                     toastr.success(result.msg);
-                    tax_groups_table.ajax.reload();
+                    // tax_groups_table.ajax.reload();
+                    Livewire.dispatchTo('tax-rates-table', 'refreshComponent');
+
                 } else {
                     toastr.error(result.msg);
                 }
@@ -1034,6 +1041,8 @@ $(document).ready(function() {
                 success: function(result) {
                     if (result.success == true) {
                         toastr.success(result.msg);
+                     Livewire.dispatchTo('tax-rates-table', 'refreshComponent');
+
                         // Trigger Livewire table refresh
                         //tax_groups_table.ajax.reload();
                         //Livewire.dispatchTo('category-table', 'refreshComponent');
@@ -1182,7 +1191,7 @@ $(document).ready(function() {
                     if (result.success == true) {
                         toastr.success(result.msg);
                         // Trigger Livewire table refresh
-                        //invoice_table.ajax.reload();
+                        invoice_table.ajax.reload();
                         //Livewire.dispatchTo('category-table', 'refreshComponent');
                     } else {
                         toastr.error(result.msg);
