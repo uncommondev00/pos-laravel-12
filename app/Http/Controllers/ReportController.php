@@ -2929,10 +2929,8 @@ class ReportController extends Controller
 
             return Datatables::of($xread)
                 ->addColumn(
-
                     'action',
                     '<a href="xreading_print/{{$id}}" class="btn btn-primary btn-xs"><i class=""></i>Print</a>'
-
                 )
                 ->removeColumn('id')
                 ->editColumn('date', '{{$date}}')

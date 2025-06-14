@@ -60,14 +60,23 @@
             }]
         });
         $(document).on('click', 'button.delete_printer_button', function() {
-            swal({
+            Swal.fire({
                 title: LANG.sure,
                 text: LANG.confirm_delete_printer,
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, remove it!',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+                focusCancel: true,
+                customClass: {
+                    confirmButton: 'btn btn-danger',
+                    cancelButton: 'btn btn-default'
+                }
             }).then((willDelete) => {
-                if (willDelete) {
+                if (willDelete.isConfirmed) {
                     var href = $(this).data('href');
                     var data = $(this).serialize();
 

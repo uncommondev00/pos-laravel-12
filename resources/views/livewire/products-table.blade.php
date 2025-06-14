@@ -119,7 +119,12 @@
                                         alt="Product Image" class="product-thumbnail">
                                     @endif
                                 </td>
-                                <td>{{ $product->name }}</td>
+                                <td>{{ $product->name }}
+                                    <br>
+                                    @if ($product->is_inactive)
+                                    <span class="badge badge-warning">inactive</span>
+                                    @endif
+                                </td>
                                 <td>{{ $product->type }}</td>
                                 <td>{{ optional($product->category)->name }}</td>
                                 <td>{{ optional($product->sub_category)->name }}</td>

@@ -169,7 +169,6 @@ $(document).ready(function() {
     $(document).on('click', 'button.delete_stock_adjustment', function() {
         Swal.fire({
             title: LANG.sure,
-            text: LANG.confirm_delete_expense_category,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',

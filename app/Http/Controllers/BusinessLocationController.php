@@ -75,32 +75,14 @@ class BusinessLocationController extends Controller
                 $locations->whereIn('business_locations.id', $permitted_locations);
             }
 
-
-            // ->addColumn('action', function ($row) {
-            //     $editUrl = route('business-location.edit', [$row->id]);
-            //     // $settingsUrl = route('location.settings', [$row->id]);
-
-            //     return '<button type="button" data-href="' . $editUrl . '" class="btn btn-xs btn-primary btn-modal" data-container=".location_edit_modal">
-            //             <i class="glyphicon glyphicon-edit"></i> ' . __('messages.edit') . '
-            //         </button>
-            //         <a href="#" class="btn btn-success btn-xs">
-            //             <i class="fa fa-wrench"></i> ' . __('messages.settings') . '
-            //         </a>';
-            // })
-            // ->rawColumns(['action'])
-            // ->make(false);
             return Datatables::of($locations)
-                ->addColumn('action', function ($row) {
-                    $editUrl = route('business-location.edit', [$row->id]);
-                    // $settingsUrl = route('location.settings', [$row->id]);
+                ->addColumn(
+                    'action',
+                    '<button type="button" data-href="{{route(\'business-location.edit\', [$id])}}" class="btn btn-xs btn-primary btn-modal" data-container=".location_edit_modal"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
 
-                    return '<button type="button" data-href="' . $editUrl . '" class="btn btn-xs btn-primary btn-modal" data-container=".location_edit_modal">
-                        <i class="glyphicon glyphicon-edit"></i> ' . __('messages.edit') . '
-                    </button>
-                    <a href="#" class="btn btn-success btn-xs">
-                        <i class="fa fa-wrench"></i> ' . __('messages.settings') . '
-                    </a>';
-                })
+                    <a href="{{route(\'location.settings\', [$id])}}" class="btn btn-success btn-xs"><i class="fa fa-wrench"></i> @lang("messages.settings")</a>
+                    '
+                )
                 ->removeColumn('id')
                 ->rawColumns([9])
                 ->make(false);
@@ -108,6 +90,7 @@ class BusinessLocationController extends Controller
 
         return view('business_location.index');
     }
+
 
     /**
      * Show the form for creating a new resource.
