@@ -67,7 +67,7 @@ class SellTable extends Component
         $permittedLocations = auth()->user()->permitted_locations();
 
         $query = Transaction::query()
-            ->with(['contact:id,name', 'location:id,name'])
+            ->with(['contact', 'return_parent'])
             ->select([
                 'transactions.id',
                 'transactions.transaction_date',
@@ -90,6 +90,7 @@ class SellTable extends Component
                 'transactions.return_parent_id as return_transaction_id'
             ])
             ->leftJoin('transaction_payments as tp', 'transactions.id', '=', 'tp.transaction_id')
+            //->leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
             ->where('transactions.business_id', $businessId)
             ->where('transactions.type', 'sell')
             ->where('transactions.status', 'final');
@@ -128,6 +129,7 @@ class SellTable extends Component
 
         return $query->orderBy($this->sortField, $this->sortDirection)
             ->latest('transactions.transaction_date')
+            ->take(50)
             ->paginate($this->perPage == -1 ? PHP_INT_MAX : $this->perPage);
     }
 

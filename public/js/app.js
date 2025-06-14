@@ -1956,7 +1956,7 @@ $(document).ready(function() {
                                 get_recent_transactions('final', $('div#tab_final'));
                                 get_recent_transactions('draft', $('div#tab_draft'));
                             }
-                        //Livewire.dispatchTo('category-table', 'refreshComponent');
+                        Livewire.dispatchTo('sell-table', 'refreshComponent');
                     } else {
                         toastr.error(result.msg);
                     }

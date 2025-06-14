@@ -61,8 +61,26 @@
                             @foreach ($sales as $sale)
                                 <tr>
                                     <td>{{ $sale->transaction_date }}</td>
-                                    <td>{{ $sale->invoice_no }}</td>
-                                    <td>{{ $sale->contact->name ?? 'test' }}</td>
+                                    <td>{{ $sale->invoice_no }}
+                                        @if (!empty($sale->woocommerce_order_id)) 
+                                                <i class="fa fa-wordpress text-primary no-print" title=" @lang('lang_v1.synced_from_woocommerce')"></i>'
+                                            
+                                            @elseif (!empty($sale->return_parent)) 
+                                                &nbsp;<small class="label bg-red label-round no-print" title="@lang('lang_v1.some_qty_returned_from_sell')"><i class="fa fa-undo"></i></small>
+                                            
+
+                                            @elseif (!empty($sale->is_recurring)) 
+                                                &nbsp;<small class="label bg-red label-round no-print" title="@lang('lang_v1.subscribed_invoice')"><i class="fa fa-recycle"></i></small>
+                                            
+
+                                            @elseif (!empty($sale->recur_parent_id)) 
+                                                &nbsp;<small class="label bg-info label-round no-print" title="@lang('lang_v1.subscription_invoice')"><i class="fa fa-recycle"></i></small>
+                                            
+                                            @else
+
+                                            @endif
+                                    </td>
+                                    <td>{{var_dump($sale->contact) }}</td>
                                     <td>{{ $sale->location->name ?? 'test' }}</td>
                                     <td>{{ ucfirst($sale->payment_status) }}</td>
                                     <td>{{ number_format($sale->final_total, 2) }}</td>
@@ -115,7 +133,7 @@
                                                 @if(request()->session()->get('user.id') == 1)
                                                     @can('direct_sell.delete')
                                                         <li>
-                                                            <a href="{{ route('sells.destroy', [$sale->id]) }}" 
+                                                            <a href="{{ route('pos.destroy', [$sale->id]) }}" 
                                                                class="delete-sale">
                                                                 <i class="fa fa-trash"></i> @lang('messages.delete')
                                                             </a>
